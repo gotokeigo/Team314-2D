@@ -1,4 +1,20 @@
-﻿using UnityEngine;
+﻿//--------------------------------------
+//
+//  PlayerHealth.cs
+//
+//  概要
+//  プレイヤーのHPを制御するスクリプト
+//
+//  更新履歴
+//
+//  2026/04/27  作成
+//              敵に当たった時にプレイヤーのHPが減り無敵時間を得るようにした。
+//              また、プレイヤーのHPが0になった時に操作を不能にし点滅した後にプレイヤーを消すようにした
+//
+//
+//--------------------------------------
+
+using UnityEngine;
 using System.Collections;
 
 public class PlayerHealth : MonoBehaviour

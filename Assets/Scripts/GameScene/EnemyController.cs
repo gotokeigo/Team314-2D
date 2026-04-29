@@ -1,14 +1,30 @@
+ï»¿//--------------------------------------
+//
+//  EnemyController.cs
+//
+//  æ¦‚è¦
+//  æ•µã®æŒ™å‹•ã‚’åˆ¶å¾¡ã™ã‚‹ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
+//
+//  æ›´æ–°å±¥æ­´
+//
+//  2026/04/27  ä½œæˆ
+//              æ•µã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¿ã‚°ã‚’æŒã£ã¦ã„ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«å‘ã‹ã‚ã›ã‚‹ã‚ˆã†ã«ã€‚
+//              æ•µãŒãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å½“ãŸã£ãŸæ™‚ã«ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¸ãˆã‚‹ã‚ˆã†ã«ã—ãŸã€‚
+//
+//  2026/04/28  æ•µãŒãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ”»æ’ƒã«å½“ãŸã£ãŸæ™‚ã«å¹ãé£›ã³ã€ç”»é¢å¤–ã«è¡Œã£ãŸã¨ãã«æ¶ˆæ»…ã™ã‚‹ã‚ˆã†ã«ãªã£ãŸ
+//                  æ•µã®å¹ã£é£›ã°ã™é€Ÿåº¦ã¯PlayerAttack.csã®knockBackForceã§å¤‰æ›´
+//
+//--------------------------------------
 using UnityEngine;
+using System.Collections;
 
 public class EnemyController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed;
     [SerializeField] private int AttackDamage;
     [SerializeField] private float attackInterval;
-    private float CurrentHp;
     private float attackTimer;
-
-
+    private bool isKnockedBack;
     private Transform player;
     private Rigidbody2D rb;
     private PlayerHealth playerHp;
@@ -16,31 +32,19 @@ public class EnemyController : MonoBehaviour
 
     void Start()
     {
-
         rb = GetComponent<Rigidbody2D>();
-
-        // ©•ª‚Æ‘Šè‚ÌƒRƒ‰ƒCƒ_[ƒTƒCƒY‚©‚ç’â~‹——£‚ğŒvZ
         Collider2D enemyCol = GetComponent<Collider2D>();
-
-        //ƒvƒŒƒCƒ„[ƒ^ƒO‚ğ‚Á‚Ä‚¢‚éƒIƒuƒWƒFƒNƒg‚ğ’T‚·
         GameObject playerObject = GameObject.FindWithTag("Player");
-
-
         if (playerObject != null)
         {
-            //ƒvƒŒƒCƒ„[‚ÌÀ•W‚ğæ“¾
             player = playerObject.transform;
-            //ƒvƒŒƒCƒ„[‚ÌHp‚ğæ“¾
             playerHp = playerObject.GetComponent<PlayerHealth>();
-
             Collider2D playerCol = playerObject.GetComponent<Collider2D>();
-
-            // —¼•û‚ÌƒRƒ‰ƒCƒ_[‚Ì”¼Œa‚ğ‡Œv‚µ‚Ä’â~‹——£‚É‚·‚é
             stopDistance = enemyCol.bounds.extents.x + playerCol.bounds.extents.x;
         }
         else
         {
-            Debug.LogError("Playerƒ^ƒO‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñI");
+            Debug.LogError("Playerã‚¿ã‚°ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ï¼");
         }
     }
 
@@ -53,10 +57,13 @@ public class EnemyController : MonoBehaviour
             return;
         }
 
+        // ãƒãƒƒã‚¯ãƒãƒƒã‚¯ä¸­ã¯è¿½è·¡ã—ãªã„
+        if (isKnockedBack) return;
+
         Vector2 direction = (Vector2)(player.position - transform.position);
         float distance = direction.magnitude;
 
-        if (distance < stopDistance)
+        if (distance <= stopDistance)
         {
             rb.MovePosition(rb.position);
             return;
@@ -69,13 +76,33 @@ public class EnemyController : MonoBehaviour
     private void OnCollisionStay2D(Collision2D collision)
     {
         if (!collision.gameObject.CompareTag("Player")) return;
-
-        Debug.Log("Enemy Hit Player");
-
         PlayerHealth playerHp = collision.gameObject.GetComponent<PlayerHealth>();
         if (playerHp != null)
         {
             playerHp.TakeDamage(AttackDamage);
+        }
+    }
+
+    public void KnockBack(Vector2 direction, float force)
+    {
+        isKnockedBack = true;
+        rb.linearVelocity = Vector2.zero;
+        rb.AddForce(direction * force, ForceMode2D.Impulse);
+        StartCoroutine(KnockBackCoroutine());
+    }
+
+    private IEnumerator KnockBackCoroutine()
+    {
+        yield return new WaitForSeconds(0.3f);
+        isKnockedBack = false;
+    }
+
+    // ãƒãƒƒã‚¯ãƒãƒƒã‚¯ä¸­ã«ç”»é¢å¤–ã«å‡ºãŸã‚‰æ¶ˆæ»…
+    private void OnBecameInvisible()
+    {
+        if (isKnockedBack)
+        {
+            Destroy(gameObject);
         }
     }
 }
