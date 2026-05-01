@@ -105,4 +105,12 @@ public class EnemyController : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    public void SetTarget(GameObject target)
+    {
+        if (target != null)
+        {
+            player = target.transform;
+        }
+    }
 }
+
