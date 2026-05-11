@@ -18,7 +18,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float moveSpeed;
     private Rigidbody2D _rb;
     private Vector2 _moveInput;
 

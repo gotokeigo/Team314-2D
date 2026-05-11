@@ -16,28 +16,40 @@
 //
 //  2026/05/04  ノックバック中に他の敵と衝突しないようレイヤーを切り替えるように
 //
+//  2026/05/10  敵にHPとレベルを追加
+//
 //--------------------------------------
 using UnityEngine;
 using System.Collections;
+using UnityEngine.InputSystem.Processors;
 
 public class EnemyController : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed;
-    [SerializeField] private int AttackDamage;
-    [SerializeField] private float attackInterval;
+    [SerializeField] private float moveSpeed;       //  移動速度
+    [SerializeField] private int AttackDamage;      //  接触時のダメージ
+    [SerializeField] private float attackInterval;  //  攻撃間隔
+    [SerializeField] private float maxHp;           //  敵の最大HP
+    [SerializeField] private int level;             //  敵のレベル
+
     private float attackTimer;
-    private bool isKnockedBack;
+    private bool isKnockedBack;                     // 吹き飛んでいるか
+    private float currentHp;                        // 敵の現在HP
     private Transform player;
     private Rigidbody2D rb;
     private PlayerHealth playerHp;
     private float stopDistance;
+    private bool isDead;
 
-    private int _defaultLayer;      // 追加
-    private int _knockbackLayer;    // 追加
+    private int _defaultLayer;
+    private int _knockbackLayer;
+
+    public int Level => level;                      // Experienceからレベルを参照用
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        currentHp = maxHp;                          // 敵の最大HP
+
         Collider2D enemyCol = GetComponent<Collider2D>();
         GameObject playerObject = GameObject.FindWithTag("Player");
         if (playerObject != null)
@@ -52,15 +64,10 @@ public class EnemyController : MonoBehaviour
             Debug.LogError("Playerタグが見つかりません！");
         }
 
-        // レイヤーをキャッシュ ここから追加
         _defaultLayer = gameObject.layer;
         _knockbackLayer = LayerMask.NameToLayer("EnemyKnockback");
-
-        // EnemyKnockbackレイヤーは通常の敵レイヤーと衝突しない
         Physics2D.IgnoreLayerCollision(_knockbackLayer, _defaultLayer, true);
-        // EnemyKnockback同士も衝突しない（複数同時にノックバックされた場合）
         Physics2D.IgnoreLayerCollision(_knockbackLayer, _knockbackLayer, true);
-        // ここまで追加
     }
 
     void FixedUpdate()
@@ -72,6 +79,7 @@ public class EnemyController : MonoBehaviour
             return;
         }
         if (isKnockedBack) return;
+
         Vector2 direction = (Vector2)(player.position - transform.position);
         float distance = direction.magnitude;
         if (distance <= stopDistance)
@@ -93,6 +101,26 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    public bool TakeDamage(float damage)
+    {
+        if (isDead) return false;
+        currentHp -= damage;
+        Debug.Log($"敵HP: {currentHp,0}/{maxHp}");
+        if (currentHp <= 0)
+        {
+            Die();
+            return true;    // 死亡
+        }
+        return false;       // 生存
+    }
+
+    private void Die()
+    {
+        isDead = true;
+    }
+
+
+
     public void KnockBack(Vector2 direction, float force)
     {
         isKnockedBack = true;
@@ -103,17 +131,18 @@ public class EnemyController : MonoBehaviour
 
     private IEnumerator KnockBackCoroutine()
     {
-        gameObject.layer = _knockbackLayer;     //ノックバック用レイヤーに切り替え
+        gameObject.layer = _knockbackLayer;
 
         yield return new WaitForSeconds(0.3f);
         isKnockedBack = false;
 
-        gameObject.layer = _defaultLayer;       // 元のレイヤーに戻す
+        gameObject.layer = _defaultLayer;
     }
 
+    // OnBecameInvisible：死亡時も消えるように条件を変更
     private void OnBecameInvisible()
     {
-        if (isKnockedBack)
+        if (isKnockedBack || isDead)    // isDead追加
         {
             Destroy(gameObject);
         }
