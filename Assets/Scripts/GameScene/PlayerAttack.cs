@@ -12,69 +12,165 @@
 //
 //  2026/04/29  プレイヤーが攻撃をしたときにヒットした敵の数をExperienceManagerに渡すように
 //
+//  2026/05/10  攻撃を3段階チャージ式に変更
+//              小チャージ：同レベル相手は一撃ではない
+//              中チャージ：同レベル相手を一撃
+//              大チャージ：自分のレベル×1.3まで一撃
+//
 //--------------------------------------
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerAttack : MonoBehaviour
 {
-    [SerializeField] private float attackRange = 1.5f;      // 攻撃の距離
-    [SerializeField] private float knockBackForce = 10f;    // 吹き飛ばす力
-    [SerializeField] private LayerMask enemyLayer;          // レイヤー
-    [SerializeField] private GameObject batObject;          // バットオブジェクトをインスペクターで登録
-    [SerializeField] private GameObject decoyPrefab;  // フィールドに追加
+    
+    [Header("攻撃設定")]
+    [SerializeField] private float attackRange;             //  攻撃範囲
+    [SerializeField] private float knockBackForce;          //  吹き飛ばす力     
+    [SerializeField] private float attackAngle;             //  扇型の角度
+    [SerializeField] private LayerMask enemyLayer;          //  敵のレイヤー
+    [SerializeField] private GameObject batObject;          //  攻撃時に表示されるbatのオブジェクト
 
+    //けす？
+    [SerializeField] private GameObject decoyPrefab;        //  Gキー(現状)を押したときに出るデコイのモデルを入れる
+
+    [Header("チャージ時間")]
+    [SerializeField] private float mediumChargeTime;        // 中チャージになる秒数
+    [SerializeField] private float largeChargeTime;         // 大チャージになる秒数
+
+    [Header("ダメージ設定")]
+    [SerializeField] private float smallDamage;             // 小チャージダメージ（敵のHPより小さく設定）
+    [SerializeField] private float mediumDamage;            // 中チャージダメージ（同レベル敵のHP以上に設定）
+    [SerializeField] private float largeKillLevelMultiplier;// 大チャージで一撃のレベル倍率
+
+    private enum ChargeLevel { Small, Medium, Large }
 
     private PlayerController _playerController;
-    private bool _isAttacking;
-    private SpriteRenderer _batSpriteRenderer;
+    private bool _isAttacking;                      //  攻撃しているか
+    private bool _isCharging;                       //  攻撃をチャージしているか
+    private float _chargeStartTime;                 //  チャージを始めた時間
+    private SpriteRenderer _batSpriteRenderer;      //  バットのスプライトレンダラー切り替え用
+    private InputAction _attackAction;
 
     private void Awake()
     {
         _playerController = GetComponent<PlayerController>();
-
         _batSpriteRenderer = batObject.GetComponent<SpriteRenderer>();
-        Debug.Log(_batSpriteRenderer); // 追加
 
+        _attackAction = GetComponent<PlayerInput>().actions["Attack"];  //PlayerInputからAttackアクションを取得
     }
 
+    //  ボタンを押した時だけチャージ開始
     private void OnAttack(InputValue value)
     {
-        if (_isAttacking) return;
-        Attack();
+        if (_isAttacking || _isCharging) return;
+
+        _isCharging = true;
+        _chargeStartTime = Time.time;
     }
 
-    private void Attack()
+    private void Update()
+    {
+        if (!_isCharging || _isAttacking) return;
+
+        //ボタンが離されたら攻撃
+        if(_attackAction.WasReleasedThisFrame())
+        {
+            _isCharging = false;
+            float chargeTime = Time.time - _chargeStartTime;
+            ChargeLevel chargeLevel = DetermineChargeLevel(chargeTime);
+            Attack(chargeLevel);
+        }
+    }
+
+
+    private ChargeLevel DetermineChargeLevel(float chargeTime)
+    {
+        if (chargeTime >= largeChargeTime) return ChargeLevel.Large;
+        if (chargeTime >= mediumChargeTime) return ChargeLevel.Medium;
+        return ChargeLevel.Small;
+    }
+
+    private void Attack(ChargeLevel chargeLevel)
     {
         _isAttacking = true;
         _batSpriteRenderer.enabled = true;
 
-
+        Debug.Log($"チャージレベル: {chargeLevel}");
 
         Vector2 attackDirection = _playerController.LastMoveDirection;
         Vector2 attackCenter = (Vector2)transform.position + attackDirection * attackRange;
 
+        // 円形で取得してから扇型に絞り込む
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackCenter, attackRange, enemyLayer);
-
+        List<Collider2D> hitEnemiesInFan = new List<Collider2D>();  // 追加
 
         foreach (Collider2D enemy in hitEnemies)
+        {
+            // プレイヤーから敵への方向を取得
+            Vector2 dirToEnemy = (enemy.transform.position - transform.position).normalized;
+            // 攻撃方向との角度を計算
+            float angle = Vector2.Angle(attackDirection, dirToEnemy);
+
+            // 扇型の範囲内なら追加
+            if (angle <= attackAngle / 2f)
+            {
+                hitEnemiesInFan.Add(enemy);
+            }
+        }
+
+        foreach (Collider2D enemy in hitEnemiesInFan)
         {
             EnemyController enemyController = enemy.GetComponent<EnemyController>();
             if (enemyController != null)
             {
-                Vector2 knockBackDirection = (enemy.transform.position - transform.position).normalized;
-                enemyController.KnockBack(knockBackDirection, knockBackForce);
+                float damage = CalculateDamage(chargeLevel, enemyController);
+                bool died = enemyController.TakeDamage(damage);
+
+                if (died)
+                {
+                    Vector2 knockBackDirection = (enemy.transform.position - transform.position).normalized;
+                    enemyController.KnockBack(knockBackDirection, knockBackForce);
+                }
             }
         }
 
-
         StartCoroutine(HideBat());
 
-        // ヒット数をExperienceManagerに渡す
-        if (hitEnemies.Length > 0)
+        if (hitEnemiesInFan.Count > 0)                  
         {
-            ExperienceManager.Instance.AddXp(hitEnemies.Length);
+            ExperienceManager.Instance.AddXp(hitEnemiesInFan.Count);  
+        }
+    }
+
+    private float CalculateDamage(ChargeLevel chargeLevel, EnemyController enemy)
+    {
+        switch (chargeLevel)
+        {
+            case ChargeLevel.Small:
+                return smallDamage;
+
+
+            case ChargeLevel.Medium:
+                return mediumDamage;
+
+
+            case ChargeLevel.Large:
+                int playerLevel = ExperienceManager.Instance.PlayerLevel;
+                // 自分のレベル × 倍率 以下の敵は一撃
+                if (enemy.Level <= playerLevel * largeKillLevelMultiplier)
+                {
+                    return float.MaxValue; // 即死
+                }
+                else
+                {
+                    return mediumDamage;   // 範囲外は中チャージ相当
+                }
+
+            default:
+                return smallDamage;
         }
     }
 
@@ -95,14 +191,11 @@ public class PlayerAttack : MonoBehaviour
             float t = elapsed / swingDuration;
             float currentAngle = Mathf.Lerp(startAngle, endAngle, t);
 
-            // バットをプレイヤーの周りに弧を描くように移動
             float rad = currentAngle * Mathf.Deg2Rad;
             batObject.transform.localPosition = new Vector2(
                 Mathf.Cos(rad) * attackRange,
                 Mathf.Sin(rad) * attackRange
             );
-
-            // バット自体の向きも合わせる
             batObject.transform.rotation = Quaternion.Euler(0, 0, currentAngle);
 
             yield return null;
@@ -112,14 +205,20 @@ public class PlayerAttack : MonoBehaviour
         _isAttacking = false;
     }
 
-    // デバッグ用：攻撃範囲をシーンビューに表示
+    //  ゲーム実行中にとめたらしたら攻撃範囲見えるやつ
     private void OnDrawGizmos()
     {
         if (_playerController == null) return;
         Gizmos.color = Color.red;
-        Vector2 attackCenter = (Vector2)transform.position +
-            _playerController.LastMoveDirection * attackRange;
-        Gizmos.DrawWireSphere(attackCenter, attackRange);
+
+        Vector2 attackDirection = _playerController.LastMoveDirection;
+
+        float halfAngle = attackAngle / 2f;
+        Vector3 leftDir = Quaternion.Euler(0, 0, halfAngle) * (Vector3)attackDirection;
+        Vector3 rightDir = Quaternion.Euler(0, 0, -halfAngle) * (Vector3)attackDirection;
+
+        Gizmos.DrawLine(transform.position, transform.position + leftDir * attackRange * 2f);
+        Gizmos.DrawLine(transform.position, transform.position + rightDir * attackRange * 2f);
     }
 
     private void OnDecoy(InputValue value)

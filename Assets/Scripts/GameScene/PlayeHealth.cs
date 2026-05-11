@@ -19,8 +19,8 @@ using System.Collections;
 
 public class PlayerHealth : MonoBehaviour
 {
-    [SerializeField] private float maxHp = 10;           //最大体力
-    [SerializeField] private float invincibleTime = 1;  //無敵時間
+    [SerializeField] private float maxHp;           //最大体力
+    [SerializeField] private float invincibleTime;  //無敵時間
 
     private bool isInvincible;
     private float currentHp;
