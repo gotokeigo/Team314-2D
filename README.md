@@ -1,45 +1,56 @@
 <div align="center">
 
-# Practice
+# Team314-2D
 
 </div>
 
 ---
 
 ## 概要
-このプロジェクトの簡単な説明を書く
+チーム制作
 
 ---
 
 ## 必要なツール
 - [Git](https://git-scm.com/install/windows)
-- [SourceTree](https://www.sourcetreeapp.com/)
+- [SourceTree](https://www.sourcetreeapp.com/) (別のツール使うならそっちを使ってください)
 - Unity Hub
 
 ## 環境
-- Unity 6000.(バージョン)
+- Unity 6000.3.14f1(バージョン)
 - OS:Windows
 
 ---
 
 ## 環境構築
-1. リポジトリをクローンする
-2. Unity Hubでプロジェクトを開く
-3. `.gitconfig`にスマートマージの設定を追加する(下記)
+1. リポジトリをクローンする(保存先のパスは英数字にすること)
+<img width="649" height="438" alt="スクリーンショット 2026-05-12 184036" src="https://github.com/user-attachments/assets/656e5c1d-c192-4ee6-8192-d0b77f1c9557" />
 
-### スマートマージの設定
-```
+2. プルする
+
+
+3. 追加∨のディスクから加えるでさっき保存先にしたファイルを選択し名前のところにカーソルを合わせプロジェクトを開く。
+
+
+
+
+<img width="255" height="117" alt="image" src="https://github.com/user-attachments/assets/f39cda2e-e070-4c2c-a55e-912363a74eb8" />
+
+
+~~3. `.gitconfig`にスマートマージの設定を追加する(下記)~~
+
+~~### スマートマージの設定~~
+~~```~~
 [merge]  
     tool = unityyamlmerge
 [mergetool "unityyamlmerge"]  
 	trustExitCode = false  
 	cmd = 'C:/Program Files/Unity/Hub/Editor/6000.(使うバージョン)/Editor/Data/Tools/UnityYAMLMerge.exe' merge -p "$BASE" "$REMOTE" "$LOCAL" "$MERGED"
-```
+~~```~~
 
 ## 便利ツール
 ### シーン切り替え君  
  Tools → シーン切り替え君 を使うとワンクリックでシーンを切り替えられます。  
- BuildProfiels→ SceneListで作成したシーンを追加しておく必要があります。  
 
 ## ブランチ運用
 - `master` → リリース用
