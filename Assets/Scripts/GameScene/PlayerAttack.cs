@@ -20,12 +20,13 @@
 //--------------------------------------
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Hierarchy;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerAttack : MonoBehaviour
 {
-    
+
     [Header("攻撃設定")]
     [SerializeField] private float attackRange;             //  攻撃範囲
     [SerializeField] private float knockBackForce;          //  吹き飛ばす力     
@@ -39,6 +40,7 @@ public class PlayerAttack : MonoBehaviour
     [Header("チャージ時間")]
     [SerializeField] private float mediumChargeTime;        // 中チャージになる秒数
     [SerializeField] private float largeChargeTime;         // 大チャージになる秒数
+    [SerializeField] private float chargeSpeedMultiplier = 1.0f;    //チャージ中の速度倍率
 
     [Header("ダメージ設定")]
     [SerializeField] private float smallDamage;             // 小チャージダメージ（敵のHPより小さく設定）
@@ -68,7 +70,8 @@ public class PlayerAttack : MonoBehaviour
         if (_isAttacking || _isCharging) return;
 
         _isCharging = true;
-        _chargeStartTime = Time.time;
+        _chargeStartTime = Time.time;   //  チャージの時間を数える
+        _playerController.SetSpeedMultiplier(chargeSpeedMultiplier);
     }
 
     private void Update()
@@ -76,9 +79,10 @@ public class PlayerAttack : MonoBehaviour
         if (!_isCharging || _isAttacking) return;
 
         //ボタンが離されたら攻撃
-        if(_attackAction.WasReleasedThisFrame())
+        if (_attackAction.WasReleasedThisFrame())
         {
             _isCharging = false;
+            _playerController.SetSpeedMultiplier(1.0f); //速度をもとに戻す
             float chargeTime = Time.time - _chargeStartTime;
             ChargeLevel chargeLevel = DetermineChargeLevel(chargeTime);
             Attack(chargeLevel);
@@ -103,23 +107,20 @@ public class PlayerAttack : MonoBehaviour
         Vector2 attackDirection = _playerController.LastMoveDirection;
         Vector2 attackCenter = (Vector2)transform.position + attackDirection * attackRange;
 
-        // 円形で取得してから扇型に絞り込む
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackCenter, attackRange, enemyLayer);
-        List<Collider2D> hitEnemiesInFan = new List<Collider2D>();  // 追加
+        List<Collider2D> hitEnemiesInFan = new List<Collider2D>();
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            // プレイヤーから敵への方向を取得
             Vector2 dirToEnemy = (enemy.transform.position - transform.position).normalized;
-            // 攻撃方向との角度を計算
             float angle = Vector2.Angle(attackDirection, dirToEnemy);
-
-            // 扇型の範囲内なら追加
             if (angle <= attackAngle / 2f)
             {
                 hitEnemiesInFan.Add(enemy);
             }
         }
+
+        int killCount = 0;  //倒した数をカウント
 
         foreach (Collider2D enemy in hitEnemiesInFan)
         {
@@ -133,15 +134,16 @@ public class PlayerAttack : MonoBehaviour
                 {
                     Vector2 knockBackDirection = (enemy.transform.position - transform.position).normalized;
                     enemyController.KnockBack(knockBackDirection, knockBackForce);
+                    killCount++;    //倒したらカウント
                 }
             }
         }
 
         StartCoroutine(HideBat());
 
-        if (hitEnemiesInFan.Count > 0)                  
+        if (killCount > 0)                          
         {
-            ExperienceManager.Instance.AddXp(hitEnemiesInFan.Count);  
+            ExperienceManager.Instance.AddXp(killCount);
         }
     }
 
