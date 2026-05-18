@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float moveSpeed;
     private Rigidbody2D _rb;
     private Vector2 _moveInput;
+    private float _speedMultiplier = 1.0f; //プレイヤー移動速度倍率
 
     // 最後に移動した方向（初期値は下向き）
     public Vector2 LastMoveDirection { get; private set; } = Vector2.down;
@@ -43,7 +44,12 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector2 newPosition = _rb.position + _moveInput * moveSpeed * Time.fixedDeltaTime;
+        Vector2 newPosition = _rb.position + _moveInput * moveSpeed * _speedMultiplier * Time.fixedDeltaTime;   //
         _rb.MovePosition(newPosition);
+    }
+
+    public void SetSpeedMultiplier(float multiplier)
+    {
+        _speedMultiplier = multiplier;
     }
 }

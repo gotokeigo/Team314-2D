@@ -31,6 +31,8 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float maxHp;           //  敵の最大HP
     [SerializeField] private int level;             //  敵のレベル
 
+    [SerializeField] private float rotationForce = 5f;     // 敵が吹き飛ぶ時の回転力
+
     private float attackTimer;
     private bool isKnockedBack;                     // 吹き飛んでいるか
     private float currentHp;                        // 敵の現在HP
@@ -93,6 +95,7 @@ public class EnemyController : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
+        if (isDead) return;
         if (!collision.gameObject.CompareTag("Player")) return;
         PlayerHealth playerHp = collision.gameObject.GetComponent<PlayerHealth>();
         if (playerHp != null)
@@ -125,7 +128,9 @@ public class EnemyController : MonoBehaviour
     {
         isKnockedBack = true;
         rb.linearVelocity = Vector2.zero;
+        rb.freezeRotation = false;
         rb.AddForce(direction * force, ForceMode2D.Impulse);
+        rb.AddTorque(rotationForce, ForceMode2D.Impulse);
         StartCoroutine(KnockBackCoroutine());
     }
 
@@ -134,9 +139,15 @@ public class EnemyController : MonoBehaviour
         gameObject.layer = _knockbackLayer;
 
         yield return new WaitForSeconds(0.3f);
-        isKnockedBack = false;
 
-        gameObject.layer = _defaultLayer;
+        // 死亡していたら吹き飛び状態のまま画面外まで飛ばし続ける
+        if (!isDead)
+        {
+            isKnockedBack = false;
+            rb.freezeRotation = true;
+            rb.rotation = 0f;
+            gameObject.layer = _defaultLayer;
+        }
     }
 
     // OnBecameInvisible：死亡時も消えるように条件を変更
