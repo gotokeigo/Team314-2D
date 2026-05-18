@@ -28,14 +28,24 @@ public class PlayerAttack : MonoBehaviour
 {
 
     [Header("攻撃設定")]
-    [SerializeField] private float attackRange;             //  攻撃範囲
-    [SerializeField] private float knockBackForce;          //  吹き飛ばす力     
-    [SerializeField] private float attackAngle;             //  扇型の角度
+    [SerializeField] private float knockBackForce;          //  吹き飛ばす力    
     [SerializeField] private LayerMask enemyLayer;          //  敵のレイヤー
     [SerializeField] private GameObject batObject;          //  攻撃時に表示されるbatのオブジェクト
 
     //けす？
     [SerializeField] private GameObject decoyPrefab;        //  Gキー(現状)を押したときに出るデコイのモデルを入れる
+
+    [Header("小チャージ設定")]                                   
+    [SerializeField] private float smallAttackRange;             //  攻撃範囲
+    [SerializeField] private float smallAttackAngle;             //  扇型の角度
+
+    [Header("中チャージ設定")]                                   
+    [SerializeField] private float mediumAttackRange;            //  攻撃範囲
+    [SerializeField] private float mediumAttackAngle;            //  扇型の角度
+
+    [Header("強チャージ設定")]                                   
+    [SerializeField] private float largeAttackRange;             //  攻撃範囲
+    [SerializeField] private float largeAttackAngle;             //  扇型の角度
 
     [Header("チャージ時間")]
     [SerializeField] private float mediumChargeTime;        // 中チャージになる秒数
@@ -89,11 +99,19 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-
+    //  チャージ時間に応じて渡す値を変えるのを制御するプログラム
     private ChargeLevel DetermineChargeLevel(float chargeTime)
     {
-        if (chargeTime >= largeChargeTime) return ChargeLevel.Large;
-        if (chargeTime >= mediumChargeTime) return ChargeLevel.Medium;
+        if (chargeTime >= largeChargeTime)
+        {
+
+            return ChargeLevel.Large;
+        }
+        if (chargeTime >= mediumChargeTime)
+        {
+            return ChargeLevel.Medium;
+        }
+
         return ChargeLevel.Small;
     }
 
@@ -104,17 +122,33 @@ public class PlayerAttack : MonoBehaviour
 
         Debug.Log($"チャージレベル: {chargeLevel}");
 
-        Vector2 attackDirection = _playerController.LastMoveDirection;
-        Vector2 attackCenter = (Vector2)transform.position + attackDirection * attackRange;
+        // チャージレベルに応じた範囲と角度を取得
+        float currentRange = chargeLevel switch
+        {
+            ChargeLevel.Small => smallAttackRange,
+            ChargeLevel.Medium => mediumAttackRange,
+            ChargeLevel.Large => largeAttackRange,
+            _ => smallAttackRange
+        };
+        float currentAngle = chargeLevel switch
+        {
+            ChargeLevel.Small => smallAttackAngle,
+            ChargeLevel.Medium => mediumAttackAngle,
+            ChargeLevel.Large => largeAttackAngle,
+            _ => smallAttackAngle
+        };
 
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackCenter, attackRange, enemyLayer);
+        Vector2 attackDirection = _playerController.LastMoveDirection;
+        Vector2 attackCenter = (Vector2)transform.position + attackDirection * currentRange;
+
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackCenter, currentRange, enemyLayer);
         List<Collider2D> hitEnemiesInFan = new List<Collider2D>();
 
         foreach (Collider2D enemy in hitEnemies)
         {
             Vector2 dirToEnemy = (enemy.transform.position - transform.position).normalized;
             float angle = Vector2.Angle(attackDirection, dirToEnemy);
-            if (angle <= attackAngle / 2f)
+            if (angle <= currentAngle / 2f)
             {
                 hitEnemiesInFan.Add(enemy);
             }
@@ -139,7 +173,7 @@ public class PlayerAttack : MonoBehaviour
             }
         }
 
-        StartCoroutine(HideBat());
+        StartCoroutine(HideBat(currentRange));  // currentRangeを渡す
 
         if (killCount > 0)                          
         {
@@ -149,16 +183,18 @@ public class PlayerAttack : MonoBehaviour
 
     private float CalculateDamage(ChargeLevel chargeLevel, EnemyController enemy)
     {
+
         switch (chargeLevel)
         {
+                //  弱チャージ
             case ChargeLevel.Small:
                 return smallDamage;
 
-
+                //  中チャージ
             case ChargeLevel.Medium:
                 return mediumDamage;
 
-
+                //  強チャージ
             case ChargeLevel.Large:
                 int playerLevel = ExperienceManager.Instance.PlayerLevel;
                 // 自分のレベル × 倍率 以下の敵は一撃
@@ -176,14 +212,13 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-    private IEnumerator HideBat()
+    //  武器を振っているように制御してる
+    private IEnumerator HideBat(float range)
     {
         Vector2 attackDirection = _playerController.LastMoveDirection;
         float baseAngle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
-
         float startAngle = baseAngle + 90f;
         float endAngle = baseAngle - 90f;
-
         float swingDuration = 0.2f;
         float elapsed = 0f;
 
@@ -192,14 +227,12 @@ public class PlayerAttack : MonoBehaviour
             elapsed += Time.deltaTime;
             float t = elapsed / swingDuration;
             float currentAngle = Mathf.Lerp(startAngle, endAngle, t);
-
             float rad = currentAngle * Mathf.Deg2Rad;
             batObject.transform.localPosition = new Vector2(
-                Mathf.Cos(rad) * attackRange,
-                Mathf.Sin(rad) * attackRange
+                Mathf.Cos(rad) * range,     // attackRange → range
+                Mathf.Sin(rad) * range      // attackRange → range
             );
             batObject.transform.rotation = Quaternion.Euler(0, 0, currentAngle);
-
             yield return null;
         }
 
@@ -211,16 +244,22 @@ public class PlayerAttack : MonoBehaviour
     private void OnDrawGizmos()
     {
         if (_playerController == null) return;
-        Gizmos.color = Color.red;
-
         Vector2 attackDirection = _playerController.LastMoveDirection;
 
-        float halfAngle = attackAngle / 2f;
+        // 小：赤、中：黄、大：緑で表示
+        DrawFanGizmo(attackDirection, smallAttackRange, smallAttackAngle, Color.red);
+        DrawFanGizmo(attackDirection, mediumAttackRange, mediumAttackAngle, Color.yellow);
+        DrawFanGizmo(attackDirection, largeAttackRange, largeAttackAngle, Color.green);
+    }
+
+    private void DrawFanGizmo(Vector2 attackDirection, float range, float angle, Color color)
+    {
+        Gizmos.color = color;
+        float halfAngle = angle / 2f;
         Vector3 leftDir = Quaternion.Euler(0, 0, halfAngle) * (Vector3)attackDirection;
         Vector3 rightDir = Quaternion.Euler(0, 0, -halfAngle) * (Vector3)attackDirection;
-
-        Gizmos.DrawLine(transform.position, transform.position + leftDir * attackRange * 2f);
-        Gizmos.DrawLine(transform.position, transform.position + rightDir * attackRange * 2f);
+        Gizmos.DrawLine(transform.position, transform.position + leftDir * range * 2f);
+        Gizmos.DrawLine(transform.position, transform.position + rightDir * range * 2f);
     }
 
     private void OnDecoy(InputValue value)

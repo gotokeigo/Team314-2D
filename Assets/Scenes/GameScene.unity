@@ -1490,14 +1490,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a19c3fe62341ce24bb2cf595711c598f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
-  attackRange: 1.5
   knockBackForce: 40
-  attackAngle: 60
   enemyLayer:
     serializedVersion: 2
     m_Bits: 8
   batObject: {fileID: 1779458742}
   decoyPrefab: {fileID: 4250216936327063589, guid: f32b785b0783b2b4284b32091d39d65d, type: 3}
+  smallAttackRange: 1
+  smallAttackAngle: 60
+  mediumAttackRange: 1.5
+  mediumAttackAngle: 90
+  largeAttackRange: 3
+  largeAttackAngle: 120
   mediumChargeTime: 0.5
   largeChargeTime: 1.5
   chargeSpeedMultiplier: 0.5
