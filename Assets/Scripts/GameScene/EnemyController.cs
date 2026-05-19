@@ -18,6 +18,10 @@
 //
 //  2026/05/10  敵にHPとレベルを追加
 //
+//  2026/05/18  プレイヤーの攻撃が当たってHPが0になったときに画面端に行くまで吹き飛び続けるように変更。
+//              ExperienceManagerにヒットした数を渡していたので倒した数を渡すように変更。
+//              敵を倒したときに回転しながら飛んでいくのを追加
+//              
 //--------------------------------------
 using UnityEngine;
 using System.Collections;
@@ -122,8 +126,6 @@ public class EnemyController : MonoBehaviour
         isDead = true;
     }
 
-
-
     public void KnockBack(Vector2 direction, float force)
     {
         isKnockedBack = true;
@@ -153,7 +155,7 @@ public class EnemyController : MonoBehaviour
     // OnBecameInvisible：死亡時も消えるように条件を変更
     private void OnBecameInvisible()
     {
-        if (isKnockedBack || isDead)    // isDead追加
+        if (isKnockedBack || isDead)
         {
             Destroy(gameObject);
         }

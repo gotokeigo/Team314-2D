@@ -17,6 +17,9 @@
 //              中チャージ：同レベル相手を一撃
 //              大チャージ：自分のレベル×1.3まで一撃
 //
+//  2026/05/18  攻撃のチャージに応じて範囲、長さが変わるように変更。
+//              攻撃をチャージしているときに移動速度が低下するように変更
+//
 //--------------------------------------
 using System.Collections;
 using System.Collections.Generic;
@@ -94,7 +97,7 @@ public class PlayerAttack : MonoBehaviour
             _isCharging = false;
             _playerController.SetSpeedMultiplier(1.0f); //速度をもとに戻す
             float chargeTime = Time.time - _chargeStartTime;
-            ChargeLevel chargeLevel = DetermineChargeLevel(chargeTime);
+            ChargeLevel chargeLevel = DetermineChargeLevel(chargeTime);     // チャージ時間に応じたチャージレベルを取得
             Attack(chargeLevel);
         }
     }
@@ -104,7 +107,6 @@ public class PlayerAttack : MonoBehaviour
     {
         if (chargeTime >= largeChargeTime)
         {
-
             return ChargeLevel.Large;
         }
         if (chargeTime >= mediumChargeTime)
@@ -240,18 +242,19 @@ public class PlayerAttack : MonoBehaviour
         _isAttacking = false;
     }
 
-    //  ゲーム実行中にとめたらしたら攻撃範囲見えるやつ
+    //  実行中に一時停止(Shift+Ctrl+P)したときにプレイヤーの攻撃範囲を表示するプログラム
+    //  小の範囲は赤、中の範囲は黄色、大の範囲は緑
     private void OnDrawGizmos()
     {
         if (_playerController == null) return;
         Vector2 attackDirection = _playerController.LastMoveDirection;
 
-        // 小：赤、中：黄、大：緑で表示
         DrawFanGizmo(attackDirection, smallAttackRange, smallAttackAngle, Color.red);
         DrawFanGizmo(attackDirection, mediumAttackRange, mediumAttackAngle, Color.yellow);
         DrawFanGizmo(attackDirection, largeAttackRange, largeAttackAngle, Color.green);
     }
 
+    //  プレイヤーの攻撃範囲を表示するために、攻撃距離　角度を取得し計算するプログラム
     private void DrawFanGizmo(Vector2 attackDirection, float range, float angle, Color color)
     {
         Gizmos.color = color;
