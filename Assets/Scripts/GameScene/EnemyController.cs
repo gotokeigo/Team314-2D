@@ -21,7 +21,10 @@
 //  2026/05/18  プレイヤーの攻撃が当たってHPが0になったときに画面端に行くまで吹き飛び続けるように変更。
 //              ExperienceManagerにヒットした数を渡していたので倒した数を渡すように変更。
 //              敵を倒したときに回転しながら飛んでいくのを追加
-//              
+//
+//  2026/05/20  敵がその辺をふらつくように、またプレイヤータグを持っているのを追いかけていたのを
+//              プレイヤータグを持っているのが近づいてきたときに、追いかけ始めるように変更
+//
 //--------------------------------------
 using UnityEngine;
 using System.Collections;
@@ -37,6 +40,10 @@ public class EnemyController : MonoBehaviour
 
     [SerializeField] private float rotationForce = 5f;     // 敵が吹き飛ぶ時の回転力
 
+    [SerializeField] private float detectionRange = 5f;     // プレイヤーを発見する距離
+    [SerializeField] private float wanderRadius = 3f;       // さまよう範囲
+    [SerializeField] private float wanderInterval = 2f;     // 次の目標地点を決める間隔
+
     private float attackTimer;
     private bool isKnockedBack;                     // 吹き飛んでいるか
     private float currentHp;                        // 敵の現在HP
@@ -46,10 +53,18 @@ public class EnemyController : MonoBehaviour
     private float stopDistance;
     private bool isDead;
 
+    //  敵集団管理用
+    private bool _isDiscovered;                             // プレイヤーを発見しているか
+    private Vector2 _wanderTarget;                          // さまよう目標地点
+    private float _wanderTimer;                             // さまようタイマー
+    private float _currentMoveSpeed;                        // 現在の移動速度（グループから設定される)
+
+
     private int _defaultLayer;
     private int _knockbackLayer;
 
     public int Level => level;                      // Experienceからレベルを参照用
+    public float GetBaseSpeed() => moveSpeed;   // 基本速度を返す
 
     void Start()
     {
@@ -74,6 +89,9 @@ public class EnemyController : MonoBehaviour
         _knockbackLayer = LayerMask.NameToLayer("EnemyKnockback");
         Physics2D.IgnoreLayerCollision(_knockbackLayer, _defaultLayer, true);
         Physics2D.IgnoreLayerCollision(_knockbackLayer, _knockbackLayer, true);
+
+        _currentMoveSpeed = moveSpeed;
+        _wanderTarget = GetNewWanderTarget();
     }
 
     void FixedUpdate()
@@ -86,6 +104,29 @@ public class EnemyController : MonoBehaviour
         }
         if (isKnockedBack) return;
 
+        // 未発見なら自動発見チェック
+        if (!_isDiscovered)
+        {
+            float distToPlayer = Vector2.Distance(rb.position, player.position);
+            if (distToPlayer <= detectionRange)
+            {
+                _isDiscovered = true;
+            }
+        }
+
+        if (_isDiscovered)
+        {
+            Chase();
+        }
+        else
+        {
+            Wander();
+        }
+    }
+
+    // 追跡処理（既存のFixedUpdateの移動処理を移動）
+    private void Chase()
+    {
         Vector2 direction = (Vector2)(player.position - transform.position);
         float distance = direction.magnitude;
         if (distance <= stopDistance)
@@ -93,9 +134,50 @@ public class EnemyController : MonoBehaviour
             rb.MovePosition(rb.position);
             return;
         }
-        Vector2 newPosition = rb.position + direction.normalized * moveSpeed * Time.fixedDeltaTime;
+        Vector2 newPosition = rb.position + direction.normalized * _currentMoveSpeed * Time.fixedDeltaTime;
         rb.MovePosition(newPosition);
     }
+
+    // さまよう処理
+    private void Wander()
+    {
+        _wanderTimer -= Time.fixedDeltaTime;
+        if (_wanderTimer <= 0f)
+        {
+            _wanderTarget = GetNewWanderTarget();
+            _wanderTimer = wanderInterval;
+        }
+
+        Vector2 direction = (_wanderTarget - rb.position);
+        if (direction.magnitude <= 0.1f)
+        {
+            _wanderTarget = GetNewWanderTarget();
+            return;
+        }
+        Vector2 newPosition = rb.position + direction.normalized * _currentMoveSpeed * Time.fixedDeltaTime;
+        rb.MovePosition(newPosition);
+    }
+
+    // さまよう目標地点をランダムに決める
+    private Vector2 GetNewWanderTarget()
+    {
+        _wanderTimer = wanderInterval;
+        return rb.position + Random.insideUnitCircle * wanderRadius;
+    }
+
+    // グループから発見状態を設定する
+    public void SetDiscovered(bool discovered)
+    {
+        _isDiscovered = discovered;
+    }
+
+    // グループから速度を設定する
+    public void SetMoveSpeed(float speed)
+    {
+        _currentMoveSpeed = speed;
+    }
+
+    public bool IsDiscovered => _isDiscovered;  // グループから参照用
 
     private void OnCollisionStay2D(Collision2D collision)
     {
