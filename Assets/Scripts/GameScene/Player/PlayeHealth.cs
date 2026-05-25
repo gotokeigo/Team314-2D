@@ -40,6 +40,7 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        //死亡中または無敵時間中はダメージは受けない
         if (IsDead || isInvincible) return;
 
         currentHp -= damage;
@@ -47,11 +48,11 @@ public class PlayerHealth : MonoBehaviour
 
         if (currentHp <= 0)
         {
-            Die();
+            Die();  //死亡処理呼び出し
         }
         else
         {
-            StartCoroutine(InvincibleCoroutine());
+            StartCoroutine(InvincibleCoroutine());  // ダメージを受けても死ななかった場合は無敵時間を開始
         }
     }
 
@@ -63,38 +64,39 @@ public class PlayerHealth : MonoBehaviour
 
         // 動き停止
         GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
-
         // 入力停止
         GetComponent<PlayerController>().enabled = false;
-
         // 当たり判定オフ
         GetComponent<Collider2D>().enabled = false;
 
         StartCoroutine(BlinkAndDestroy());
     }
 
+    //点滅させてからプレイヤーを消す処理
     private IEnumerator BlinkAndDestroy()
     {
         for (int i = 0; i < 4; i++)
         {
-            spriteRenderer.enabled = false;
+            spriteRenderer.enabled = false;         //スプライトを非表示
             yield return new WaitForSeconds(0.2f);
 
-            spriteRenderer.enabled = true;
+            spriteRenderer.enabled = true;          //スプライトを表示
             yield return new WaitForSeconds(0.2f);
         }
 
         Destroy(gameObject);
     }
+
+    // 無敵時間中に当たり判定をオフにする処理
     private IEnumerator InvincibleCoroutine()
     {
         isInvincible = true;
 
-        playerCollider.enabled = false;
+        playerCollider.enabled = false; //当たり判定オフ
 
-        yield return new WaitForSeconds(invincibleTime);
+        yield return new WaitForSeconds(invincibleTime); //設定された時間が経過したら
 
-        playerCollider.enabled = true;
+        playerCollider.enabled = true;  //当たり判定オン
         isInvincible = false;
     }
 
