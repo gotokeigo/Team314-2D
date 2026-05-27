@@ -1382,11 +1382,11 @@ MonoBehaviour:
   smallAttackAngle: 60
   mediumAttackRange: 1.5
   mediumAttackAngle: 90
-  largeAttackRange: 3
+  largeAttackRange: 5
   largeAttackAngle: 120
-  mediumChargeTime: 0.5
-  largeChargeTime: 1.5
-  chargeSpeedMultiplier: 0.5
+  mediumChargeTime: 5
+  largeChargeTime: 10
+  chargeSpeedMultiplier: 0.2
   smallDamage: 5
   mediumDamage: 10
   largeKillLevelMultiplier: 1.3
