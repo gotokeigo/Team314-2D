@@ -52,7 +52,6 @@ public class ShoutProjectile : MonoBehaviour
             if (group != null)
             {
                 group.AlertGroup();
-                Debug.Log("敵:グループ発見！");
             }
             else
             {

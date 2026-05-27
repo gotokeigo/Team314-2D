@@ -141,19 +141,9 @@ public class EnemyController : MonoBehaviour
     // さまよう処理
     private void Wander()
     {
-        _wanderTimer -= Time.fixedDeltaTime;
-        if (_wanderTimer <= 0f)
-        {
-            _wanderTarget = GetNewWanderTarget();
-            _wanderTimer = wanderInterval;
-        }
-
         Vector2 direction = (_wanderTarget - rb.position);
-        if (direction.magnitude <= 0.1f)
-        {
-            _wanderTarget = GetNewWanderTarget();
-            return;
-        }
+        if (direction.magnitude <= 0.1f) return;    // 目標地点に着いたら止まって待つ
+
         Vector2 newPosition = rb.position + direction.normalized * _currentMoveSpeed * Time.fixedDeltaTime;
         rb.MovePosition(newPosition);
     }
@@ -250,4 +240,13 @@ public class EnemyController : MonoBehaviour
             player = target.transform;
         }
     }
+
+    // グループから目標地点を受け取る
+    public void SetWanderTarget(Vector2 target)
+    {
+        _wanderTarget = target;
+    }
+
+
 }
+
