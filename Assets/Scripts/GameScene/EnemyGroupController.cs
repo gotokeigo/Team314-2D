@@ -20,27 +20,33 @@ public class EnemyGroupController : MonoBehaviour
     [SerializeField] private float groupSlowRadius = 3f;        // この範囲内の敵の数で速度が変わる
     [SerializeField] private float minSpeedMultiplier;   // 最大減速倍率（固まった時）
     [SerializeField] private int maxGroupSizeForSlow = 5;       // この数以上固まると最大減速
+    [SerializeField] private float groupWanderRadius = 5f;      // グループの徘徊範囲
+    [SerializeField] private float groupWanderInterval = 3f;    // 次の目標地点を決める間隔
+
+    private Vector2 _groupWanderTarget;                         // グループ共通の目標地点
+    private float _groupWanderTimer;                            // 徘徊タイマー
+    private Vector2 _groupOrigin;                               // グループの初期位置
 
     private bool _isDiscovered;
     private List<EnemyController> _enemies = new List<EnemyController>();
 
     private void Start()
     {
-        // 子オブジェクトの敵を全員登録
         foreach (EnemyController enemy in GetComponentsInChildren<EnemyController>())
         {
             _enemies.Add(enemy);
         }
+
+        // 追加：グループの初期位置を記録して最初の目標地点を決める
+        _groupOrigin = transform.position;
+        _groupWanderTarget = GetNewGroupWanderTarget();
     }
 
     private void Update()
     {
-        // 死亡したEnemyをリストから削除
         _enemies.RemoveAll(e => e == null);
-
         if (_enemies.Count == 0) return;
 
-        // 1体でも発見したらグループ全員に伝える
         if (!_isDiscovered)
         {
             foreach (EnemyController enemy in _enemies)
@@ -53,7 +59,22 @@ public class EnemyGroupController : MonoBehaviour
             }
         }
 
-        // 各敵の速度をグループの密集度に応じて調整
+        // 追加：未発見時はグループ共通の目標地点に向かって徘徊
+        if (!_isDiscovered)
+        {
+            _groupWanderTimer -= Time.deltaTime;
+            if (_groupWanderTimer <= 0f)
+            {
+                _groupWanderTarget = GetNewGroupWanderTarget();
+            }
+
+            // グループ全員に同じ目標地点を伝える
+            foreach (EnemyController enemy in _enemies)
+            {
+                enemy.SetWanderTarget(_groupWanderTarget);
+            }
+        }
+
         foreach (EnemyController enemy in _enemies)
         {
             int nearbyCount = CountNearbyEnemies(enemy);
@@ -62,9 +83,17 @@ public class EnemyGroupController : MonoBehaviour
         }
     }
 
+    // 追加：グループの目標地点をランダムに決める
+    private Vector2 GetNewGroupWanderTarget()
+    {
+        _groupWanderTimer = groupWanderInterval;
+        return _groupOrigin + Random.insideUnitCircle * groupWanderRadius;
+    }
+
     // グループ全員をプレイヤー発見状態にする
     private void DiscoverAll()
     {
+        Debug.Log("敵グループ:発見！");
         _isDiscovered = true;
         foreach (EnemyController enemy in _enemies)
         {
