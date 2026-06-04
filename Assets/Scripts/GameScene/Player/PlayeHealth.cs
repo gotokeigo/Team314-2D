@@ -24,16 +24,18 @@ public class PlayerHealth : MonoBehaviour
 
     private bool isInvincible;
     private float currentHp;
-    private SpriteRenderer spriteRenderer;
+    private Renderer Renderer;
     private Collider2D playerCollider;
     public bool IsDead { get; private set; }
 
+    public float MaxHp => maxHp;            //外部からの最大HP参照用
+    public float CurrentHp => currentHp;    //外部からの現在HP参照用
 
     void Start()
     {
         currentHp = maxHp;
         IsDead = false;
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        Renderer = GetComponentInChildren<Renderer>();
         playerCollider = GetComponent<Collider2D>();
 
     }
@@ -77,10 +79,10 @@ public class PlayerHealth : MonoBehaviour
     {
         for (int i = 0; i < 4; i++)
         {
-            spriteRenderer.enabled = false;         //スプライトを非表示
+            Renderer.enabled = false;         //スプライトを非表示
             yield return new WaitForSeconds(0.2f);
 
-            spriteRenderer.enabled = true;          //スプライトを表示
+            Renderer.enabled = true;          //スプライトを表示
             yield return new WaitForSeconds(0.2f);
         }
 

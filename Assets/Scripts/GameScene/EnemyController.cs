@@ -43,6 +43,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float detectionRange = 5f;     // プレイヤーを発見する距離
     [SerializeField] private float wanderRadius = 3f;       // さまよう範囲
     [SerializeField] private float wanderInterval = 2f;     // 次の目標地点を決める間隔
+    [SerializeField] private float fallGravity = 3f;        // 落下時の重力
 
     private float attackTimer;
     private bool isKnockedBack;                     // 吹き飛んでいるか
@@ -52,6 +53,8 @@ public class EnemyController : MonoBehaviour
     private PlayerHealth playerHp;
     private float stopDistance;
     private bool isDead;
+    private bool _isFalling;
+    public float MaxHp => maxHp;    // 外部からmaxHpを参照用
 
     //  敵集団管理用
     private bool _isDiscovered;                             // プレイヤーを発見しているか
@@ -62,6 +65,8 @@ public class EnemyController : MonoBehaviour
 
     private int _defaultLayer;
     private int _knockbackLayer;
+
+    public bool IsFalling => _isFalling;    //外部から落下中か参照用
 
     public int Level => level;                      // Experienceからレベルを参照用
     public float GetBaseSpeed() => moveSpeed;   // 基本速度を返す
@@ -97,6 +102,7 @@ public class EnemyController : MonoBehaviour
     void FixedUpdate()
     {
         if (player == null || rb == null) return;
+        if (_isFalling) return;
         if (playerHp != null && playerHp.IsDead)
         {
             rb.linearVelocity = Vector2.zero;
@@ -244,9 +250,58 @@ public class EnemyController : MonoBehaviour
     // グループから目標地点を受け取る
     public void SetWanderTarget(Vector2 target)
     {
+        if (_isFalling || isDead) return;
         _wanderTarget = target;
     }
 
+    public void FallOff()
+    {
+
+        if (_isFalling) return;
+        if (!isDead && !isKnockedBack) return;
+        _isFalling = true;
+        isDead = true;
+        isKnockedBack = false;
+        StopAllCoroutines();
+
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        rb.freezeRotation = false;
+
+        StartCoroutine(FallAndDestroy());
+
+    }
+
+    private IEnumerator FallAndDestroy()
+    {
+        float duration = 1.5f;
+        float elapsed = 0f;
+        Vector3 startScale = transform.localScale;
+        Vector2 startPos = transform.position;  // Vector2で管理（Z軸を触らない）
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+
+            // イーズイン：最初はゆっくり、だんだん加速
+            float eased = t * t;
+
+            transform.localScale = Vector3.Lerp(startScale, Vector3.zero, t);
+
+            // Vector2で操作してZ軸を保持
+            transform.position = new Vector3(
+                startPos.x,
+                startPos.y - eased * 3f,
+                transform.position.z
+            );
+
+            yield return null;
+        }
+
+        Destroy(gameObject);
+    }
 
 }
 

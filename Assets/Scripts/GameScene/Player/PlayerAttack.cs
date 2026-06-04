@@ -56,7 +56,6 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private float chargeSpeedMultiplier = 1.0f;    //チャージ中の速度倍率
 
     [Header("ダメージ設定")]
-    [SerializeField] private float smallDamage;             // 小チャージダメージ（敵のHPより小さく設定）
     [SerializeField] private float mediumDamage;            // 中チャージダメージ（同レベル敵のHP以上に設定）
     [SerializeField] private float largeKillLevelMultiplier;// 大チャージで一撃のレベル倍率
 
@@ -185,32 +184,30 @@ public class PlayerAttack : MonoBehaviour
 
     private float CalculateDamage(ChargeLevel chargeLevel, EnemyController enemy)
     {
-
         switch (chargeLevel)
         {
-                //  弱チャージ
+            // 弱チャージ：どんな敵でも必ず2発
             case ChargeLevel.Small:
-                return smallDamage;
+                return enemy.MaxHp / 2f;    // 変更
 
-                //  中チャージ
+            // 中チャージ
             case ChargeLevel.Medium:
                 return mediumDamage;
 
-                //  強チャージ
+            // 強チャージ
             case ChargeLevel.Large:
                 int playerLevel = ExperienceManager.Instance.PlayerLevel;
-                // 自分のレベル × 倍率 以下の敵は一撃
                 if (enemy.Level <= playerLevel * largeKillLevelMultiplier)
                 {
-                    return float.MaxValue; // 即死
+                    return float.MaxValue;
                 }
                 else
                 {
-                    return mediumDamage;   // 範囲外は中チャージ相当
+                    return mediumDamage;
                 }
 
             default:
-                return smallDamage;
+                return enemy.MaxHp / 2f;
         }
     }
 
