@@ -185,3 +185,7 @@ MonoBehaviour:
   maxHp: 10
   level: 1
   rotationForce: 5
+  detectionRange: 5
+  wanderRadius: 3
+  wanderInterval: 2
+  fallGravity: 100
