@@ -43,7 +43,6 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float detectionRange = 5f;     // プレイヤーを発見する距離
     [SerializeField] private float wanderRadius = 3f;       // さまよう範囲
     [SerializeField] private float wanderInterval = 2f;     // 次の目標地点を決める間隔
-    [SerializeField] private float fallGravity = 3f;        // 落下時の重力
 
     private float attackTimer;
     private bool isKnockedBack;                     // 吹き飛んでいるか
@@ -116,7 +115,7 @@ public class EnemyController : MonoBehaviour
             float distToPlayer = Vector2.Distance(rb.position, player.position);
             if (distToPlayer <= detectionRange)
             {
-                _isDiscovered = true;
+                SetDiscovered(true);
             }
         }
 
@@ -164,7 +163,19 @@ public class EnemyController : MonoBehaviour
     // グループから発見状態を設定する
     public void SetDiscovered(bool discovered)
     {
+        // 変化がないときは通知しない
+        if (_isDiscovered == discovered) return;
+
         _isDiscovered = discovered;
+
+        if (discovered)
+        {
+            EnemyManager.Instance?.NotifyDiscovered();
+        }
+        else
+        {
+            EnemyManager.Instance?.NotifyLost();
+        }
     }
 
     // グループから速度を設定する
@@ -202,6 +213,13 @@ public class EnemyController : MonoBehaviour
     private void Die()
     {
         isDead = true;
+
+        // 発見状態だった場合は通知
+        if (_isDiscovered)
+        {
+            _isDiscovered = false;
+            EnemyManager.Instance?.NotifyLost();
+        }
     }
 
     public void KnockBack(Vector2 direction, float force)
