@@ -201,7 +201,6 @@ public class EnemyController : MonoBehaviour
     {
         if (isDead) return false;
         currentHp -= damage;
-        Debug.Log($"敵HP: {currentHp,0}/{maxHp}");
         if (currentHp <= 0)
         {
             Die();

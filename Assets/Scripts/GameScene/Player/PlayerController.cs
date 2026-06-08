@@ -18,7 +18,9 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    [Tooltip("プレイヤーの移動速度")]
     [SerializeField] private float moveSpeed;
+
     private Rigidbody2D _rb;
     private Vector2 _moveInput;
     private float _speedMultiplier = 1.0f; //プレイヤー移動速度倍率
