@@ -19,7 +19,9 @@ using System.Collections;
 
 public class PlayerHealth : MonoBehaviour
 {
+    [Tooltip("プレイヤー最大HP")]
     [SerializeField] private float maxHp;           //最大体力
+    [Tooltip("被ダメ時の無敵時間")]
     [SerializeField] private float invincibleTime;  //無敵時間
 
     private bool isInvincible;
@@ -46,7 +48,6 @@ public class PlayerHealth : MonoBehaviour
         if (IsDead || isInvincible) return;
 
         currentHp -= damage;
-        Debug.Log("PlayerHP: " + currentHp);
 
         if (currentHp <= 0)
         {

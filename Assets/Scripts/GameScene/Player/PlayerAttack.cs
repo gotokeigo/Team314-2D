@@ -35,25 +35,36 @@ using UnityEngine.InputSystem;
 public class PlayerAttack : MonoBehaviour
 {
     [Header("攻撃設定")]
-    [SerializeField] private float knockBackForce;
-    [SerializeField] private LayerMask enemyLayer;
-    [SerializeField] private GameObject decoyPrefab;
+    [Tooltip("吹き飛ばした時の敵の飛んでく速さ")]
+    [SerializeField] private float knockbackForce;
+    [Tooltip("敵のレイヤーを設定する")]
+    [SerializeField] private LayerMask enemyLayer;      // 敵のレイヤーを設定する
+ //   [SerializeField] private GameObject decoyPrefab;
 
     [Header("チャージ設定")]
+    [Tooltip("中チャージになる秒数")]
     [SerializeField] private float mediumChargeTime = 0.5f;     // 中チャージになる秒数
+    [Tooltip("強チャージになる秒数")]
     [SerializeField] private float largeChargeTime = 1.0f;      // 強チャージになる秒数
-    [SerializeField] private float enemyCountSpeedMultiplier = 0.1f; // 敵1体あたりの速度上昇倍率
+    [Tooltip("敵1体辺りのチャージ速度上昇倍率(0.1で1.1倍)")]
+    [SerializeField] private float enemyCountSpeedMultiplier = 0.1f; // 敵1体あたりの速度上昇倍率(0.1で1.1倍)
 
     [Header("小チャージ設定")]
+    [Tooltip("小攻撃の攻撃が届く距離")]
     [SerializeField] private float smallAttackRange;
+    [Tooltip("小攻撃の攻撃が届く角度")]
     [SerializeField] private float smallAttackAngle;
 
     [Header("中チャージ設定")]
+    [Tooltip("中攻撃の攻撃が届く距離")]
     [SerializeField] private float mediumAttackRange;
+    [Tooltip("中攻撃の攻撃が届く角度")]
     [SerializeField] private float mediumAttackAngle;
 
     [Header("強チャージ設定")]
+    [Tooltip("強攻撃の攻撃が届く距離")]
     [SerializeField] private float largeAttackRange;
+    [Tooltip("強攻撃の攻撃が届く角度")]
     [SerializeField] private float largeAttackAngle;
 
     [Header("ダメージ設定")]
@@ -173,7 +184,7 @@ public class PlayerAttack : MonoBehaviour
                 if (died)
                 {
                     Vector2 knockBackDirection = (enemy.transform.position - transform.position).normalized;
-                    enemyController.KnockBack(knockBackDirection, knockBackForce);
+                    enemyController.KnockBack(knockBackDirection, knockbackForce);
                     killCount++;
                 }
             }
@@ -220,10 +231,10 @@ public class PlayerAttack : MonoBehaviour
         _isAttacking = false;
     }
 
-    private void OnDecoy(InputValue value)
-    {
-        Instantiate(decoyPrefab, transform.position, Quaternion.identity);
-    }
+    //private void OnDecoy(InputValue value)
+    //{
+    //    Instantiate(decoyPrefab, transform.position, Quaternion.identity);
+    //}
 
     private void OnDrawGizmos()
     {

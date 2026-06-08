@@ -11,6 +11,10 @@
 //
 //  2026/05/10  プレイヤーレベルを追加
 //
+//  2026/06/08  経験値制度を廃止。
+//              1体倒すと1レベルアップ。
+//              複数体同時に倒した場合はフィボナッチ数列に基づいてレベルアップ量が増える。
+//
 //--------------------------------------
 using UnityEngine;
 
@@ -18,13 +22,7 @@ public class ExperienceManager : MonoBehaviour
 {
     public static ExperienceManager Instance { get; private set; }
 
-    [SerializeField] private float baseXpPerEnemy;          // 1体あたりの基本XP
-    [SerializeField] private float multiHitBonusPerEnemy;   // 複数ヒット時の補正
-    [SerializeField] private float xpPerLevel;              // レベル1→2に必要な基準XP
-    [SerializeField] private float levelScaling;            // レベルアップに必要なXPの増加率
-
     public int PlayerLevel { get; private set; } = 1;
-    private float totalXp;
 
     private void Awake()
     {
@@ -32,30 +30,24 @@ public class ExperienceManager : MonoBehaviour
         else Destroy(gameObject);
     }
 
-    public void AddXp(int hitCount)
+    public void AddXp(int killCount)
     {
-        float xp = baseXpPerEnemy * (1.0f + (hitCount - 1) * multiHitBonusPerEnemy);
-        totalXp += xp;
-        Debug.Log($"{hitCount}体ヒット！ +{xp}XP / 合計:{totalXp}XP");
-
-        CheckLevelUp();
+        int levelUp = FibonacciAt(killCount);
+        PlayerLevel += levelUp;
     }
 
-    private void CheckLevelUp()
+    // フィボナッチ数列のn番目を返す
+    // 1体=1, 2体=1, 3体=2, 4体=3, 5体=5 ...
+    private int FibonacciAt(int n)
     {
-        float required = XpRequiredForNextLevel();
-        while (totalXp >= required)
+        if (n <= 2) return 1;
+        int a = 1, b = 1;
+        for (int i = 2; i < n; i++)
         {
-            totalXp -= required;
-            PlayerLevel++;
-            Debug.Log($"レベルアップ！ 現在レベル: {PlayerLevel}");
-            required = XpRequiredForNextLevel();
+            int temp = a + b;
+            a = b;
+            b = temp;
         }
-    }
-
-    // 次のレベルに必要なXP（レベルが上がるほど多くなる）
-    private float XpRequiredForNextLevel()
-    {
-        return xpPerLevel * Mathf.Pow(PlayerLevel, levelScaling);
+        return b;
     }
 }

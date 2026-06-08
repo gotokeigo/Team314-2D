@@ -8,13 +8,17 @@
 //  更新履歴
 //
 //  2026/06/02  作成  DebugLogに時間表示
+//  2026/06/08  DebugLogに表示するのをやめTextMeshProに表示するように変更
 //
 //-------------------------------------------------------
 using UnityEngine;
+using TMPro;
 
 public class GameTimer : MonoBehaviour
 {
+    [Tooltip("目標時間(秒)")]
     [SerializeField] private float targetTime = 60f;    // 目標時間（秒）
+    [SerializeField] private TextMeshProUGUI timerText; // Inspectorでアタッチ
     //[SerializeField] private GameObject bossPrefab;     // ボスのPrefab
 
     private float _currentTime;
@@ -37,7 +41,11 @@ public class GameTimer : MonoBehaviour
         // 経過時間をDebug.Logで表示
         int minutes = (int)(_currentTime / 60f);
         int seconds = (int)(_currentTime % 60f);
-        Debug.Log($"経過時間: {minutes:00}:{seconds:00}");
+
+        if(timerText != null)
+        {
+            timerText.text = $"{minutes:00}:{seconds:00}"; // UIに表示
+        }
 
         if (_currentTime >= targetTime)
         {
