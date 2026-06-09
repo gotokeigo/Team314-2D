@@ -20,116 +20,108 @@
 //  2026/05/18  攻撃のチャージに応じて範囲、長さが変わるように変更。
 //              攻撃をチャージしているときに移動速度が低下するように変更
 //
-//  2026/06/04  チャージ方式を変更。
-//              移動中かつ発見状態の敵を引き連れているときに自動でチャージ。
-//              チャージ速度は引き連れている敵の数に比例。
-//              左クリックでその時点のチャージ段階の攻撃を発射しゲージリセット。
-//              攻撃の見た目をバットスイングから扇形の風エフェクトに変更。
-//
 //--------------------------------------
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Hierarchy;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerAttack : MonoBehaviour
 {
-    [Header("攻撃設定")]
-    [Tooltip("吹き飛ばした時の敵の飛んでく速さ")]
-    [SerializeField] private float knockbackForce;
-    [Tooltip("敵のレイヤーを設定する")]
-    [SerializeField] private LayerMask enemyLayer;      // 敵のレイヤーを設定する
- //   [SerializeField] private GameObject decoyPrefab;
 
-    [Header("チャージ設定")]
-    [Tooltip("中チャージになる秒数")]
-    [SerializeField] private float mediumChargeTime = 0.5f;     // 中チャージになる秒数
-    [Tooltip("強チャージになる秒数")]
-    [SerializeField] private float largeChargeTime = 1.0f;      // 強チャージになる秒数
-    [Tooltip("敵1体辺りのチャージ速度上昇倍率(0.1で1.1倍)")]
-    [SerializeField] private float enemyCountSpeedMultiplier = 0.1f; // 敵1体あたりの速度上昇倍率(0.1で1.1倍)
+    [Header("攻撃設定")]
+    [SerializeField] private float knockbackForce;          //  吹き飛ばす力    
+    [SerializeField] private LayerMask enemyLayer;          //  敵のレイヤー
+    [SerializeField] private GameObject weaponObject;          //  攻撃時に表示されるbatのオブジェクト
+ //   [SerializeField] private GameObject decoyPrefab;        //  Gキー(現状)を押したときに出るデコイのモデルを入れる
 
     [Header("小チャージ設定")]
-    [Tooltip("小攻撃の攻撃が届く距離")]
-    [SerializeField] private float smallAttackRange;
-    [Tooltip("小攻撃の攻撃が届く角度")]
-    [SerializeField] private float smallAttackAngle;
+    [SerializeField] private float smallAttackRange;             //  攻撃範囲
+    [SerializeField] private float smallAttackAngle;             //  扇型の角度
 
     [Header("中チャージ設定")]
-    [Tooltip("中攻撃の攻撃が届く距離")]
-    [SerializeField] private float mediumAttackRange;
-    [Tooltip("中攻撃の攻撃が届く角度")]
-    [SerializeField] private float mediumAttackAngle;
+    [SerializeField] private float mediumAttackRange;            //  攻撃範囲
+    [SerializeField] private float mediumAttackAngle;            //  扇型の角度
 
     [Header("強チャージ設定")]
-    [Tooltip("強攻撃の攻撃が届く距離")]
-    [SerializeField] private float largeAttackRange;
-    [Tooltip("強攻撃の攻撃が届く角度")]
-    [SerializeField] private float largeAttackAngle;
+    [SerializeField] private float largeAttackRange;             //  攻撃範囲
+    [SerializeField] private float largeAttackAngle;             //  扇型の角度
+
+    [Header("チャージ時間")]
+    [SerializeField] private float mediumChargeTime;        // 中チャージになる秒数
+    [SerializeField] private float largeChargeTime;         // 大チャージになる秒数
+    [SerializeField] private float chargeSpeedMultiplier = 1.0f;    //チャージ中の速度倍率
 
     [Header("ダメージ設定")]
-    [SerializeField] private float mediumDamage;
-    [SerializeField] private float largeKillLevelMultiplier;
+    [SerializeField] private float mediumDamage;            // 中チャージダメージ（同レベル敵のHP以上に設定）
+    [SerializeField] private float largeKillLevelMultiplier;// 大チャージで一撃のレベル倍率
 
-    [Header("風エフェクト設定")]
-    [SerializeField] private GameObject windEffectPrefab;       // 風エフェクトのPrefab
-
-    private enum ChargeLevel { None, Small, Medium, Large }
+    private enum ChargeLevel { Small, Medium, Large }
 
     private PlayerController _playerController;
+    private bool _isAttacking;                      //  攻撃しているか
+    private bool _isCharging;                       //  攻撃をチャージしているか
+    private float _chargeStartTime;                 //  チャージを始めた時間
+    private SpriteRenderer _weaponSpriteRenderer;      //  バットのスプライトレンダラー切り替え用
     private InputAction _attackAction;
-    private float _chargeAmount = 0f;                           // 現在のチャージ量（0〜1）
-    private bool _isAttacking;
 
     private void Awake()
     {
         _playerController = GetComponent<PlayerController>();
-        _attackAction = GetComponent<PlayerInput>().actions["Attack"];
+        _weaponSpriteRenderer = weaponObject.GetComponent<SpriteRenderer>();
+
+        _attackAction = GetComponent<PlayerInput>().actions["Attack"];  //PlayerInputからAttackアクションを取得
+    }
+
+    //  ボタンを押した時だけチャージ開始
+    private void OnAttack(InputValue value)
+    {
+        if (_isAttacking || _isCharging) return;
+
+        _isCharging = true;
+        _chargeStartTime = Time.time;   //  チャージの時間を数える
+        _playerController.SetSpeedMultiplier(chargeSpeedMultiplier);
     }
 
     private void Update()
     {
-        UpdateCharge();
+        if (!_isCharging || _isAttacking) return;
 
-        if (_attackAction.WasReleasedThisFrame() && !_isAttacking)
+        //ボタンが離されたら攻撃
+        if (_attackAction.WasReleasedThisFrame())
         {
-            ChargeLevel level = DetermineChargeLevel(_chargeAmount);
-            if (level != ChargeLevel.None)
-            {
-                Attack(level);
-            }
-            _chargeAmount = 0f;     // 攻撃ボタンを押したらリセット
+            _isCharging = false;
+            _playerController.SetSpeedMultiplier(1.0f); //速度をもとに戻す
+            float chargeTime = Time.time - _chargeStartTime;
+            ChargeLevel chargeLevel = DetermineChargeLevel(chargeTime);     // チャージ時間に応じたチャージレベルを取得
+            Attack(chargeLevel);
         }
     }
 
-    private void UpdateCharge()
+    //  チャージ時間に応じて渡す値を変えるのを制御するプログラム
+    private ChargeLevel DetermineChargeLevel(float chargeTime)
     {
-        bool isMoving = _playerController.LastMoveDirection != Vector2.zero;
-        int discoveredCount = EnemyManager.Instance != null
-            ? EnemyManager.Instance.DiscoveredEnemyCount
-            : 0;
-
-        if (isMoving && discoveredCount > 0)
+        if (chargeTime >= largeChargeTime)
         {
-            // 敵の数が多いほど速くなる（例: 10体で2倍速）
-            float speedMultiplier = 1f + discoveredCount * enemyCountSpeedMultiplier;
-            _chargeAmount += Time.deltaTime * speedMultiplier;
-            _chargeAmount = Mathf.Min(_chargeAmount, largeChargeTime);
+            return ChargeLevel.Large;
         }
-    }
+        if (chargeTime >= mediumChargeTime)
+        {
+            return ChargeLevel.Medium;
+        }
 
-    private ChargeLevel DetermineChargeLevel(float amount)
-    {
-        if (amount >= largeChargeTime) return ChargeLevel.Large;
-        if (amount >= mediumChargeTime) return ChargeLevel.Medium;
-        if (amount > 0f) return ChargeLevel.Small;
-        return ChargeLevel.None;
+        return ChargeLevel.Small;
     }
 
     private void Attack(ChargeLevel chargeLevel)
     {
         _isAttacking = true;
+        _weaponSpriteRenderer.enabled = true;
 
+        Debug.Log($"チャージレベル: {chargeLevel}");
+
+        // チャージレベルに応じた範囲と角度を取得
         float currentRange = chargeLevel switch
         {
             ChargeLevel.Small => smallAttackRange,
@@ -148,15 +140,6 @@ public class PlayerAttack : MonoBehaviour
         Vector2 attackDirection = _playerController.LastMoveDirection;
         Vector2 attackCenter = (Vector2)transform.position + attackDirection * currentRange;
 
-        // 風エフェクト表示
-        if (windEffectPrefab != null)
-        {
-            float angle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
-            Instantiate(windEffectPrefab,
-                attackCenter,
-                Quaternion.Euler(0f, 0f, angle));
-        }
-
         // 扇形範囲内の敵に当たり判定
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackCenter, currentRange, enemyLayer);
         List<Collider2D> hitEnemiesInFan = new List<Collider2D>();
@@ -171,7 +154,7 @@ public class PlayerAttack : MonoBehaviour
             }
         }
 
-        int killCount = 0;
+        int killCount = 0;  //倒した数をカウント
 
         foreach (Collider2D enemy in hitEnemiesInFan)
         {
@@ -185,12 +168,12 @@ public class PlayerAttack : MonoBehaviour
                 {
                     Vector2 knockBackDirection = (enemy.transform.position - transform.position).normalized;
                     enemyController.KnockBack(knockBackDirection, knockbackForce);
-                    killCount++;
+                    killCount++;    //倒したらカウント
                 }
             }
         }
 
-        StartCoroutine(FinishAttack());
+        StartCoroutine(HideBat(currentRange));  // currentRangeを渡す
 
         if (killCount > 0)
         {
@@ -202,12 +185,15 @@ public class PlayerAttack : MonoBehaviour
     {
         switch (chargeLevel)
         {
+            // 弱チャージ：どんな敵でも必ず2発
             case ChargeLevel.Small:
                 return enemy.MaxHp / 2f;
 
+            // 中チャージ
             case ChargeLevel.Medium:
                 return mediumDamage;
 
+            // 強チャージ
             case ChargeLevel.Large:
                 int playerLevel = ExperienceManager.Instance.PlayerLevel;
                 if (enemy.Level <= playerLevel * largeKillLevelMultiplier)
@@ -224,13 +210,36 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-    // 攻撃フラグを戻すだけ（エフェクト側で表示時間を管理）
-    private IEnumerator FinishAttack()
+    //  武器を振っているように制御してる
+    private IEnumerator HideBat(float range)
     {
-        yield return null;
+        Vector2 attackDirection = _playerController.LastMoveDirection;
+        float baseAngle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
+        float startAngle = baseAngle + 90f;
+        float endAngle = baseAngle - 90f;
+        float swingDuration = 0.2f;
+        float elapsed = 0f;
+
+        while (elapsed < swingDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / swingDuration;
+            float currentAngle = Mathf.Lerp(startAngle, endAngle, t);
+            float rad = currentAngle * Mathf.Deg2Rad;
+            weaponObject.transform.localPosition = new Vector2(
+                Mathf.Cos(rad) * range,
+                Mathf.Sin(rad) * range
+            );
+            weaponObject.transform.rotation = Quaternion.Euler(0, 0, currentAngle);
+            yield return null;
+        }
+
+        _weaponSpriteRenderer.enabled = false;
         _isAttacking = false;
     }
 
+    //  実行中に一時停止(Shift+Ctrl+P)したときにプレイヤーの攻撃範囲を表示するプログラム
+    //  小の範囲は赤、中の範囲は黄色、大の範囲は緑
     //private void OnDecoy(InputValue value)
     //{
     //    Instantiate(decoyPrefab, transform.position, Quaternion.identity);
@@ -246,6 +255,7 @@ public class PlayerAttack : MonoBehaviour
         DrawFanGizmo(attackDirection, largeAttackRange, largeAttackAngle, Color.green);
     }
 
+    //  プレイヤーの攻撃範囲を表示するために、攻撃距離　角度を取得し計算するプログラム
     private void DrawFanGizmo(Vector2 attackDirection, float range, float angle, Color color)
     {
         Gizmos.color = color;
