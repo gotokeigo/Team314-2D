@@ -32,16 +32,26 @@ using UnityEngine.InputSystem.Processors;
 
 public class EnemyController : MonoBehaviour
 {
+    [Header("敵のステータス設定")]
+    [Tooltip("敵の移動速度")]
     [SerializeField] private float moveSpeed;       //  移動速度
+    [Tooltip("プレイヤーに接触したときにプレイヤーに与えるダメージ")]
     [SerializeField] private int AttackDamage;      //  接触時のダメージ
+    [Tooltip("敵の攻撃インターバル")]
     [SerializeField] private float attackInterval;  //  攻撃間隔
+    [Tooltip("敵の最大HP")]
     [SerializeField] private float maxHp;           //  敵の最大HP
+    [Tooltip("敵の最大レベル")]
     [SerializeField] private int level;             //  敵のレベル
-
+    [Tooltip("敵の吹き飛ばしたときの回転力")]
     [SerializeField] private float rotationForce = 5f;     // 敵が吹き飛ぶ時の回転力
 
+    [Header("敵のさまよう・索敵関係")]
+    [Tooltip("プレイヤーを発見する距離")]
     [SerializeField] private float detectionRange = 5f;     // プレイヤーを発見する距離
+    [Tooltip("敵が初期沸き位置からさまよう範囲")]
     [SerializeField] private float wanderRadius = 3f;       // さまよう範囲
+    [Tooltip("次の目標地点を決める間隔")]
     [SerializeField] private float wanderInterval = 2f;     // 次の目標地点を決める間隔
 
     private float attackTimer;
@@ -84,10 +94,7 @@ public class EnemyController : MonoBehaviour
             Collider2D playerCol = playerObject.GetComponent<Collider2D>();
             stopDistance = enemyCol.bounds.extents.x + playerCol.bounds.extents.x;
         }
-        else
-        {
-            Debug.LogError("Playerタグが見つかりません！");
-        }
+
 
         _defaultLayer = gameObject.layer;
         _knockbackLayer = LayerMask.NameToLayer("EnemyKnockback");

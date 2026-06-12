@@ -14,9 +14,13 @@ using UnityEngine;
 
 public class ShoutVisualEffect : MonoBehaviour
 {
+    [Tooltip("シャウトが表示される時間")]
     [SerializeField] private float displayTime = 2f;        // 表示時間
+    [Tooltip("プレイヤーの後ろに出る判定の大きさ")]
     [SerializeField] private float backCircleRadius = 1f;   // 後ろの円の半径
+    [Tooltip("奥行き")]
     [SerializeField] private float fanRange = 5f;           // 扇の奥行き
+    [Tooltip("角度")]
     [SerializeField] private float fanAngle = 90f;          // 扇の角度
     [SerializeField] private Color effectColor = new Color(1f, 1f, 0f, 0.5f);  // 色
 

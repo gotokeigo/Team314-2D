@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8924047362267622851}
   - component: {fileID: 4002481717524898911}
   - component: {fileID: 4528527186677492310}
+  - component: {fileID: 3412437493014749468}
   m_Layer: 0
   m_Name: Shoutprefab
   m_TagString: Untagged
@@ -111,3 +112,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShoutProjectile
   speed: 5
   lifeTime: 3
+--- !u!114 &3412437493014749468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 178532259022559108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cf41ac082287924ab6db55f26919b13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShoutVisualEffect
+  displayTime: 2
+  backCircleRadius: 1
+  fanRange: 5
+  fanAngle: 90
+  effectColor: {r: 1, g: 1, b: 0, a: 0.5}

@@ -188,7 +188,6 @@ MonoBehaviour:
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
-  fallGravity: 100
 --- !u!1 &360553351903918212
 GameObject:
   m_ObjectHideFlags: 0
@@ -377,7 +376,6 @@ MonoBehaviour:
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
-  fallGravity: 100
 --- !u!1 &3190304750577002344
 GameObject:
   m_ObjectHideFlags: 0
@@ -566,7 +564,6 @@ MonoBehaviour:
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
-  fallGravity: 100
 --- !u!1 &3389243784592188378
 GameObject:
   m_ObjectHideFlags: 0
@@ -615,9 +612,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f80b4b3ba62455449682e9a453ee54d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyGroupController
-  groupSlowRadius: 3
-  minSpeedMultiplier: 0.8
-  maxGroupSizeForSlow: 5
+  groupSlowRadius: 0
+  minSpeedMultiplier: 0
+  maxGroupSizeForSlow: 0
   groupWanderRadius: 5
   groupWanderInterval: 3
 --- !u!1 &6677772777746286785
@@ -808,4 +805,3 @@ MonoBehaviour:
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
-  fallGravity: 100

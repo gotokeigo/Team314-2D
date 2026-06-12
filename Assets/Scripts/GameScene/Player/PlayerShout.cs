@@ -17,7 +17,9 @@ using UnityEngine.VFX;
 
 public class PlayerShout : MonoBehaviour
 {
+    [Tooltip("声の見た目に使うPrefab")]
     [SerializeField] private GameObject shoutPrefab;        // 声のPrefab
+    [Tooltip("クールタイム")]
     [SerializeField] private float shoutCoolTime = 3f;      // クールタイム
 
     private PlayerController _playerController;
