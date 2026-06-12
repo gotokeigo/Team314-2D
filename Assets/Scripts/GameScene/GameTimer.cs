@@ -20,6 +20,7 @@ public class GameTimer : MonoBehaviour
 {
     [Tooltip("目標時間(秒)")]
     [SerializeField] private float targetTime = 60f;
+    [Tooltip("タイマー表示に使うtextmeshの場所をアタッチ")]
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private GameObject bossPrefab;
 

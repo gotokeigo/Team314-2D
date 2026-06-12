@@ -32,30 +32,44 @@ using UnityEngine.InputSystem;
 public class PlayerAttack : MonoBehaviour
 {
     [Header("攻撃設定")]
+    [Tooltip("敵を吹き飛ばしたときの敵が吹き飛んでいく速さ")]
     [SerializeField] private float knockbackForce;
+    [Tooltip("攻撃が当たるレイヤー")]
     [SerializeField] private LayerMask enemyLayer;
+    [Tooltip("攻撃時にプレイヤーが振るオブジェクトを指定")]
     [SerializeField] private GameObject weaponObject;
     //  [SerializeField] private GameObject decoyPrefab;
 
+    [Header("チャージ関連")]
+    [Tooltip("中攻撃になるのに必要な溜め時間")]
+    [SerializeField] private float mediumChargeTime;
+    [Tooltip("強攻撃になるのに必要な溜め時間")]
+    [SerializeField] private float largeChargeTime;
+    [SerializeField] private float chargeSpeedMultiplier;
+
     [Header("小チャージ設定")]
+    [Tooltip("小攻撃の範囲(長さ)")]
     [SerializeField] private float smallAttackRange;
+    [Tooltip("小攻撃の範囲(角度)")]
     [SerializeField] private float smallAttackAngle;
 
     [Header("中チャージ設定")]
+    [Tooltip("中攻撃の範囲(長さ)")]
     [SerializeField] private float mediumAttackRange;
+    [Tooltip("中攻撃の範囲(角度)")]
     [SerializeField] private float mediumAttackAngle;
 
     [Header("強チャージ設定")]
+    [Tooltip("強攻撃の範囲(長さ)")]
     [SerializeField] private float largeAttackRange;
+    [Tooltip("強攻撃の範囲(角度)")]
     [SerializeField] private float largeAttackAngle;
 
-    [Header("チャージ時間")]
-    [SerializeField] private float mediumChargeTime;
-    [SerializeField] private float largeChargeTime;
-    [SerializeField] private float chargeSpeedMultiplier = 1.0f;
-
     [Header("ダメージ設定")]
+    [Tooltip("元の中攻撃ダメージ")]
     [SerializeField] private float mediumDamage;
+    [Tooltip("元の強攻撃ダメージ")]
+    [SerializeField] private float largeDamage;
     [SerializeField] private float largeKillLevelMultiplier;
 
     private enum ChargeLevel { Small, Medium, Large }

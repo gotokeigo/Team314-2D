@@ -17,10 +17,15 @@ using UnityEngine;
 
 public class EnemyGroupController : MonoBehaviour
 {
-    [SerializeField] private float groupSlowRadius = 3f;        // この範囲内の敵の数で速度が変わる
+    [Tooltip("範囲内の敵の量で移動速度を変化させる")]
+    [SerializeField] private float groupSlowRadius;        // この範囲内の敵の数で速度が変わる
+    [Tooltip("最大減速倍率")]
     [SerializeField] private float minSpeedMultiplier;   // 最大減速倍率（固まった時）
-    [SerializeField] private int maxGroupSizeForSlow = 5;       // この数以上固まると最大減速
+    [Tooltip("最大減速になる敵の数")]
+    [SerializeField] private int maxGroupSizeForSlow;       // この数以上固まると最大減速
+    [Tooltip("敵グループの未発見時歩き回る範囲")]
     [SerializeField] private float groupWanderRadius = 5f;      // グループの徘徊範囲
+    [Tooltip("敵グループの次の目標地点を決める間隔")]
     [SerializeField] private float groupWanderInterval = 3f;    // 次の目標地点を決める間隔
 
     private Vector2 _groupWanderTarget;                         // グループ共通の目標地点

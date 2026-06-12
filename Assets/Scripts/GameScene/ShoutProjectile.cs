@@ -15,7 +15,9 @@ using UnityEngine;
 
 public class ShoutProjectile : MonoBehaviour
 {
+    [Tooltip("シャウトの判定が飛ぶ速度")]
     [SerializeField] private float speed = 10f;         // 飛ぶ速度
+    [Tooltip("シャウトが消えるまでの時間")]
     [SerializeField] private float lifeTime = 3f;       // 消えるまでの時間
 
     private Vector2 _direction;

@@ -1,9 +1,9 @@
 ﻿//-------------------------------------------------------
 //
-//  PlayerStatusUI.cs
+//  StatusUI.cs
 //
 //  概要
-//  プレイヤーの体力をUIに♡として表示するスクリプト+プレイヤーのレベルをTextMeshProで表示するスクリプト
+//  ステータスのUIを管理するスクリプト
 //
 //  更新履歴
 //
@@ -16,12 +16,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class PlayerStatusUI : MonoBehaviour
+public class StatusUI : MonoBehaviour
 {
+    [Tooltip("プレイヤーHP参照用")]
     [SerializeField] private PlayerHealth playerHealth; // プレイヤーのHealthスクリプト
+    [Tooltip("体力表示に使う画像をアタッチする")]
     [SerializeField] private Sprite heartSprite;        // ♡の画像をアタッチする
+    [Tooltip("体力に使うハートを並べる位置")]
     [SerializeField] private Transform heartsPanel;     // ♡を並べる親オブジェクト
+    [Tooltip("体力表示に使うハートの大きさ")]
     [SerializeField] private Vector2 heartSize = new Vector2(30.0f, 30.0f); //♡のサイズ
+    [Tooltip("プレイヤーのレベル表示に使うtextmeshの場所をアタッチ")]
     [SerializeField] private TextMeshProUGUI levelText; // インスペクターでアタッチ
 
     private List<Image> _heartImages = new List<Image>();
