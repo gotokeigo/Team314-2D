@@ -108,7 +108,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossController
   moveSpeed: 3
   attackDamage: 1
-  maxHp: 100
+  maxHp: 10
   rotationForce: 5
 --- !u!61 &3779902834618020740
 BoxCollider2D:
@@ -182,4 +182,4 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
