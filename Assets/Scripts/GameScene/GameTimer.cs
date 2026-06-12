@@ -27,6 +27,7 @@ public class GameTimer : MonoBehaviour
     private float _currentTime;
     private bool _isFinished;
     private bool _bossSpawned;
+    private bool _bossMessage;
 
     public float CurrentTime => _currentTime;
 
@@ -35,6 +36,7 @@ public class GameTimer : MonoBehaviour
         _currentTime = 0f;
         _isFinished = false;
         _bossSpawned = false;
+        _bossMessage = false;
     }
 
     private void Update()
@@ -48,7 +50,7 @@ public class GameTimer : MonoBehaviour
         if (timerText != null)
         {
             // ボス出現中は2行目にメッセージ表示
-            if (_bossSpawned)
+            if (_bossMessage)
             {
                 timerText.text = $"{minutes:00}:{seconds:00}\nbossappeared";
             }
@@ -66,10 +68,11 @@ public class GameTimer : MonoBehaviour
 
     private void OnTimeUp()
     {
-        if (bossPrefab != null && !_bossSpawned)
+        if (bossPrefab != null && _bossSpawned == false)
         {
             Instantiate(bossPrefab, Vector3.zero, Quaternion.identity);
             _bossSpawned = true;
+            _bossMessage = true;
             Debug.Log("ボスが出現した！");
         }
     }
@@ -77,7 +80,7 @@ public class GameTimer : MonoBehaviour
     // BossControllerから呼ばれる
     public void OnBossDefeated()
     {
-        _bossSpawned = false;   // メッセージを消す
+        _bossMessage = false;   // メッセージを消す
         Debug.Log("ボスを倒した！");
     }
 }

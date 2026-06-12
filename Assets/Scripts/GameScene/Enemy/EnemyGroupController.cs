@@ -3,7 +3,7 @@
 //  EnemyGroupController.cs
 //
 //  概要
-//  敵の集団を管理するプログラム
+//  敵の集団を管理するスクリプト
 //
 //  更新履歴
 //
@@ -42,7 +42,7 @@ public class EnemyGroupController : MonoBehaviour
             _enemies.Add(enemy);
         }
 
-        // 追加：グループの初期位置を記録して最初の目標地点を決める
+        // グループの初期位置を記録して最初の目標地点を決める
         _groupOrigin = transform.position;
         _groupWanderTarget = GetNewGroupWanderTarget();
     }
@@ -64,7 +64,7 @@ public class EnemyGroupController : MonoBehaviour
             }
         }
 
-        // 追加：未発見時はグループ共通の目標地点に向かって徘徊
+        // 未発見時はグループ共通の目標地点に向かって徘徊
         if (!_isDiscovered)
         {
             _groupWanderTimer -= Time.deltaTime;
@@ -88,7 +88,7 @@ public class EnemyGroupController : MonoBehaviour
         }
     }
 
-    // 追加：グループの目標地点をランダムに決める
+    // グループの目標地点をランダムに決める
     private Vector2 GetNewGroupWanderTarget()
     {
         _groupWanderTimer = groupWanderInterval;
