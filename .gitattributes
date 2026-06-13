@@ -1,0 +1,3 @@
+Assets/TextMesh Pro/Shaders/*.shader linguist-vendored=true
+Assets/TextMesh Pro/Shaders/*.hlsl linguist-vendored=true
+Assets/TextMesh Pro/Shaders/*.cginc linguist-vendored=true
