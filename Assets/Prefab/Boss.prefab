@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1925855328674983966}
   - component: {fileID: 5363256355134946455}
-  - component: {fileID: 8450340589543197320}
   - component: {fileID: 3779902834618020740}
   - component: {fileID: 3919301513037182587}
+  - component: {fileID: 8450340589543197320}
   m_Layer: 3
   m_Name: Boss
   m_TagString: Untagged
@@ -94,22 +94,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &8450340589543197320
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4032952339765419896}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8364e068ca3c76d4f9a687d0a2f739be, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BossController
-  moveSpeed: 3
-  attackDamage: 1
-  maxHp: 10
-  rotationForce: 5
 --- !u!61 &3779902834618020740
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -183,3 +167,20 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &8450340589543197320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4032952339765419896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8364e068ca3c76d4f9a687d0a2f739be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossController
+  moveSpeed: 3
+  attackDamage: 1
+  maxHp: 10
+  rotationForce: 5
+  oneHitKillPlayerLevel: 1
