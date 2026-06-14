@@ -25,6 +25,8 @@ public class BossController : MonoBehaviour
     [SerializeField] private float maxHp = 100f;
     [Tooltip("吹き飛ぶ時の回転力")]
     [SerializeField] private float rotationForce = 5f;
+    [Tooltip("このレベル以上のプレイヤーはボスをワンパンできる")]
+    [SerializeField] private int oneHitKillPlayerLevel = 10;
 
     public float MaxHp => maxHp;
 
@@ -107,6 +109,14 @@ public class BossController : MonoBehaviour
     public bool TakeDamage(float damage)
     {
         if (_isDead) return false;
+
+        // プレイヤーが一定レベル以上なら即死
+        int playerLevel = ExperienceManager.Instance.PlayerLevel;
+        if (playerLevel >= oneHitKillPlayerLevel)
+        {
+            damage = float.MaxValue;
+        }
+
         _currentHp -= damage;
         Debug.Log($"ボスHP: {_currentHp}/{maxHp}");
         if (_currentHp <= 0)
@@ -204,4 +214,5 @@ public class BossController : MonoBehaviour
 
         Destroy(gameObject);
     }
+
 }
