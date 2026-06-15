@@ -28,10 +28,16 @@ public class PlayerHealth : MonoBehaviour
     private float currentHp;
     private Renderer Renderer;
     private Collider2D playerCollider;
+    private int _enemyLayer;
+    private int _enemyKnockbackLayer;
+
+
     public bool IsDead { get; private set; }
 
     public float MaxHp => maxHp;            //外部からの最大HP参照用
     public float CurrentHp => currentHp;    //外部からの現在HP参照用
+
+
 
     void Start()
     {
@@ -39,6 +45,9 @@ public class PlayerHealth : MonoBehaviour
         IsDead = false;
         Renderer = GetComponentInChildren<Renderer>();
         playerCollider = GetComponent<Collider2D>();
+        _enemyLayer = LayerMask.NameToLayer("Enemy");
+        _enemyKnockbackLayer = LayerMask.NameToLayer("EnemyKnockback");
+        int playerLayer = gameObject.layer;
 
     }
 
@@ -95,11 +104,17 @@ public class PlayerHealth : MonoBehaviour
     {
         isInvincible = true;
 
-        playerCollider.enabled = false; //当たり判定オフ
+        // 敵レイヤーとの衝突だけオフ
+        int playerLayer = gameObject.layer;
+        Physics2D.IgnoreLayerCollision(playerLayer, _enemyLayer, true);
+        Physics2D.IgnoreLayerCollision(playerLayer, _enemyKnockbackLayer, true);
 
-        yield return new WaitForSeconds(invincibleTime); //設定された時間が経過したら
+        yield return new WaitForSeconds(invincibleTime);
 
-        playerCollider.enabled = true;  //当たり判定オン
+        // 敵レイヤーとの衝突を戻す
+        Physics2D.IgnoreLayerCollision(playerLayer, _enemyLayer, false);
+        Physics2D.IgnoreLayerCollision(playerLayer, _enemyKnockbackLayer, false);
+
         isInvincible = false;
     }
 

@@ -52,6 +52,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            Application.Quit();
+            Debug.Log("ゲーム終了");
+        }
+    }
+
     private void FixedUpdate()
     {
         Vector2 newPosition = _rb.position + _moveInput * moveSpeed * _speedMultiplier * Time.fixedDeltaTime;   //
