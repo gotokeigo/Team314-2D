@@ -367,7 +367,7 @@ GameObject:
   - component: {fileID: 739118449}
   - component: {fileID: 739118448}
   - component: {fileID: 739118447}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -488,7 +488,7 @@ Transform:
   m_GameObject: {fileID: 739118446}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 80, y: 3.76737, z: 0}
+  m_LocalPosition: {x: 50, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 100, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -505,7 +505,7 @@ GameObject:
   - component: {fileID: 838789560}
   - component: {fileID: 838789559}
   - component: {fileID: 838789558}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -626,7 +626,7 @@ Transform:
   m_GameObject: {fileID: 838789557}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -83.15728, y: 3.76737, z: 0}
+  m_LocalPosition: {x: -50, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 100, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -678,7 +678,7 @@ GameObject:
   - component: {fileID: 1041625633}
   - component: {fileID: 1041625632}
   - component: {fileID: 1041625631}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -799,8 +799,8 @@ Transform:
   m_GameObject: {fileID: 1041625630}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 16.84272, y: -35, z: 0}
-  m_LocalScale: {x: 200, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: -50, z: 0}
+  m_LocalScale: {x: 100, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1010646895}
@@ -1270,8 +1270,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4294966975
+  m_fontColor: {r: 0.75, g: 0.9973623, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1564,8 +1564,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4294508455
+  m_fontColor: {r: 0.6556604, g: 1, b: 0.97335225, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1646,7 +1646,7 @@ GameObject:
   - component: {fileID: 1758474757}
   - component: {fileID: 1758474756}
   - component: {fileID: 1758474758}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1721,8 +1721,8 @@ Transform:
   m_GameObject: {fileID: 1758474754}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 16.84272, y: 35, z: 0}
-  m_LocalScale: {x: 200, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 50, z: 0}
+  m_LocalScale: {x: 100, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1010646895}
