@@ -488,7 +488,7 @@ Transform:
   m_GameObject: {fileID: 739118446}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 116.84272, y: 3.76737, z: 0}
+  m_LocalPosition: {x: 80, y: 3.76737, z: 0}
   m_LocalScale: {x: 1, y: 100, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -657,7 +657,7 @@ Transform:
   m_GameObject: {fileID: 1010646894}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -16.84272, y: -3.76737, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -799,7 +799,7 @@ Transform:
   m_GameObject: {fileID: 1041625630}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 16.84272, y: -46.23263, z: 0}
+  m_LocalPosition: {x: 16.84272, y: -35, z: 0}
   m_LocalScale: {x: 200, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -928,10 +928,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0335a59c05bb6f346837e864fc27c713, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExperienceManager
-  baseXpPerKill: 10
-  multiKillBonusRate: 0.1
+  baseXpPerKill: 200
+  multiKillBonusRate: 0.6
   xpPerLevel: 100
-  levelScaling: 1.5
+  levelScaling: 1.2
   baseAttackPower: 10
   attackPowerPerLevel: 5
 --- !u!4 &1234626140
@@ -1495,7 +1495,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b42383b1104fdd547bb1d5a08f64291c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameTimer
-  targetTime: 60
+  targetTime: 30
   timerText: {fileID: 1491170073}
   bossPrefab: {fileID: 4032952339765419896, guid: 8904cb838dc6df748869ecaa4aeb3b35, type: 3}
 --- !u!1 &1643415620
@@ -1645,6 +1645,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1758474757}
   - component: {fileID: 1758474756}
+  - component: {fileID: 1758474758}
   m_Layer: 0
   m_Name: Square
   m_TagString: Untagged
@@ -1720,12 +1721,58 @@ Transform:
   m_GameObject: {fileID: 1758474754}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 16.84272, y: 53.76737, z: 0}
+  m_LocalPosition: {x: 16.84272, y: 35, z: 0}
   m_LocalScale: {x: 200, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1010646895}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &1758474758
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758474754}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1001 &1913439603
 PrefabInstance:
   m_ObjectHideFlags: 0
