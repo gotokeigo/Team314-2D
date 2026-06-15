@@ -181,6 +181,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossController
   moveSpeed: 3
   attackDamage: 1
-  maxHp: 10
+  maxHp: 1000
   rotationForce: 5
-  oneHitKillPlayerLevel: 1
+  oneHitKillPlayerLevel: 20
