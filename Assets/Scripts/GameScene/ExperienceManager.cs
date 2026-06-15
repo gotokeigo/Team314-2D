@@ -35,6 +35,15 @@ public class ExperienceManager : MonoBehaviour
     [Tooltip("レベルが上がるほど必要XPが増える割合（1.0で線形、2.0で2乗）")]
     [SerializeField] private float levelScaling = 1.5f;
 
+    [Header("攻撃力設定")]
+    [Tooltip("レベル1の基本攻撃力")]
+    [SerializeField] private float baseAttackPower = 10f;
+    [Tooltip("レベルアップごとの攻撃力上昇量")]
+    [SerializeField] private float attackPowerPerLevel = 5f;
+
+    // 現在の攻撃力を返す
+    public float PlayerAttackPower => baseAttackPower + (PlayerLevel - 1) * attackPowerPerLevel;
+
     public int PlayerLevel { get; private set; } = 1;
     private float _totalXp;
 

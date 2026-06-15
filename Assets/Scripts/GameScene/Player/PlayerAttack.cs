@@ -38,6 +38,10 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private LayerMask enemyLayer;
     [Tooltip("攻撃時にプレイヤーが振るオブジェクトを指定")]
     [SerializeField] private GameObject weaponObject;
+    [Tooltip("攻撃間隔（秒）")]
+    [SerializeField] private float attackInterval = 0.5f;
+    [Tooltip("敵に与える硬直時間（秒）")]
+    [SerializeField] private float stunDuration = 0.3f;
     //  [SerializeField] private GameObject decoyPrefab;
 
     [Header("チャージ関連")]
@@ -65,48 +69,57 @@ public class PlayerAttack : MonoBehaviour
     [Tooltip("強攻撃の範囲(角度)")]
     [SerializeField] private float largeAttackAngle;
 
-    [Header("ダメージ設定")]
-    [Tooltip("元の中攻撃ダメージ")]
-    [SerializeField] private float mediumDamage;
-    [Tooltip("元の強攻撃ダメージ")]
-    [SerializeField] private float largeDamage;
-    [SerializeField] private float largeKillLevelMultiplier;
 
     private enum ChargeLevel { Small, Medium, Large }
 
     private PlayerController _playerController;
+    private PlayerHealth _playerHealth;
     private bool _isAttacking;
     private bool _isCharging;
     private float _chargeStartTime;
     private SpriteRenderer _weaponSpriteRenderer;
     private InputAction _attackAction;
+    private float _attackTimer = 0f;
 
     private void Awake()
     {
         _playerController = GetComponent<PlayerController>();
         _weaponSpriteRenderer = weaponObject.GetComponent<SpriteRenderer>();
         _attackAction = GetComponent<PlayerInput>().actions["Attack"];
+        _playerHealth = GetComponent<PlayerHealth>();
     }
 
     private void OnAttack(InputValue value)
     {
+        if (_playerHealth != null && _playerHealth.IsDead) return;  //プレイヤーのHPがないとき攻撃できなくする
         if (_isAttacking || _isCharging) return;
         _isCharging = true;
         _chargeStartTime = Time.time;
         _playerController.SetSpeedMultiplier(chargeSpeedMultiplier);
     }
 
+    // Update() に追加
     private void Update()
     {
+        if (_playerHealth != null && _playerHealth.IsDead) return;
+
+        // 攻撃タイマーを減らす
+        if (_attackTimer > 0f)
+        {
+            _attackTimer -= Time.deltaTime;
+        }
+
         if (!_isCharging || _isAttacking) return;
 
         if (_attackAction.WasReleasedThisFrame())
         {
+            if (_attackTimer > 0f) return;  // インターバル中は攻撃しない
             _isCharging = false;
             _playerController.SetSpeedMultiplier(1.0f);
             float chargeTime = Time.time - _chargeStartTime;
             ChargeLevel chargeLevel = DetermineChargeLevel(chargeTime);
             Attack(chargeLevel);
+            _attackTimer = attackInterval;  // タイマーをセット
         }
     }
 
@@ -171,6 +184,10 @@ public class PlayerAttack : MonoBehaviour
                     enemyController.KnockBack(knockBackDirection, knockbackForce);
                     killCount++;
                 }
+                else
+                {
+                    enemyController.Stun(stunDuration);  // 追加: 倒しきれなかったら硬直
+                }
                 continue;   // EnemyControllerがあればBossControllerは見ない
             }
 
@@ -201,21 +218,11 @@ public class PlayerAttack : MonoBehaviour
         switch (chargeLevel)
         {
             case ChargeLevel.Small:
-                return enemy.MaxHp / 2f;
+                return enemy.MaxHp / 2f;    // 必ず2発
 
             case ChargeLevel.Medium:
-                return mediumDamage;
-
             case ChargeLevel.Large:
-                int playerLevel = ExperienceManager.Instance.PlayerLevel;
-                if (enemy.Level <= playerLevel * largeKillLevelMultiplier)
-                {
-                    return float.MaxValue;
-                }
-                else
-                {
-                    return mediumDamage;
-                }
+                return ExperienceManager.Instance.PlayerAttackPower;
 
             default:
                 return enemy.MaxHp / 2f;
@@ -226,22 +233,19 @@ public class PlayerAttack : MonoBehaviour
     {
         switch (chargeLevel)
         {
-            // 小チャージ：必ず2発
             case ChargeLevel.Small:
-                return boss.MaxHp / 2f;
+                return boss.MaxHp / 2f;     // 必ず2発
 
-            // 中チャージ：固定ダメージ
             case ChargeLevel.Medium:
-                return mediumDamage;
-
-            // 強チャージ：固定ダメージ（ボスは一撃では倒せない）
             case ChargeLevel.Large:
-                return mediumDamage;
+                return ExperienceManager.Instance.PlayerAttackPower;
 
             default:
                 return boss.MaxHp / 2f;
         }
     }
+
+   
 
     private IEnumerator HideBat(float range)
     {
