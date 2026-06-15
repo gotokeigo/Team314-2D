@@ -55,8 +55,9 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float wanderInterval = 2f;     // 次の目標地点を決める間隔
 
     private float attackTimer;
-    private bool isKnockedBack;                     // 吹き飛んでいるか
-    private float currentHp;                        // 敵の現在HP
+    private bool isKnockedBack; // 吹き飛んでいるか
+    private bool _isStunned;     // スタン中
+    private float currentHp;    // 敵の現在HP
     private Transform player;
     private Rigidbody2D rb;
     private PlayerHealth playerHp;
@@ -109,6 +110,7 @@ public class EnemyController : MonoBehaviour
     {
         if (player == null || rb == null) return;
         if (_isFalling) return;
+        if(_isStunned) return;
         if (playerHp != null && playerHp.IsDead)
         {
             rb.linearVelocity = Vector2.zero;
@@ -238,6 +240,12 @@ public class EnemyController : MonoBehaviour
         StartCoroutine(KnockBackCoroutine());
     }
 
+    public void Stun(float duration)
+    {
+        if (isDead || _isStunned) return;
+        StartCoroutine(StunCoroutine(duration));
+    }
+
     private IEnumerator KnockBackCoroutine()
     {
         gameObject.layer = _knockbackLayer;
@@ -252,6 +260,14 @@ public class EnemyController : MonoBehaviour
             rb.rotation = 0f;
             gameObject.layer = _defaultLayer;
         }
+    }
+
+    private IEnumerator StunCoroutine(float duration)
+    {
+        _isStunned = true;
+        rb.linearVelocity = Vector2.zero;
+        yield return new WaitForSeconds(duration);
+        _isStunned = false;
     }
 
     // OnBecameInvisible：死亡時も消えるように条件を変更
