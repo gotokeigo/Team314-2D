@@ -91,7 +91,7 @@ public class StatusUI : MonoBehaviour
         if (levelText == null) return;
 
         _lastLevel = ExperienceManager.Instance.PlayerLevel;
-        levelText.text = $"PlayerLevel:{_lastLevel}";
+        levelText.text = $"PlayerLv:{_lastLevel}";
     }
 }
 
