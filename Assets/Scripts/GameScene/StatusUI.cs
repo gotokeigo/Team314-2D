@@ -9,7 +9,7 @@
 //
 //  2026/06/04  作成
 //  2026/06/08  プレイヤーのレベル表示を追加
-//
+//  2026/06/16  プレイヤーアタックのチャージレベルを継承してUIに表示するように変更
 //-------------------------------------------------------
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,21 +28,28 @@ public class StatusUI : MonoBehaviour
     [SerializeField] private Vector2 heartSize = new Vector2(30.0f, 30.0f); //♡のサイズ
     [Tooltip("プレイヤーのレベル表示に使うtextmeshの場所をアタッチ")]
     [SerializeField] private TextMeshProUGUI levelText; // インスペクターでアタッチ
+    [Tooltip("プレイヤーのチャージレベル表示に使うtextmeshの場所をアタッチ")]
+    [SerializeField] private TextMeshProUGUI chargeLevelText;
+    [Tooltip("PlayerAttackスクリプトの参照")]
+    [SerializeField] private PlayerAttack playerAttack;
 
     private List<Image> _heartImages = new List<Image>();
     private int _maxHp;
     private int _lastLevel = -1;    // 前フレームのレベル保存用
 
+
     void Start()
     {
         _maxHp = (int)playerHealth.MaxHp;
         CreateHearts();
+        UpdateChargeLevelText();
         UpdateLevelText();
     }
 
     void Update()
     {
         UpdateHearts();
+        UpdateChargeLevelText();
 
         // レベルが変わった時だけ更新
         int currentLevel = ExperienceManager.Instance.PlayerLevel;
@@ -50,7 +57,10 @@ public class StatusUI : MonoBehaviour
         {
             UpdateLevelText();
         }
+
+
     }
+
 
     // ♡を最大HP分生成
     private void CreateHearts()
@@ -92,6 +102,21 @@ public class StatusUI : MonoBehaviour
 
         _lastLevel = ExperienceManager.Instance.PlayerLevel;
         levelText.text = $"PlayerLv:{_lastLevel}";
+    }
+
+    private void UpdateChargeLevelText()
+    {
+        if (chargeLevelText == null) return;
+        if (playerAttack == null) return;
+
+        // チャージ中でないときは非表示にする（任意）
+        if (!playerAttack.IsCharging)
+        {
+            chargeLevelText.text = "ChargeLv: -";
+            return;
+        }
+
+        chargeLevelText.text = $"ChargeLv:{playerAttack.CurrentChargeLevel}";
     }
 }
 

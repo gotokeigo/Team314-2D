@@ -22,6 +22,7 @@
 //
 //  2026/06/11  ボスへの攻撃処理を追加
 //
+//  2026/06/16  StatusUIに現在のチャージレベルを引き渡せるように変更
 //--------------------------------------
 using System.Collections;
 using System.Collections.Generic;
@@ -70,7 +71,10 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private float largeAttackAngle;
 
 
-    private enum ChargeLevel { Small, Medium, Large }
+    public enum ChargeLevel { Small, Medium, Large }
+    // パブリックプロパティを追加（フィールドの近くに記述）
+    public ChargeLevel CurrentChargeLevel { get; private set; } = ChargeLevel.Small;
+    public bool IsCharging => _isCharging;
 
     private PlayerController _playerController;
     private PlayerHealth _playerHealth;
@@ -80,6 +84,7 @@ public class PlayerAttack : MonoBehaviour
     private SpriteRenderer _weaponSpriteRenderer;
     private InputAction _attackAction;
     private float _attackTimer = 0f;
+
 
     private void Awake()
     {
@@ -98,7 +103,6 @@ public class PlayerAttack : MonoBehaviour
         _playerController.SetSpeedMultiplier(chargeSpeedMultiplier);
     }
 
-    // Update() に追加
     private void Update()
     {
         if (_playerHealth != null && _playerHealth.IsDead) return;
@@ -111,19 +115,25 @@ public class PlayerAttack : MonoBehaviour
 
         if (!_isCharging || _isAttacking) return;
 
+        // StatusUIに攻撃のチャージレベルを引き渡すために使用
+        float elapsedTime = Time.time - _chargeStartTime;
+        CurrentChargeLevel = DetermineChargeLevel(elapsedTime);
+
         if (_attackAction.WasReleasedThisFrame())
         {
             if (_attackTimer > 0f) return;  // インターバル中は攻撃しない
             _isCharging = false;
             _playerController.SetSpeedMultiplier(1.0f);
             float chargeTime = Time.time - _chargeStartTime;
+            CurrentChargeLevel = DetermineChargeLevel(chargeTime);
             ChargeLevel chargeLevel = DetermineChargeLevel(chargeTime);
             Attack(chargeLevel);
+
             _attackTimer = attackInterval;  // タイマーをセット
         }
     }
 
-    private ChargeLevel DetermineChargeLevel(float chargeTime)
+    public ChargeLevel DetermineChargeLevel(float chargeTime)
     {
         if (chargeTime >= largeChargeTime) return ChargeLevel.Large;
         if (chargeTime >= mediumChargeTime) return ChargeLevel.Medium;
@@ -186,7 +196,7 @@ public class PlayerAttack : MonoBehaviour
                 }
                 else
                 {
-                    enemyController.Stun(stunDuration);  // 追加: 倒しきれなかったら硬直
+                    enemyController.Stun(stunDuration);  // 倒しきれなかったら硬直
                 }
                 continue;   // EnemyControllerがあればBossControllerは見ない
             }
@@ -272,6 +282,8 @@ public class PlayerAttack : MonoBehaviour
 
         _weaponSpriteRenderer.enabled = false;
         _isAttacking = false;
+        CurrentChargeLevel = ChargeLevel.Small;  // ← 攻撃終了時にリセット
+
     }
 
     private void OnDrawGizmos()
@@ -294,8 +306,4 @@ public class PlayerAttack : MonoBehaviour
         Gizmos.DrawLine(transform.position, transform.position + rightDir * range * 2f);
     }
 
-    //  private void OnDecoy(InputValue value)
-    //  {
-    //      Instantiate(decoyPrefab, transform.position, Quaternion.identity);
-    //  }
 }
