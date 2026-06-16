@@ -25,15 +25,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Decoy",
-                    "type": "Button",
-                    "id": "7968de41-7ed2-4a5a-9fff-10428606d72b",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Shout",
                     "type": "Button",
                     "id": "4dba5210-ca2f-4eb0-97eb-242ab86ac93d",
@@ -173,17 +164,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Attack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "6342421c-3757-442c-aca5-950ffe5548f8",
-                    "path": "<Keyboard>/g",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Decoy",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
