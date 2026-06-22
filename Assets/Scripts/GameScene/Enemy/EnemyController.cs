@@ -36,7 +36,7 @@ public class EnemyController : MonoBehaviour
     [Tooltip("敵の移動速度")]
     [SerializeField] private float moveSpeed;       //  移動速度
     [Tooltip("プレイヤーに接触したときにプレイヤーに与えるダメージ")]
-    [SerializeField] private int AttackDamage;      //  接触時のダメージ
+    [SerializeField] private int attackDamage;      //  接触時のダメージ
     [Tooltip("敵の攻撃インターバル")]
     [SerializeField] private float attackInterval;  //  攻撃間隔
     [Tooltip("敵の最大HP")]
@@ -54,15 +54,14 @@ public class EnemyController : MonoBehaviour
     [Tooltip("次の目標地点を決める間隔")]
     [SerializeField] private float wanderInterval = 2f;     // 次の目標地点を決める間隔
 
-    private float attackTimer;
-    private bool isKnockedBack; // 吹き飛んでいるか
-    private bool _isStunned;     // スタン中
-    private float currentHp;    // 敵の現在HP
-    private Transform player;
-    private Rigidbody2D rb;
-    private PlayerHealth playerHp;
-    private float stopDistance;
-    private bool isDead;
+    private float _attackTimer;
+    private bool _isKnockedBack; // 吹き飛んでいるか
+    private float _currentHp;    // 敵の現在HP
+    private Transform _player;
+    private Rigidbody2D _rb;
+    private PlayerHealth _playerHp;
+    private float _stopDistance;
+    private bool _isDead;
     private bool _isFalling;
     public float MaxHp => maxHp;    // 外部からmaxHpを参照用
 
@@ -83,17 +82,17 @@ public class EnemyController : MonoBehaviour
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        currentHp = maxHp;                          // 敵の最大HP
+        _rb = GetComponent<Rigidbody2D>();
+        _currentHp = maxHp;                          // 敵の最大HP
 
         Collider2D enemyCol = GetComponent<Collider2D>();
         GameObject playerObject = GameObject.FindWithTag("Player");
         if (playerObject != null)
         {
-            player = playerObject.transform;
-            playerHp = playerObject.GetComponent<PlayerHealth>();
+            _player = playerObject.transform;
+            _playerHp = playerObject.GetComponent<PlayerHealth>();
             Collider2D playerCol = playerObject.GetComponent<Collider2D>();
-            stopDistance = enemyCol.bounds.extents.x + playerCol.bounds.extents.x;
+            _stopDistance = enemyCol.bounds.extents.x + playerCol.bounds.extents.x;
         }
 
 
@@ -108,20 +107,19 @@ public class EnemyController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (player == null || rb == null) return;
+        if (_player == null || _rb == null) return;
         if (_isFalling) return;
-        if(_isStunned) return;
-        if (playerHp != null && playerHp.IsDead)
+        if (_playerHp != null && _playerHp.IsDead)
         {
-            rb.linearVelocity = Vector2.zero;
+            _rb.linearVelocity = Vector2.zero;
             return;
         }
-        if (isKnockedBack) return;
+        if (_isKnockedBack) return;
 
         // 未発見なら自動発見チェック
         if (!_isDiscovered)
         {
-            float distToPlayer = Vector2.Distance(rb.position, player.position);
+            float distToPlayer = Vector2.Distance(_rb.position, _player.position);
             if (distToPlayer <= detectionRange)
             {
                 SetDiscovered(true);
@@ -141,32 +139,32 @@ public class EnemyController : MonoBehaviour
     // 追跡処理（既存のFixedUpdateの移動処理を移動）
     private void Chase()
     {
-        Vector2 direction = (Vector2)(player.position - transform.position);
+        Vector2 direction = (Vector2)(_player.position - transform.position);
         float distance = direction.magnitude;
-        if (distance <= stopDistance)
+        if (distance <= _stopDistance)
         {
-            rb.MovePosition(rb.position);
+            _rb.MovePosition(_rb.position);
             return;
         }
-        Vector2 newPosition = rb.position + direction.normalized * _currentMoveSpeed * Time.fixedDeltaTime;
-        rb.MovePosition(newPosition);
+        Vector2 newPosition = _rb.position + direction.normalized * _currentMoveSpeed * Time.fixedDeltaTime;
+        _rb.MovePosition(newPosition);
     }
 
     // さまよう処理
     private void Wander()
     {
-        Vector2 direction = (_wanderTarget - rb.position);
+        Vector2 direction = (_wanderTarget - _rb.position);
         if (direction.magnitude <= 0.1f) return;    // 目標地点に着いたら止まって待つ
 
-        Vector2 newPosition = rb.position + direction.normalized * _currentMoveSpeed * Time.fixedDeltaTime;
-        rb.MovePosition(newPosition);
+        Vector2 newPosition = _rb.position + direction.normalized * _currentMoveSpeed * Time.fixedDeltaTime;
+        _rb.MovePosition(newPosition);
     }
 
     // さまよう目標地点をランダムに決める
     private Vector2 GetNewWanderTarget()
     {
         _wanderTimer = wanderInterval;
-        return rb.position + Random.insideUnitCircle * wanderRadius;
+        return _rb.position + Random.insideUnitCircle * wanderRadius;
     }
 
     // グループから発見状態を設定する
@@ -197,20 +195,20 @@ public class EnemyController : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (isDead) return;
+        if (_isDead) return;
         if (!collision.gameObject.CompareTag("Player")) return;
-        PlayerHealth playerHp = collision.gameObject.GetComponent<PlayerHealth>();
-        if (playerHp != null)
+        PlayerHealth colPlayerHp = collision.gameObject.GetComponent<PlayerHealth>();
+        if (colPlayerHp != null)
         {
-            playerHp.TakeDamage(AttackDamage);
+            colPlayerHp.TakeDamage(attackDamage);
         }
     }
 
     public bool TakeDamage(float damage)
     {
-        if (isDead) return false;
-        currentHp -= damage;
-        if (currentHp <= 0)
+        if (_isDead) return false;
+        _currentHp -= damage;
+        if (_currentHp <= 0)
         {
             Die();
             return true;    // 死亡
@@ -220,7 +218,7 @@ public class EnemyController : MonoBehaviour
 
     private void Die()
     {
-        isDead = true;
+        _isDead = true;
 
         // 発見状態だった場合は通知
         if (_isDiscovered)
@@ -232,18 +230,26 @@ public class EnemyController : MonoBehaviour
 
     public void KnockBack(Vector2 direction, float force)
     {
-        isKnockedBack = true;
-        rb.linearVelocity = Vector2.zero;
-        rb.freezeRotation = false;
-        rb.AddForce(direction * force, ForceMode2D.Impulse);
-        rb.AddTorque(rotationForce, ForceMode2D.Impulse);
+        _isKnockedBack = true;
+        _rb.linearVelocity = Vector2.zero;
+        _rb.freezeRotation = false;
+        _rb.AddForce(direction * force, ForceMode2D.Impulse);
+        _rb.AddTorque(rotationForce, ForceMode2D.Impulse);
         StartCoroutine(KnockBackCoroutine());
     }
 
-    public void Stun(float duration)
+    public void SmallKnockBack(Vector2 direction, float force)
     {
-        if (isDead || _isStunned) return;
-        StartCoroutine(StunCoroutine(duration));
+        if (_isDead) return;
+        StartCoroutine(SmallKnockBackCoroutine(direction, force));
+    }
+
+    private IEnumerator SmallKnockBackCoroutine(Vector2 direction, float force)
+    {
+        _isKnockedBack = true;
+        _rb.AddForce(direction * force, ForceMode2D.Impulse);
+        yield return new WaitForSeconds(0.1f);  // 追跡を止める時間（Inspectorで調整できないので短めに固定）
+        _isKnockedBack = false;
     }
 
     private IEnumerator KnockBackCoroutine()
@@ -253,27 +259,25 @@ public class EnemyController : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
 
         // 死亡していたら吹き飛び状態のまま画面外まで飛ばし続ける
-        if (!isDead)
+        if (!_isDead)
         {
-            isKnockedBack = false;
-            rb.freezeRotation = true;
-            rb.rotation = 0f;
+            _isKnockedBack = false;
+            _rb.freezeRotation = true;
+            _rb.rotation = 0f;
             gameObject.layer = _defaultLayer;
         }
     }
 
     private IEnumerator StunCoroutine(float duration)
     {
-        _isStunned = true;
-        rb.linearVelocity = Vector2.zero;
+        _rb.linearVelocity = Vector2.zero;
         yield return new WaitForSeconds(duration);
-        _isStunned = false;
     }
 
     // OnBecameInvisible：死亡時も消えるように条件を変更
     private void OnBecameInvisible()
     {
-        if (isKnockedBack || isDead)
+        if (_isKnockedBack || _isDead)
         {
             Destroy(gameObject);
         }
@@ -283,14 +287,14 @@ public class EnemyController : MonoBehaviour
     {
         if (target != null)
         {
-            player = target.transform;
+            _player = target.transform;
         }
     }
 
     // グループから目標地点を受け取る
     public void SetWanderTarget(Vector2 target)
     {
-        if (_isFalling || isDead) return;
+        if (_isFalling || _isDead) return;
         _wanderTarget = target;
     }
 
@@ -298,16 +302,16 @@ public class EnemyController : MonoBehaviour
     {
 
         if (_isFalling) return;
-        if (!isDead && !isKnockedBack) return;
+        if (!_isDead && !_isKnockedBack) return;
         _isFalling = true;
-        isDead = true;
-        isKnockedBack = false;
+        _isDead = true;
+        _isKnockedBack = false;
         StopAllCoroutines();
 
-        rb.linearVelocity = Vector2.zero;
-        rb.angularVelocity = 0f;
-        rb.bodyType = RigidbodyType2D.Kinematic;
-        rb.freezeRotation = false;
+        _rb.linearVelocity = Vector2.zero;
+        _rb.angularVelocity = 0f;
+        _rb.bodyType = RigidbodyType2D.Kinematic;
+        _rb.freezeRotation = false;
 
         StartCoroutine(FallAndDestroy());
 
@@ -344,4 +348,3 @@ public class EnemyController : MonoBehaviour
     }
 
 }
-

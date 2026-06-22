@@ -23,6 +23,9 @@
 //  2026/06/11  ボスへの攻撃処理を追加
 //
 //  2026/06/16  StatusUIに現在のチャージレベルを引き渡せるように変更
+//
+//  2026/06/22  硬直をやめて生存時に小ノックバックするように変更
+//
 //--------------------------------------
 using System.Collections;
 using System.Collections.Generic;
@@ -33,7 +36,7 @@ using UnityEngine.InputSystem;
 public class PlayerAttack : MonoBehaviour
 {
     [Header("攻撃設定")]
-    [Tooltip("敵を吹き飛ばしたときの敵が吹き飛んでいく速さ")]
+    [Tooltip("敵を吹き飛ばしたときの敵が吹き飛んでいく速さ（死亡時）")]
     [SerializeField] private float knockbackForce;
     [Tooltip("攻撃が当たるレイヤー")]
     [SerializeField] private LayerMask enemyLayer;
@@ -41,9 +44,8 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private GameObject weaponObject;
     [Tooltip("攻撃間隔（秒）")]
     [SerializeField] private float attackInterval = 0.5f;
-    [Tooltip("敵に与える硬直時間（秒）")]
-    [SerializeField] private float stunDuration = 0.3f;
-    //  [SerializeField] private GameObject decoyPrefab;
+    [Tooltip("ヒット時の小ノックバック力（生存時）")]
+    [SerializeField] private float hitKnockbackForce;
 
     [Header("チャージ関連")]
     [Tooltip("中攻撃になるのに必要な溜め時間")]
@@ -70,9 +72,7 @@ public class PlayerAttack : MonoBehaviour
     [Tooltip("強攻撃の範囲(角度)")]
     [SerializeField] private float largeAttackAngle;
 
-
     public enum ChargeLevel { Small, Medium, Large }
-    // パブリックプロパティを追加（フィールドの近くに記述）
     public ChargeLevel CurrentChargeLevel { get; private set; } = ChargeLevel.Small;
     public bool IsCharging => _isCharging;
 
@@ -85,7 +85,6 @@ public class PlayerAttack : MonoBehaviour
     private InputAction _attackAction;
     private float _attackTimer = 0f;
 
-
     private void Awake()
     {
         _playerController = GetComponent<PlayerController>();
@@ -96,7 +95,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void OnAttack(InputValue value)
     {
-        if (_playerHealth != null && _playerHealth.IsDead) return;  //プレイヤーのHPがないとき攻撃できなくする
+        if (_playerHealth != null && _playerHealth.IsDead) return;
         if (_isAttacking || _isCharging) return;
         _isCharging = true;
         _chargeStartTime = Time.time;
@@ -107,7 +106,6 @@ public class PlayerAttack : MonoBehaviour
     {
         if (_playerHealth != null && _playerHealth.IsDead) return;
 
-        // 攻撃タイマーを減らす
         if (_attackTimer > 0f)
         {
             _attackTimer -= Time.deltaTime;
@@ -115,21 +113,19 @@ public class PlayerAttack : MonoBehaviour
 
         if (!_isCharging || _isAttacking) return;
 
-        // StatusUIに攻撃のチャージレベルを引き渡すために使用
         float elapsedTime = Time.time - _chargeStartTime;
         CurrentChargeLevel = DetermineChargeLevel(elapsedTime);
 
         if (_attackAction.WasReleasedThisFrame())
         {
-            if (_attackTimer > 0f) return;  // インターバル中は攻撃しない
+            if (_attackTimer > 0f) return;
             _isCharging = false;
             _playerController.SetSpeedMultiplier(1.0f);
             float chargeTime = Time.time - _chargeStartTime;
             CurrentChargeLevel = DetermineChargeLevel(chargeTime);
             ChargeLevel chargeLevel = DetermineChargeLevel(chargeTime);
             Attack(chargeLevel);
-
-            _attackTimer = attackInterval;  // タイマーをセット
+            _attackTimer = attackInterval;
         }
     }
 
@@ -190,15 +186,18 @@ public class PlayerAttack : MonoBehaviour
                 bool died = enemyController.TakeDamage(damage);
                 if (died)
                 {
+                    // 死亡時は強くノックバック
                     Vector2 knockBackDirection = (enemy.transform.position - transform.position).normalized;
                     enemyController.KnockBack(knockBackDirection, knockbackForce);
                     killCount++;
                 }
                 else
                 {
-                    enemyController.Stun(stunDuration);  // 倒しきれなかったら硬直
+                    // 生存時は小ノックバック
+                    Vector2 knockBackDirection = (enemy.transform.position - transform.position).normalized;
+                    enemyController.SmallKnockBack(knockBackDirection, hitKnockbackForce);
                 }
-                continue;   // EnemyControllerがあればBossControllerは見ない
+                continue;
             }
 
             // ボスへの攻撃
@@ -209,8 +208,15 @@ public class PlayerAttack : MonoBehaviour
                 bool died = bossController.TakeDamage(damage);
                 if (died)
                 {
+                    // 死亡時は強くノックバック
                     Vector2 knockBackDirection = (enemy.transform.position - transform.position).normalized;
                     bossController.KnockBack(knockBackDirection, knockbackForce);
+                }
+                else
+                {
+                    // 生存時は小ノックバック
+                    Vector2 knockBackDirection = (enemy.transform.position - transform.position).normalized;
+                    bossController.SmallKnockBack(knockBackDirection, hitKnockbackForce);
                 }
             }
         }
@@ -228,7 +234,7 @@ public class PlayerAttack : MonoBehaviour
         switch (chargeLevel)
         {
             case ChargeLevel.Small:
-                return enemy.MaxHp / 2f;    // 必ず2発
+                return enemy.MaxHp / 2f;
 
             case ChargeLevel.Medium:
             case ChargeLevel.Large:
@@ -244,7 +250,7 @@ public class PlayerAttack : MonoBehaviour
         switch (chargeLevel)
         {
             case ChargeLevel.Small:
-                return boss.MaxHp / 2f;     // 必ず2発
+                return boss.MaxHp / 2f;
 
             case ChargeLevel.Medium:
             case ChargeLevel.Large:
@@ -254,8 +260,6 @@ public class PlayerAttack : MonoBehaviour
                 return boss.MaxHp / 2f;
         }
     }
-
-   
 
     private IEnumerator HideBat(float range)
     {
@@ -282,8 +286,7 @@ public class PlayerAttack : MonoBehaviour
 
         _weaponSpriteRenderer.enabled = false;
         _isAttacking = false;
-        CurrentChargeLevel = ChargeLevel.Small;  // ← 攻撃終了時にリセット
-
+        CurrentChargeLevel = ChargeLevel.Small;
     }
 
     private void OnDrawGizmos()
@@ -305,5 +308,4 @@ public class PlayerAttack : MonoBehaviour
         Gizmos.DrawLine(transform.position, transform.position + leftDir * range * 2f);
         Gizmos.DrawLine(transform.position, transform.position + rightDir * range * 2f);
     }
-
 }

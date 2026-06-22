@@ -2349,7 +2349,7 @@ MonoBehaviour:
     m_Bits: 8
   weaponObject: {fileID: 1444650102}
   attackInterval: 0.5
-  stunDuration: 0.3
+  hitKnockbackForce: 20
   mediumChargeTime: 0.5
   largeChargeTime: 1
   chargeSpeedMultiplier: 0.2
