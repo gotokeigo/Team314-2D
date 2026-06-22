@@ -127,6 +127,20 @@ public class BossController : MonoBehaviour
         return false;
     }
 
+    public void SmallKnockBack(Vector2 direction, float force)
+    {
+        if (_isDead) return;
+        StartCoroutine(SmallKnockBackCoroutine(direction, force));
+    }
+
+    private IEnumerator SmallKnockBackCoroutine(Vector2 direction, float force)
+    {
+        _isKnockedBack = true;
+        _rb.AddForce(direction * force, ForceMode2D.Impulse);
+        yield return new WaitForSeconds(0.1f);
+        _isKnockedBack = false;
+    }
+
     private void Die()
     {
         _isDead = true;

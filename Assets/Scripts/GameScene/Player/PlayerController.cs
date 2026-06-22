@@ -15,31 +15,24 @@
 //--------------------------------------
 using UnityEngine;
 using UnityEngine.InputSystem;
-
 public class PlayerController : MonoBehaviour
 {
     [Tooltip("プレイヤーの移動速度")]
     [SerializeField] private float moveSpeed;
-
     private Rigidbody2D _rb;
     private Vector2 _moveInput;
     private float _speedMultiplier = 1.0f; //プレイヤー移動速度倍率
-
     private Animator _animator;
-
     // 最後に移動した方向（初期値は下向き）
     public Vector2 LastMoveDirection { get; private set; } = Vector2.down;
-
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
         _animator = GetComponentInChildren<Animator>();
     }
-
     private void OnMove(InputValue value)
     {
         _moveInput = value.Get<Vector2>();
-
         // 移動入力があった時だけ方向を更新
         if (_moveInput != Vector2.zero)
         {
@@ -51,7 +44,6 @@ public class PlayerController : MonoBehaviour
             _animator.SetBool("isMoving", false);
         }
     }
-
     private void Update()
     {
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
@@ -60,13 +52,11 @@ public class PlayerController : MonoBehaviour
             Debug.Log("ゲーム終了");
         }
     }
-
     private void FixedUpdate()
     {
-        Vector2 newPosition = _rb.position + _moveInput * moveSpeed * _speedMultiplier * Time.fixedDeltaTime;   //
+        Vector2 newPosition = _rb.position + _moveInput * moveSpeed * _speedMultiplier * Time.fixedDeltaTime;
         _rb.MovePosition(newPosition);
     }
-
     public void SetSpeedMultiplier(float multiplier)
     {
         _speedMultiplier = multiplier;

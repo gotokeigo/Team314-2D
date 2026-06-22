@@ -13,109 +13,74 @@
 //
 //
 //--------------------------------------
-
 using UnityEngine;
 using System.Collections;
-
 public class PlayerHealth : MonoBehaviour
 {
     [Tooltip("プレイヤー最大HP")]
-    [SerializeField] private float maxHp;           //最大体力
+    [SerializeField] private float maxHp;
     [Tooltip("被ダメ時の無敵時間")]
-    [SerializeField] private float invincibleTime;  //無敵時間
-
-    private bool isInvincible;
-    private float currentHp;
-    private Renderer Renderer;
-    private Collider2D playerCollider;
+    [SerializeField] private float invincibleTime;
+    private bool _isInvincible;
+    private float _currentHp;
+    private Renderer _renderer;
+    private Collider2D _playerCollider;
     private int _enemyLayer;
     private int _enemyKnockbackLayer;
-
-
     public bool IsDead { get; private set; }
-
-    public float MaxHp => maxHp;            //外部からの最大HP参照用
-    public float CurrentHp => currentHp;    //外部からの現在HP参照用
-
-
-
+    public float MaxHp => maxHp;
+    public float CurrentHp => _currentHp;
     void Start()
     {
-        currentHp = maxHp;
+        _currentHp = maxHp;
         IsDead = false;
-        Renderer = GetComponentInChildren<Renderer>();
-        playerCollider = GetComponent<Collider2D>();
+        _renderer = GetComponentInChildren<Renderer>();
+        _playerCollider = GetComponent<Collider2D>();
         _enemyLayer = LayerMask.NameToLayer("Enemy");
         _enemyKnockbackLayer = LayerMask.NameToLayer("EnemyKnockback");
-        int playerLayer = gameObject.layer;
-
     }
-
     public void TakeDamage(float damage)
     {
-        //死亡中または無敵時間中はダメージは受けない
-        if (IsDead || isInvincible) return;
-
-        currentHp -= damage;
-
-        if (currentHp <= 0)
+        if (IsDead || _isInvincible) return;
+        _currentHp -= damage;
+        if (_currentHp <= 0)
         {
-            Die();  //死亡処理呼び出し
+            Die();
         }
         else
         {
-            StartCoroutine(InvincibleCoroutine());  // ダメージを受けても死ななかった場合は無敵時間を開始
+            StartCoroutine(InvincibleCoroutine());
         }
     }
-
     private void Die()
     {
         IsDead = true;
-
         Debug.Log("Player is Dead");
-
-        // 動き停止
         GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
-        // 入力停止
         GetComponent<PlayerController>().enabled = false;
-        // 当たり判定オフ
         GetComponent<Collider2D>().enabled = false;
-
         StartCoroutine(BlinkAndDestroy());
     }
-
-    //点滅させてからプレイヤーを消す処理
     private IEnumerator BlinkAndDestroy()
     {
         for (int i = 0; i < 4; i++)
         {
-            Renderer.enabled = false;         //スプライトを非表示
+            _renderer.enabled = false;
             yield return new WaitForSeconds(0.2f);
-
-            Renderer.enabled = true;          //スプライトを表示
+            _renderer.enabled = true;
             yield return new WaitForSeconds(0.2f);
         }
-
         Destroy(gameObject);
     }
-
-    // 無敵時間中に当たり判定をオフにする処理
     private IEnumerator InvincibleCoroutine()
     {
-        isInvincible = true;
-
-        // 敵レイヤーとの衝突だけオフ
+        _isInvincible = true;
         int playerLayer = gameObject.layer;
         Physics2D.IgnoreLayerCollision(playerLayer, _enemyLayer, true);
         Physics2D.IgnoreLayerCollision(playerLayer, _enemyKnockbackLayer, true);
-
         yield return new WaitForSeconds(invincibleTime);
-
-        // 敵レイヤーとの衝突を戻す
         Physics2D.IgnoreLayerCollision(playerLayer, _enemyLayer, false);
         Physics2D.IgnoreLayerCollision(playerLayer, _enemyKnockbackLayer, false);
-
-        isInvincible = false;
+        _isInvincible = false;
     }
-
 }
