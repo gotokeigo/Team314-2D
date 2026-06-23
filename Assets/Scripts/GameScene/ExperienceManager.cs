@@ -45,6 +45,8 @@ public class ExperienceManager : MonoBehaviour
     public float PlayerAttackPower => baseAttackPower + (PlayerLevel - 1) * attackPowerPerLevel;
 
     public int PlayerLevel { get; private set; } = 1;
+    public float CurrentXp => _totalXp;
+    public float NextLevelXp => XpRequiredForNextLevel();
     private float _totalXp;
 
     private void Awake()
