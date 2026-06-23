@@ -72,6 +72,9 @@ public class PlayerAttack : MonoBehaviour
     [Tooltip("強攻撃の範囲(角度)")]
     [SerializeField] private float largeAttackAngle;
 
+    [SerializeField]
+    private GameObject attackRangeObject;
+
     public enum ChargeLevel { Small, Medium, Large }
     public ChargeLevel CurrentChargeLevel { get; private set; } = ChargeLevel.Small;
     public bool IsCharging => _isCharging;
@@ -98,6 +101,7 @@ public class PlayerAttack : MonoBehaviour
         if (_playerHealth != null && _playerHealth.IsDead) return;
         if (_isAttacking || _isCharging) return;
         _isCharging = true;
+        attackRangeObject.SetActive(true);
         _chargeStartTime = Time.time;
         _playerController.SetSpeedMultiplier(chargeSpeedMultiplier);
     }
@@ -116,8 +120,38 @@ public class PlayerAttack : MonoBehaviour
         float elapsedTime = Time.time - _chargeStartTime;
         CurrentChargeLevel = DetermineChargeLevel(elapsedTime);
 
+        float range = smallAttackRange;
+
+        switch (CurrentChargeLevel)
+        {
+            case ChargeLevel.Medium:
+                range = mediumAttackRange;
+                break;
+
+            case ChargeLevel.Large:
+                range = largeAttackRange;
+                break;
+        }
+
+        attackRangeObject.transform.localScale =
+            new Vector3(range, range, 1.0f);
+
+        Vector2 dir = _playerController.LastMoveDirection;
+
+        if (dir != Vector2.zero)
+        {
+            attackRangeObject.transform.localPosition =
+                dir.normalized * range;
+
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+            attackRangeObject.transform.localRotation =
+                Quaternion.Euler(0f, 0f, angle);
+        }
+
         if (_attackAction.WasReleasedThisFrame())
         {
+            attackRangeObject.SetActive(false);
             if (_attackTimer > 0f) return;
             _isCharging = false;
             _playerController.SetSpeedMultiplier(1.0f);
