@@ -28,6 +28,14 @@ public class EnemyGroupController : MonoBehaviour
     [Tooltip("敵グループの次の目標地点を決める間隔")]
     [SerializeField] private float groupWanderInterval = 3f;    // 次の目標地点を決める間隔
 
+    // --- [Git追記] グループ合流・UI設定用の変数 ---
+    [Header("グループ合流・UI設定")]
+    [SerializeField] private float mergeRadius = 4f;
+    [SerializeField] private TMPro.TextMeshProUGUI countText;
+    public List<EnemyController> Enemies => _enemies;
+    public bool IsDiscovered => _isDiscovered;
+    // --------------------------------------------
+
     private Vector2 _groupWanderTarget;                         // グループ共通の目標地点
     private float _groupWanderTimer;                            // 徘徊タイマー
     private Vector2 _groupOrigin;                               // グループの初期位置
@@ -50,7 +58,24 @@ public class EnemyGroupController : MonoBehaviour
     private void Update()
     {
         _enemies.RemoveAll(e => e == null);
+
+        // --- [Git追記] UIの更新処理 ---
+        if (countText != null)
+        {
+            if (_enemies.Count > 0)
+            {
+                countText.text = _enemies.Count.ToString();
+                countText.transform.position = CalcGroupCenter() + new Vector2(0, 1.5f);
+            }
+            else countText.text = "";
+        }
+        // ----------------------------
+
         if (_enemies.Count == 0) return;
+
+        // --- [Git追記] 近くの別グループを吸収して合流 --
+        TryMergeWithNearbyGroups();
+        //----------------------------
 
         if (!_isDiscovered)
         {
@@ -135,4 +160,53 @@ public class EnemyGroupController : MonoBehaviour
     {
         DiscoverAll();
     }
+
+    // --- [Git追記] 新規追加メソッド群 ---
+    private void TryMergeWithNearbyGroups()
+    {
+        EnemyGroupController[] allGroups = FindObjectsByType<EnemyGroupController>(FindObjectsSortMode.None);
+        foreach (EnemyGroupController otherGroup in allGroups)
+        {
+            if (otherGroup == this || otherGroup.Enemies.Count == 0) continue;
+
+            float dist = Vector2.Distance(CalcGroupCenter(), otherGroup.CalcGroupCenter());
+            if (dist <= mergeRadius)
+            {
+                if (otherGroup.IsDiscovered && !_isDiscovered)
+                {
+                    DiscoverAll();
+                }
+
+                foreach (EnemyController enemy in otherGroup.Enemies)
+                {
+                    if (enemy == null) continue;
+                    enemy.transform.SetParent(this.transform);
+                    _enemies.Add(enemy);
+                }
+
+                otherGroup.Enemies.Clear();
+                // 【修正箇所】Destroyをやめて、ゲームオブジェクトを非表示（無効化）にする
+                otherGroup.gameObject.SetActive(false);
+                //Destroy(otherGroup.gameObject);
+            }
+        }
+    }
+
+    public Vector2 CalcGroupCenter()
+    {
+        if (_enemies.Count == 0) return transform.position;
+        Vector2 sumPosition = Vector2.zero;
+        int validCount = 0;
+        foreach (EnemyController enemy in _enemies)
+        {
+            if (enemy != null)
+            {
+                sumPosition += (Vector2)enemy.transform.position;
+                validCount++;
+            }
+        }
+        return validCount > 0 ? sumPosition / validCount : (Vector2)transform.position;
+    }
+    // ------------------------------------
+
 }
