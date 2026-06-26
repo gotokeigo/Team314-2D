@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
 {
     [Tooltip("プレイヤーの移動速度")]
     [SerializeField] private float moveSpeed;
+    [SerializeField] private Transform modelTransform;
     private Rigidbody2D _rb;
     private Vector2 _moveInput;
     private float _speedMultiplier = 1.0f; //プレイヤー移動速度倍率
@@ -56,6 +57,16 @@ public class PlayerController : MonoBehaviour
     {
         Vector2 newPosition = _rb.position + _moveInput * moveSpeed * _speedMultiplier * Time.fixedDeltaTime;
         _rb.MovePosition(newPosition);
+
+        // 左右だけ向きを変える
+        if (_moveInput.x > 0)
+        {
+            modelTransform.localScale = new Vector3(1, 1, 1);   // 右向き
+        }
+        else if (_moveInput.x < 0)
+        {
+            modelTransform.localScale = new Vector3(-1, 1, 1);  // 左向き
+        }
     }
     public void SetSpeedMultiplier(float multiplier)
     {
