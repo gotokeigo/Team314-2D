@@ -195,9 +195,13 @@ public class EnemyController : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
+
         if (_isDead) return;
+
         if (!collision.gameObject.CompareTag("Player")) return;
-        PlayerHealth colPlayerHp = collision.gameObject.GetComponent<PlayerHealth>();
+
+        //PlayerHealth colPlayerHp = collision.gameObject.GetComponent<PlayerHealth>();
+        PlayerHealth colPlayerHp = collision.gameObject.GetComponentInParent<PlayerHealth>();
         if (colPlayerHp != null)
         {
             colPlayerHp.TakeDamage(attackDamage);

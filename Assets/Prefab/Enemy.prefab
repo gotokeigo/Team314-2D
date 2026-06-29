@@ -180,7 +180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
   moveSpeed: 1
-  AttackDamage: 1
+  attackDamage: 1
   attackInterval: 1
   maxHp: 10
   level: 1
