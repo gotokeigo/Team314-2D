@@ -52,14 +52,12 @@ public class StatusUI : MonoBehaviour
     {
         _maxHp = (int)playerHealth.MaxHp;
         CreateHearts();
-        UpdateChargeLevelText();
         UpdateLevelText();
     }
 
     void Update()
     {
         UpdateHearts();
-        UpdateChargeLevelText();
 
         // レベルが変わった時だけ更新
         int currentLevel = ExperienceManager.Instance.PlayerLevel;
@@ -98,16 +96,14 @@ public class StatusUI : MonoBehaviour
     // 現在HPに応じて♡の表示を更新
     private void UpdateHearts()
     {
-        if (playerHealth == null)
-        {
-            return;
-        }
+        if (playerHealth == null) return;
+
         int currentHp = (int)playerHealth.CurrentHp;
 
-        for(int i = 0; i < _heartImages.Count; i++)
+        for (int i = 0; i < _heartImages.Count; i++)
         {
-            //現在HP以下のインデックスは赤、それ以外はグレー
-            _heartImages[i].color = i < currentHp ? Color.red : Color.gray;
+            // 現在HP以下のインデックスは表示、それ以外は非表示
+            _heartImages[i].enabled = i < currentHp;
         }
     }
 
@@ -129,19 +125,6 @@ public class StatusUI : MonoBehaviour
         level1.sprite = numberSprites[_lastLevel % 10];
     }
 
-    private void UpdateChargeLevelText()
-    {
-        if (chargeLevelText == null) return;
-        if (playerAttack == null) return;
 
-        // チャージ中でないときは非表示にする（任意）
-        if (!playerAttack.IsCharging)
-        {
-            chargeLevelText.text = "ChargeLv: -";
-            return;
-        }
-
-        chargeLevelText.text = $"ChargeLv:{playerAttack.CurrentChargeLevel}";
-    }
 }
 
