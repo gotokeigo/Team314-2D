@@ -56,6 +56,16 @@ public class PlayerHealth : MonoBehaviour
     {
         IsDead = true;
         Debug.Log("Player is Dead");
+
+        // リザルトに渡すデータを保存
+        ResultData.FinalLevel = ExperienceManager.Instance.PlayerLevel;
+        GameTimer gameTimer = FindFirstObjectByType<GameTimer>();
+        if (gameTimer != null)
+        {
+            ResultData.SurvivedTime = gameTimer.CurrentTime;
+        }
+
+
         GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
         GetComponent<PlayerController>().enabled = false;
         GetComponent<Collider2D>().enabled = false;
@@ -71,6 +81,8 @@ public class PlayerHealth : MonoBehaviour
             yield return new WaitForSeconds(0.2f);
         }
         Destroy(gameObject);
+
+        UnityEngine.SceneManagement.SceneManager.LoadScene("ResultScene");
     }
     private IEnumerator InvincibleCoroutine()
     {
