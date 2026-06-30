@@ -104,6 +104,11 @@ public class PlayerAttack : MonoBehaviour
         attackRangeObject.SetActive(true);
         _chargeStartTime = Time.time;
         _playerController.SetSpeedMultiplier(chargeSpeedMultiplier);
+
+        Vector2 attackDirection = GetMouseDirection();
+
+        _playerController.SetLookLock(false);
+        _playerController.SetLookDirection(attackDirection);
     }
 
     private void Update()
@@ -136,7 +141,8 @@ public class PlayerAttack : MonoBehaviour
         attackRangeObject.transform.localScale =
             new Vector3(range, range, 1.0f);
 
-        Vector2 dir = _playerController.LastMoveDirection;
+        // Vector2 dir = _playerController.LastMoveDirection;
+        Vector2 dir = GetMouseDirection();
 
         if (dir != Vector2.zero)
         {
@@ -192,7 +198,9 @@ public class PlayerAttack : MonoBehaviour
             _ => smallAttackAngle
         };
 
-        Vector2 attackDirection = _playerController.LastMoveDirection;
+        //Vector2 attackDirection = _playerController.LastMoveDirection;
+        Vector2 attackDirection = GetMouseDirection();
+
         Vector2 attackCenter = (Vector2)transform.position + attackDirection * currentRange;
 
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackCenter, currentRange, enemyLayer);
@@ -297,7 +305,9 @@ public class PlayerAttack : MonoBehaviour
 
     private IEnumerator HideBat(float range)
     {
-        Vector2 attackDirection = _playerController.LastMoveDirection;
+        // Vector2 attackDirection = _playerController.LastMoveDirection;
+        Vector2 attackDirection = GetMouseDirection();
+
         float baseAngle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
         float startAngle = baseAngle + 90f;
         float endAngle = baseAngle - 90f;
@@ -316,17 +326,20 @@ public class PlayerAttack : MonoBehaviour
             );
             weaponObject.transform.rotation = Quaternion.Euler(0, 0, currentAngle);
             yield return null;
+            
         }
 
         _weaponSpriteRenderer.enabled = false;
         _isAttacking = false;
         CurrentChargeLevel = ChargeLevel.Small;
+        //_playerController.lookMode = PlayerController.LookMode.Move;
     }
 
     private void OnDrawGizmos()
     {
         if (_playerController == null) return;
-        Vector2 attackDirection = _playerController.LastMoveDirection;
+        // Vector2 attackDirection = _playerController.LastMoveDirection;
+        Vector2 attackDirection = GetMouseDirection();
 
         DrawFanGizmo(attackDirection, smallAttackRange, smallAttackAngle, Color.red);
         DrawFanGizmo(attackDirection, mediumAttackRange, mediumAttackAngle, Color.yellow);
@@ -342,4 +355,15 @@ public class PlayerAttack : MonoBehaviour
         Gizmos.DrawLine(transform.position, transform.position + leftDir * range * 2f);
         Gizmos.DrawLine(transform.position, transform.position + rightDir * range * 2f);
     }
+    private Vector2 GetMouseDirection()
+    {
+        Vector3 mousePos = Mouse.current.position.ReadValue();
+
+        // スクリーン座標 → ワールド座標
+        mousePos = Camera.main.ScreenToWorldPoint(mousePos);
+        mousePos.z = 0;
+
+        return (mousePos - transform.position).normalized;
+    }
+
 }
