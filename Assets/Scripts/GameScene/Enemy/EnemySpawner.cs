@@ -110,8 +110,8 @@ public class EnemySpawner : MonoBehaviour
 
             Vector2 candidatePos = (Vector2)transform.position + randomOffset;
 
-            // カメラ外かつ障害物と重なっていない場所にスポーン
-            if (!IsInCameraView(candidatePos) && !IsOverlappingObstacle(candidatePos))
+            // カメラ外、障害物と重なっていない、かつFieldタグの範囲内にスポーン
+            if (!IsInCameraView(candidatePos) && !IsOverlappingObstacle(candidatePos) && IsInsideField(candidatePos))
             {
                 return candidatePos;
             }
@@ -119,6 +119,20 @@ public class EnemySpawner : MonoBehaviour
 
         Vector2 fallbackDir = biasDir == Vector2.zero ? Vector2.up : -biasDir;
         return (Vector2)transform.position + fallbackDir * spawnAreaSize;
+    }
+
+    // Fieldタグのコライダー内かどうか判定
+    private bool IsInsideField(Vector2 pos)
+    {
+        Collider2D[] hits = Physics2D.OverlapPointAll(pos);
+        foreach (Collider2D hit in hits)
+        {
+            if (hit.CompareTag("Field"))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private bool IsOverlappingObstacle(Vector2 pos)
