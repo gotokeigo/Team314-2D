@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Decoy
   - Enemy
+  - Field
   layers:
   - Default
   - TransparentFX

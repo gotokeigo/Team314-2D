@@ -19,8 +19,12 @@ using UnityEngine.UI;
 
 public class GameTimer : MonoBehaviour
 {
-    [Tooltip("目標時間(秒)")]
+    [Tooltip("最初のボス出現時間(秒)")]
     [SerializeField] private float targetTime = 60f;
+    [Tooltip("2回目以降のボス出現間隔(秒)")]
+    [SerializeField] private float bossSpawnInterval = 60f;
+    [Tooltip("ボスのスポーン座標")]
+    [SerializeField] private Vector3 bossSpawnPosition = Vector3.zero; 
     [Tooltip("タイマー表示に使うtextmeshの場所をアタッチ")]
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private Image TimerFrame;
@@ -38,7 +42,7 @@ public class GameTimer : MonoBehaviour
     private float _currentTime;
     private bool _isFinished;
     private bool _bossSpawned;
-    private bool _bossMessage;
+    private float _nextBossSpawnTime;   //次にボスが湧く時間
 
     public float CurrentTime => _currentTime;
 
@@ -47,7 +51,7 @@ public class GameTimer : MonoBehaviour
         _currentTime = 0f;
         _isFinished = false;
         _bossSpawned = false;
-        _bossMessage = false;
+        _nextBossSpawnTime = targetTime;    //最初の出現時間をリセット
     }
 
     private void Update()
@@ -58,18 +62,7 @@ public class GameTimer : MonoBehaviour
         int minutes = (int)(_currentTime / 60f);
         int seconds = (int)(_currentTime % 60f);
 
-        //if (timerText != null)
-        //{
-        //    // ボス出現中は2行目にメッセージ表示
-        //    if (_bossMessage)
-        //    {
-        //        timerText.text = $"{minutes:00}:{seconds:00}\nbossappeared";
-        //    }
-        //    else
-        //    {
-        //        timerText.text = $"{minutes:00}:{seconds:00}";
-        //    }
-        //}
+
         if (numberSprites.Length >= 10)
         {
             minute10.sprite = numberSprites[minutes / 10];
@@ -79,9 +72,10 @@ public class GameTimer : MonoBehaviour
             second1.sprite = numberSprites[seconds % 10];
         }
 
-        if (_currentTime >= targetTime)
+        if (_currentTime >= _nextBossSpawnTime)
         {
             OnTimeUp();
+            _nextBossSpawnTime += bossSpawnInterval;    //次の出現時間を更新
         }
     }
 
@@ -89,17 +83,15 @@ public class GameTimer : MonoBehaviour
     {
         if (bossPrefab != null && _bossSpawned == false)
         {
-            Instantiate(bossPrefab, Vector3.zero, Quaternion.identity);
+            Instantiate(bossPrefab,bossSpawnPosition, Quaternion.identity);
             _bossSpawned = true;
-            _bossMessage = true;
-            Debug.Log("ボスが出現した！");
         }
     }
 
     // BossControllerから呼ばれる
     public void OnBossDefeated()
     {
-        _bossMessage = false;   // メッセージを消す
         Debug.Log("ボスを倒した！");
+        _bossSpawned = false;
     }
 }
