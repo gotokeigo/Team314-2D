@@ -75,6 +75,11 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField]
     private GameObject attackRangeObject;
 
+    [SerializeField]
+    private AudioSource audioSource;
+    [SerializeField]
+    private AudioClip attackSE;
+
     public enum ChargeLevel { Small, Medium, Large }
     public ChargeLevel CurrentChargeLevel { get; private set; } = ChargeLevel.Small;
     public bool IsCharging => _isCharging;
@@ -185,6 +190,8 @@ public class PlayerAttack : MonoBehaviour
     {
         _isAttacking = true;
         _weaponSpriteRenderer.enabled = true;
+
+        audioSource.PlayOneShot(attackSE);
 
         Debug.Log($"チャージレベル: {chargeLevel}");
 
