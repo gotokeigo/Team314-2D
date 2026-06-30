@@ -180,7 +180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
   moveSpeed: 1
-  attackDamage: 0
+  attackDamage: 1
   attackInterval: 1
   maxHp: 10
   level: 1
@@ -368,7 +368,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
   moveSpeed: 1
-  attackDamage: 0
+  attackDamage: 1
   attackInterval: 1
   maxHp: 10
   level: 1
@@ -693,7 +693,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
   moveSpeed: 1
-  attackDamage: 0
+  attackDamage: 1
   attackInterval: 1
   maxHp: 10
   level: 1
@@ -1039,7 +1039,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
   moveSpeed: 1
-  attackDamage: 0
+  attackDamage: 1
   attackInterval: 1
   maxHp: 10
   level: 1

@@ -110,15 +110,21 @@ public class EnemySpawner : MonoBehaviour
 
             Vector2 candidatePos = (Vector2)transform.position + randomOffset;
 
-            if (!IsInCameraView(candidatePos))
+            // カメラ外かつ障害物と重なっていない場所にスポーン
+            if (!IsInCameraView(candidatePos) && !IsOverlappingObstacle(candidatePos))
             {
                 return candidatePos;
             }
         }
 
-        // フォールバック
         Vector2 fallbackDir = biasDir == Vector2.zero ? Vector2.up : -biasDir;
         return (Vector2)transform.position + fallbackDir * spawnAreaSize;
+    }
+
+    private bool IsOverlappingObstacle(Vector2 pos)
+    {
+        Collider2D hit = Physics2D.OverlapCircle(pos, 0.5f, LayerMask.GetMask("Obstacle"));
+        return hit != null;
     }
 
     private bool IsInCameraView(Vector2 worldPos)

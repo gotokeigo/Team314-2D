@@ -26,12 +26,22 @@ public class StatusUI : MonoBehaviour
     [SerializeField] private Transform heartsPanel;     // ♡を並べる親オブジェクト
     [Tooltip("体力表示に使うハートの大きさ")]
     [SerializeField] private Vector2 heartSize = new Vector2(30.0f, 30.0f); //♡のサイズ
-    [Tooltip("プレイヤーのレベル表示に使うtextmeshの場所をアタッチ")]
-    [SerializeField] private TextMeshProUGUI levelText; // インスペクターでアタッチ
+   // [Tooltip("プレイヤーのレベル表示に使うtextmeshの場所をアタッチ")]
+  //  [SerializeField] private TextMeshProUGUI levelText; // インスペクターでアタッチ
     [Tooltip("プレイヤーのチャージレベル表示に使うtextmeshの場所をアタッチ")]
     [SerializeField] private TextMeshProUGUI chargeLevelText;
     [Tooltip("PlayerAttackスクリプトの参照")]
     [SerializeField] private PlayerAttack playerAttack;
+    [Tooltip("レベル1000の位")]
+    [SerializeField] private Image level1000;
+    [Tooltip("レベル100の位")]
+    [SerializeField] private Image level100;
+    [Tooltip("レベル10の位")]
+    [SerializeField] private Image level10;
+    [Tooltip("レベル1の位")]
+    [SerializeField] private Image level1;
+    [Tooltip("数字のスプライト(0～9)")]
+    [SerializeField] private Sprite[] numberSprites;
 
     private List<Image> _heartImages = new List<Image>();
     private int _maxHp;
@@ -42,18 +52,16 @@ public class StatusUI : MonoBehaviour
     {
         _maxHp = (int)playerHealth.MaxHp;
         CreateHearts();
-        UpdateChargeLevelText();
         UpdateLevelText();
     }
 
     void Update()
     {
         UpdateHearts();
-        UpdateChargeLevelText();
 
         // レベルが変わった時だけ更新
         int currentLevel = ExperienceManager.Instance.PlayerLevel;
-        if(currentLevel != _lastLevel)
+        if (currentLevel != _lastLevel)
         {
             UpdateLevelText();
         }
@@ -62,7 +70,7 @@ public class StatusUI : MonoBehaviour
     }
 
 
-    // ♡を最大HP分生成
+     //♡を最大HP分生成
     private void CreateHearts()
     {
         for (int i = 0; i < _maxHp; i++)
@@ -83,40 +91,40 @@ public class StatusUI : MonoBehaviour
         }
     }
 
+
+
     // 現在HPに応じて♡の表示を更新
     private void UpdateHearts()
     {
+        if (playerHealth == null) return;
+
         int currentHp = (int)playerHealth.CurrentHp;
 
-        for(int i = 0; i < _heartImages.Count; i++)
+        for (int i = 0; i < _heartImages.Count; i++)
         {
-            //現在HP以下のインデックスは赤、それ以外はグレー
-            _heartImages[i].color = i < currentHp ? Color.red : Color.gray;
+            // 現在HP以下のインデックスは表示、それ以外は非表示
+            _heartImages[i].enabled = i < currentHp;
         }
     }
 
     //レベル表示を更新
+    //private void UpdateLevelText()
+    //{
+    //    if (levelText == null) return;
+
+    //    _lastLevel = ExperienceManager.Instance.PlayerLevel;
+    //    levelText.text = $"PlayerLv:{_lastLevel}";
+    //}
     private void UpdateLevelText()
     {
-        if (levelText == null) return;
-
         _lastLevel = ExperienceManager.Instance.PlayerLevel;
-        levelText.text = $"PlayerLv:{_lastLevel}";
+
+        level1000.sprite = numberSprites[(_lastLevel / 1000) % 10];
+        level100.sprite = numberSprites[(_lastLevel / 100) % 10];
+        level10.sprite = numberSprites[(_lastLevel / 10) % 10];
+        level1.sprite = numberSprites[_lastLevel % 10];
     }
 
-    private void UpdateChargeLevelText()
-    {
-        if (chargeLevelText == null) return;
-        if (playerAttack == null) return;
 
-        // チャージ中でないときは非表示にする（任意）
-        if (!playerAttack.IsCharging)
-        {
-            chargeLevelText.text = "ChargeLv: -";
-            return;
-        }
-
-        chargeLevelText.text = $"ChargeLv:{playerAttack.CurrentChargeLevel}";
-    }
 }
 
