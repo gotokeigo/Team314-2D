@@ -64,6 +64,8 @@ public class PlayerController : MonoBehaviour
         {
             SetLookDirection(_moveInput);
         }
+        // 攻撃溜め中ならWalk、それ以外はRun
+        _animator.SetBool("isWalk", _speedMultiplier < 1.0f);
     }
     public void SetSpeedMultiplier(float multiplier)
     {
