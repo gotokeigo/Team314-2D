@@ -107,13 +107,18 @@ public class PlayerAttack : MonoBehaviour
 
         Vector2 attackDirection = GetMouseDirection();
 
-        _playerController.SetLookLock(false);
         _playerController.SetLookDirection(attackDirection);
     }
 
     private void Update()
     {
         if (_playerHealth != null && _playerHealth.IsDead) return;
+
+        if (_isCharging)
+        {
+            Vector2 mouseDir = GetMouseDirection();
+            _playerController.SetLookDirection(mouseDir);
+        }
 
         if (_attackTimer > 0f)
         {

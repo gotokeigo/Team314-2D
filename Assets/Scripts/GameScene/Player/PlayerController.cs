@@ -24,8 +24,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 _moveInput;
     private float _speedMultiplier = 1.0f; //プレイヤー移動速度倍率
     private Animator _animator;
-    private bool _lockLookDirection = false;
-
+   
 
     // 最後に移動した方向（初期値は下向き）
     public Vector2 LastMoveDirection { get; private set; } = Vector2.down;
@@ -58,22 +57,8 @@ public class PlayerController : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        //Vector2 newPosition = _rb.position + _moveInput * moveSpeed * _speedMultiplier * Time.fixedDeltaTime;
-        //_rb.MovePosition(newPosition);
-
-        //// 左右だけ向きを変える
-        //if (_moveInput.x > 0)
-        //{
-        //    modelTransform.localScale = new Vector3(1, 1, 1);   // 右向き
-        //}
-        //else if (_moveInput.x < 0)
-        //{
-        //    modelTransform.localScale = new Vector3(-1, 1, 1);  // 左向き
-        //}
         Vector2 newPosition = _rb.position + _moveInput * moveSpeed * _speedMultiplier * Time.fixedDeltaTime;
         _rb.MovePosition(newPosition);
-
-        if (_lockLookDirection) return;
 
         if (_moveInput != Vector2.zero)
         {
@@ -95,8 +80,5 @@ public class PlayerController : MonoBehaviour
             modelTransform.localScale = new Vector3(-1, 1, 1);
         }
     }
-    public void SetLookLock(bool value)
-    {
-        _lockLookDirection = value;
-    }
+    
 }
