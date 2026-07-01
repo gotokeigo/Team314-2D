@@ -23,15 +23,23 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D _rb;
     private Vector2 _moveInput;
     private float _speedMultiplier = 1.0f; //プレイヤー移動速度倍率
-    private Animator _animator;
-   
+    //private Animator _animator;
+   [SerializeField] private Animator _animator;
 
     // 最後に移動した方向（初期値は下向き）
     public Vector2 LastMoveDirection { get; private set; } = Vector2.down;
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
-         _animator = GetComponentInChildren<Animator>();
+       //  _animator = GetComponentInChildren<Animator>();
+        Animator[] animators = GetComponentsInChildren<Animator>();
+
+        Debug.Log("Animatorの数 = " + animators.Length);
+
+        foreach (Animator a in animators)
+        {
+            Debug.Log(a.gameObject.name);
+        }
     }
     private void OnMove(InputValue value)
     {
