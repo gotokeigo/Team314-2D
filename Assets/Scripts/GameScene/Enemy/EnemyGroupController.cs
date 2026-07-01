@@ -111,6 +111,28 @@ public class EnemyGroupController : MonoBehaviour
             float speedMultiplier = CalcSpeedMultiplier(nearbyCount);
             enemy.SetMoveSpeed(enemy.GetBaseSpeed() * speedMultiplier);
         }
+
+        // ==================== 【ここを書き換えます】 ====================
+        Vector2 groupCenter = CalcGroupCenter(); // グループの現在の中心点
+
+        foreach (EnemyController enemy in _enemies)
+        {
+            if (enemy == null) continue;
+
+            // 敵から見たグループの中心点への方向と距離
+            Vector2 toCenter = groupCenter - (Vector2)enemy.transform.position;
+            float distanceToCenter = toCenter.magnitude;
+
+            // 敵同士の隙間が 2.0 ユニット以上開いてバラバラになっている場合
+            if (distanceToCenter > 2.0f)
+            {
+                // 💡無理やり位置を動かすのをやめて、敵のAIの「目標地点（WanderTarget）」を
+                // 一時的に「グループの中心（groupCenter）」に書き換えて、そっちに向かって歩かせます！
+                enemy.SetWanderTarget(groupCenter);
+            }
+        }
+        // ================================================================
+
     }
 
     // グループの目標地点をランダムに決める
@@ -185,9 +207,11 @@ public class EnemyGroupController : MonoBehaviour
                 }
 
                 otherGroup.Enemies.Clear();
-                // 【修正箇所】Destroyをやめて、ゲームオブジェクトを非表示（無効化）にする
-                otherGroup.gameObject.SetActive(false);
-                //Destroy(otherGroup.gameObject);
+                // 吸収された側のグループが、本当に空っぽ（敵が0体）なら非表示にする
+                if (otherGroup.Enemies.Count == 0)
+                {
+                    otherGroup.gameObject.SetActive(false);
+                }
             }
         }
     }
@@ -201,6 +225,12 @@ public class EnemyGroupController : MonoBehaviour
         {
             if (enemy != null)
             {
+                if (validCount > 0)
+                {
+                    float distFromCurrentAverage = Vector2.Distance(sumPosition / validCount, enemy.transform.position);
+                    if (distFromCurrentAverage > 10f) continue; // ふっとんだ敵は無視して次の敵へ
+                }
+
                 sumPosition += (Vector2)enemy.transform.position;
                 validCount++;
             }
