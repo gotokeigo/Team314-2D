@@ -24,12 +24,14 @@ public class PlayerController : MonoBehaviour
     private Vector2 _moveInput;
     private float _speedMultiplier = 1.0f; //プレイヤー移動速度倍率
     private Animator _animator;
+   
+
     // 最後に移動した方向（初期値は下向き）
     public Vector2 LastMoveDirection { get; private set; } = Vector2.down;
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
-        _animator = GetComponentInChildren<Animator>();
+         _animator = GetComponentInChildren<Animator>();
     }
     private void OnMove(InputValue value)
     {
@@ -58,18 +60,27 @@ public class PlayerController : MonoBehaviour
         Vector2 newPosition = _rb.position + _moveInput * moveSpeed * _speedMultiplier * Time.fixedDeltaTime;
         _rb.MovePosition(newPosition);
 
-        // 左右だけ向きを変える
-        if (_moveInput.x > 0)
+        if (_moveInput != Vector2.zero)
         {
-            modelTransform.localScale = new Vector3(1, 1, 1);   // 右向き
+            SetLookDirection(_moveInput);
         }
-        else if (_moveInput.x < 0)
-        {
-            modelTransform.localScale = new Vector3(-1, 1, 1);  // 左向き
-        }
+        // 攻撃溜め中ならWalk、それ以外はRun
+        _animator.SetBool("isWalk", _speedMultiplier < 1.0f);
     }
     public void SetSpeedMultiplier(float multiplier)
     {
         _speedMultiplier = multiplier;
     }
+    public void SetLookDirection(Vector2 dir)
+    {
+        if (dir.x > 0)
+        {
+            modelTransform.localScale = new Vector3(1, 1, 1);
+        }
+        else if (dir.x < 0)
+        {
+            modelTransform.localScale = new Vector3(-1, 1, 1);
+        }
+    }
+    
 }
