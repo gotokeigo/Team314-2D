@@ -79,6 +79,12 @@ public class PlayerController : MonoBehaviour
     {
         _speedMultiplier = multiplier;
     }
+
+    public void SetCharging(bool charging)
+    {
+        _animator.SetBool("isCharging", charging);
+    }
+
     public void SetLookDirection(Vector2 dir)
     {
         if (dir.x > 0)

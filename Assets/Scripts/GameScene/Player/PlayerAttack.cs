@@ -109,6 +109,7 @@ public class PlayerAttack : MonoBehaviour
         attackRangeObject.SetActive(true);
         _chargeStartTime = Time.time;
         _playerController.SetSpeedMultiplier(chargeSpeedMultiplier);
+        _playerController.SetCharging(true);
 
         Vector2 attackDirection = GetMouseDirection();
 
@@ -171,6 +172,7 @@ public class PlayerAttack : MonoBehaviour
             if (_attackTimer > 0f) return;
             _isCharging = false;
             _playerController.SetSpeedMultiplier(1.0f);
+            _playerController.SetCharging(false);
             float chargeTime = Time.time - _chargeStartTime;
             CurrentChargeLevel = DetermineChargeLevel(chargeTime);
             ChargeLevel chargeLevel = DetermineChargeLevel(chargeTime);

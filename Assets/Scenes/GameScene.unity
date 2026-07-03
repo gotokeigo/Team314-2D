@@ -13057,7 +13057,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   moveSpeed: 5
-  modelTransform: {fileID: 1080305484}
+  modelTransform: {fileID: 312133502}
   _animator: {fileID: 312133505}
 --- !u!114 &2053118864
 MonoBehaviour:
