@@ -1864,7 +1864,10 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: aa8360abe4133164db124fdd268e7104, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 6657659824751683065, guid: b6b4c9d42ebe8354f87ad8b8ab248e21, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 235525052}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b6b4c9d42ebe8354f87ad8b8ab248e21, type: 3}
       insertIndex: -1
@@ -2156,6 +2159,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &235525052 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 58b54d5ecd4cb6541a023be161904e09, type: 3}
+  m_PrefabInstance: {fileID: 1485481625}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &238810861
 GameObject:
   m_ObjectHideFlags: 0
@@ -5248,7 +5256,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &882917860
 Transform:
   m_ObjectHideFlags: 0
@@ -7008,6 +7016,11 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.0949823, y: 6.2770567}
   m_EdgeRadius: 0
+--- !u!4 &1139376360 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6657659824751683065, guid: b6b4c9d42ebe8354f87ad8b8ab248e21, type: 3}
+  m_PrefabInstance: {fileID: 150424174}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1154431324
 GameObject:
   m_ObjectHideFlags: 0
@@ -9289,6 +9302,63 @@ PolygonCollider2D:
       - {x: 1.7653661, y: -2.2973657}
       - {x: 1.426394, y: -1.0375996}
   m_UseDelaunayMesh: 1
+--- !u!1001 &1485481625
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1139376360}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 58b54d5ecd4cb6541a023be161904e09, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 58b54d5ecd4cb6541a023be161904e09, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 58b54d5ecd4cb6541a023be161904e09, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 58b54d5ecd4cb6541a023be161904e09, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 58b54d5ecd4cb6541a023be161904e09, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 58b54d5ecd4cb6541a023be161904e09, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 58b54d5ecd4cb6541a023be161904e09, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 58b54d5ecd4cb6541a023be161904e09, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 58b54d5ecd4cb6541a023be161904e09, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 58b54d5ecd4cb6541a023be161904e09, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 58b54d5ecd4cb6541a023be161904e09, type: 3}
+      propertyPath: m_Name
+      value: Sword_model
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 58b54d5ecd4cb6541a023be161904e09, type: 3}
 --- !u!1 &1491170072
 GameObject:
   m_ObjectHideFlags: 0
