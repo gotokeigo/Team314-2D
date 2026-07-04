@@ -169,17 +169,14 @@ public class PlayerAttack : MonoBehaviour
            
             if (chargeParticles != null)
             {
-                Debug.Log("Particle数 : " + chargeParticles.Length);
+                
                 foreach (ParticleSystem ps in chargeParticles)
                 {
-                    Debug.Log("Pause : " + ps.name);
+                   
                     ps.Pause();
                 }
             }
-            else
-            {
-                Debug.Log("chargeParticles が null");
-            }
+            
         }
         
         float range = smallAttackRange;
@@ -273,11 +270,32 @@ public class PlayerAttack : MonoBehaviour
         Vector2 attackCenter = (Vector2)transform.position + attackDirection * currentRange;
         if (slashEffectPrefab != null)
         {
-            Instantiate(
+            GameObject slash = Instantiate(
                 slashEffectPrefab,
                 transform.position,
                 Quaternion.Euler(0, 0, effectAngle)
             );
+            ParticleSystem[] particles = slash.GetComponentsInChildren<ParticleSystem>();
+
+            foreach (ParticleSystem ps in particles)
+            {
+                var main = ps.main;
+
+                switch (chargeLevel)
+                {
+                    case ChargeLevel.Small:
+                        main.startSize = 25f;
+                        break;
+
+                    case ChargeLevel.Medium:
+                        main.startSize = 35f;
+                        break;
+
+                    case ChargeLevel.Large:
+                        main.startSize = 50f;
+                        break;
+                }
+            }
         }
 
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackCenter, currentRange, enemyLayer);
