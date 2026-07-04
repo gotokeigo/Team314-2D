@@ -80,6 +80,13 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField]
     private AudioClip attackSE;
 
+    [Header("エフェクト")]
+    [SerializeField] private GameObject chargeEffectPrefab;
+    [SerializeField] private GameObject chargeWindPrefab;
+    [SerializeField] private GameObject slashEffectPrefab;
+
+    private GameObject chargeEffectInstance;
+    private GameObject chargeWindInstance;
     public enum ChargeLevel { Small, Medium, Large }
     public ChargeLevel CurrentChargeLevel { get; private set; } = ChargeLevel.Small;
     public bool IsCharging => _isCharging;
@@ -92,7 +99,9 @@ public class PlayerAttack : MonoBehaviour
     private SpriteRenderer _weaponSpriteRenderer;
     private InputAction _attackAction;
     private float _attackTimer = 0f;
-
+    private ParticleSystem[] chargeParticles;
+    private bool maxChargeReached = false;
+    
     private void Awake()
     {
         _playerController = GetComponent<PlayerController>();
@@ -110,6 +119,24 @@ public class PlayerAttack : MonoBehaviour
         _chargeStartTime = Time.time;
         _playerController.SetSpeedMultiplier(chargeSpeedMultiplier);
         _playerController.SetCharging(true);
+        if (chargeEffectPrefab != null && chargeEffectInstance == null)
+        {
+            chargeEffectInstance = Instantiate(
+                chargeEffectPrefab,
+                transform.position,
+                Quaternion.identity,
+                transform
+            );
+            chargeWindInstance = Instantiate(
+             chargeWindPrefab,
+             transform.position,
+             Quaternion.identity,
+             transform
+);
+        }
+
+        chargeParticles = chargeEffectInstance.GetComponentsInChildren<ParticleSystem>();
+        maxChargeReached = false;
 
         Vector2 attackDirection = GetMouseDirection();
 
@@ -135,7 +162,23 @@ public class PlayerAttack : MonoBehaviour
 
         float elapsedTime = Time.time - _chargeStartTime;
         CurrentChargeLevel = DetermineChargeLevel(elapsedTime);
-
+        if (!maxChargeReached &&
+        CurrentChargeLevel == ChargeLevel.Large)
+        {
+            maxChargeReached = true;
+           
+            if (chargeParticles != null)
+            {
+                
+                foreach (ParticleSystem ps in chargeParticles)
+                {
+                   
+                    ps.Pause();
+                }
+            }
+            
+        }
+        
         float range = smallAttackRange;
 
         switch (CurrentChargeLevel)
@@ -173,6 +216,11 @@ public class PlayerAttack : MonoBehaviour
             _isCharging = false;
             _playerController.SetSpeedMultiplier(1.0f);
             _playerController.SetCharging(false);
+            if (chargeEffectInstance != null)
+            {
+                Destroy(chargeEffectInstance);
+            }
+
             float chargeTime = Time.time - _chargeStartTime;
             CurrentChargeLevel = DetermineChargeLevel(chargeTime);
             ChargeLevel chargeLevel = DetermineChargeLevel(chargeTime);
@@ -194,7 +242,8 @@ public class PlayerAttack : MonoBehaviour
         _weaponSpriteRenderer.enabled = true;
 
         audioSource.PlayOneShot(attackSE);
-
+       
+        
         Debug.Log($"チャージレベル: {chargeLevel}");
 
         float currentRange = chargeLevel switch
@@ -214,8 +263,40 @@ public class PlayerAttack : MonoBehaviour
 
         //Vector2 attackDirection = _playerController.LastMoveDirection;
         Vector2 attackDirection = GetMouseDirection();
-
+        float effectAngle = Mathf.Atan2(
+           attackDirection.y,
+            attackDirection.x
+            ) * Mathf.Rad2Deg;
         Vector2 attackCenter = (Vector2)transform.position + attackDirection * currentRange;
+        if (slashEffectPrefab != null)
+        {
+            GameObject slash = Instantiate(
+                slashEffectPrefab,
+                transform.position,
+                Quaternion.Euler(0, 0, effectAngle)
+            );
+            ParticleSystem[] particles = slash.GetComponentsInChildren<ParticleSystem>();
+
+            foreach (ParticleSystem ps in particles)
+            {
+                var main = ps.main;
+
+                switch (chargeLevel)
+                {
+                    case ChargeLevel.Small:
+                        main.startSize = 25f;
+                        break;
+
+                    case ChargeLevel.Medium:
+                        main.startSize = 35f;
+                        break;
+
+                    case ChargeLevel.Large:
+                        main.startSize = 50f;
+                        break;
+                }
+            }
+        }
 
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackCenter, currentRange, enemyLayer);
         List<Collider2D> hitEnemiesInFan = new List<Collider2D>();
@@ -233,7 +314,7 @@ public class PlayerAttack : MonoBehaviour
         int killCount = 0;
 
         foreach (Collider2D enemy in hitEnemiesInFan)
-        {
+        {                   
             // 通常敵への攻撃
             EnemyController enemyController = enemy.GetComponent<EnemyController>();
             if (enemyController != null)

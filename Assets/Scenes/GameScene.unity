@@ -13090,6 +13090,9 @@ MonoBehaviour:
   attackRangeObject: {fileID: 1966885292}
   audioSource: {fileID: 2053118867}
   attackSE: {fileID: 8300000, guid: 286217ec4430d974b93ad76194866e50, type: 3}
+  chargeEffectPrefab: {fileID: 7677013053262124761, guid: bf6559136281e564fab25f6dfc0a249d, type: 3}
+  chargeWindPrefab: {fileID: 5606259899122270309, guid: b9b789a04d34e904aaaa58e55698af9c, type: 3}
+  slashEffectPrefab: {fileID: 3816927504909393319, guid: aeec2a6a728313444a58113644021ea7, type: 3}
 --- !u!114 &2053118865
 MonoBehaviour:
   m_ObjectHideFlags: 0
