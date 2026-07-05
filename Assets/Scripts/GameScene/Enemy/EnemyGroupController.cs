@@ -14,6 +14,7 @@
 //-------------------------------------------------------
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyGroupController : MonoBehaviour
 {
@@ -36,6 +37,19 @@ public class EnemyGroupController : MonoBehaviour
     public bool IsDiscovered => _isDiscovered;
     // --------------------------------------------
 
+    // --- 【新規追記】グループ全体のHPバー設定用の変数 ---
+    [Header("グループHPバー設定")]
+    [Tooltip("作ったHPバーのCanvasプレハブをここに割り当てます")]
+    [SerializeField] private GameObject hpBarPrefab;
+    [Tooltip("一番下にいる敵の足元から、どれだけ位置をずらすかの調整用（Yをマイナスにすると下がります）")]
+    [SerializeField] private Vector2 hpBarOffset = new Vector2(0, -1.0f);
+
+    private float _initialGroupMaxHp = 0f; // 💡 グループ全体の初期最大HPを記憶する変数
+    //private bool _isInitialHpCalculated = false; // 最初の1回だけ計算するためのフラグ
+
+    private GameObject _spawnedHpBar;                      // 画面上に実際に生成されたHPバー
+    private Image _hpBarFillImage;                         // 赤いバー（HealthBar）の残量制御用Image
+
     private Vector2 _groupWanderTarget;                         // グループ共通の目標地点
     private float _groupWanderTimer;                            // 徘徊タイマー
     private Vector2 _groupOrigin;                               // グループの初期位置
@@ -45,20 +59,56 @@ public class EnemyGroupController : MonoBehaviour
 
     private void Start()
     {
-        foreach (EnemyController enemy in GetComponentsInChildren<EnemyController>())
+        _initialGroupMaxHp = 0f; // 初期化
+
+        // ★追加：Spawner から指示された数、またはインスペクターの設定を取得
+        // デフォルト値として、指定がない場合は全員出すようにするためのセーフティ
+        int targetActiveCount = PlayerPrefs.GetInt("NextGroupSize", 4);
+
+        // 一度、子要素の敵をすべてリスト化する
+        List<EnemyController> allChildEnemies = new List<EnemyController>(GetComponentsInChildren<EnemyController>());
+
+
+        // ★追加：指定された数を超えた敵を削除（または非表示）にして、整列を維持する
+        for (int i = 0; i < allChildEnemies.Count; i++)
         {
-            _enemies.Add(enemy);
+            if (i >= targetActiveCount)
+            {
+                Destroy(allChildEnemies[i].gameObject); // あふれた敵は消去
+            }
+            else
+            {
+                _enemies.Add(allChildEnemies[i]);
+                if (allChildEnemies[i] != null)
+                {
+                    _initialGroupMaxHp += allChildEnemies[i].GetMaxHP();
+                }
+            }
         }
 
         // グループの初期位置を記録して最初の目標地点を決める
         _groupOrigin = transform.position;
         _groupWanderTarget = GetNewGroupWanderTarget();
+
+        // --- 【新規追記】ゲーム開始時にHPバーのUIを生成してセットアップ ---
+        if (hpBarPrefab != null && _enemies.Count > 0)
+        {
+            _spawnedHpBar = Instantiate(hpBarPrefab, transform);
+
+            // プレハブの構造「Background/HealthBar」からImageコンポーネントを探す
+            Transform healthBarTransform = _spawnedHpBar.transform.Find("Background/HealthBar");
+            if (healthBarTransform != null)
+            {
+                _hpBarFillImage = healthBarTransform.GetComponent<Image>();
+            }
+        }
+
     }
 
     private void Update()
     {
-        _enemies.RemoveAll(e => e == null);
-
+        //_enemies.RemoveAll(e => e == null);
+        _enemies.RemoveAll(e => e == null || e.GetCurrentHP() <= 0);
         // --- [Git追記] UIの更新処理 ---
         if (countText != null)
         {
@@ -71,7 +121,15 @@ public class EnemyGroupController : MonoBehaviour
         }
         // ----------------------------
 
-        if (_enemies.Count == 0) return;
+        // 敵グループが全滅した場合、HPバーを即座に破棄して処理を抜ける（★修正）
+        if (_enemies.Count == 0)
+        {
+            if (_spawnedHpBar != null) Destroy(_spawnedHpBar);
+            return;
+        }
+
+        // --- 【新規追記】毎フレーム、一番下にいる敵を追跡してHPバーを移動する ---
+        UpdateGroupHPBar();
 
         // --- [Git追記] 近くの別グループを吸収して合流 --
         TryMergeWithNearbyGroups();
@@ -199,6 +257,9 @@ public class EnemyGroupController : MonoBehaviour
                     DiscoverAll();
                 }
 
+                // 💡 吸収する前に、相手のグループの「初期最大HP（分母）」を自分の分母に合算する！
+                this._initialGroupMaxHp += otherGroup._initialGroupMaxHp;
+
                 foreach (EnemyController enemy in otherGroup.Enemies)
                 {
                     if (enemy == null) continue;
@@ -211,6 +272,8 @@ public class EnemyGroupController : MonoBehaviour
                 if (otherGroup.Enemies.Count == 0)
                 {
                     otherGroup.gameObject.SetActive(false);
+                    // 【★ここを追加！】吸収されたグループ側の古いHPバーも画面から綺麗に削除する
+                    if (otherGroup._spawnedHpBar != null) Destroy(otherGroup._spawnedHpBar);
                 }
             }
         }
@@ -238,5 +301,67 @@ public class EnemyGroupController : MonoBehaviour
         return validCount > 0 ? sumPosition / validCount : (Vector2)transform.position;
     }
     // ------------------------------------
+    // --- 【合流完全対応版】合体したグループの最大HPも現在HPもすべて合算する処理 ---
+    private void UpdateGroupHPBar()
+    {
+        // 💡 1. 死んだ敵（nullまたはHPが0以下）をリストから除外
+        _enemies.RemoveAll(enemy => enemy == null || enemy.GetCurrentHP() <= 0);
 
+        // 生き残りが0になったらHPバーを非表示
+        if (_enemies.Count == 0)
+        {
+            if (_spawnedHpBar != null) _spawnedHpBar.SetActive(false);
+            return;
+        }
+
+        if (_spawnedHpBar == null) return;
+        _spawnedHpBar.SetActive(true);
+
+        EnemyController lowestEnemy = null;
+        float lowestY = float.MaxValue;
+
+        // 💡 2. 毎フレーム、今このグループにいる「すべての敵」の最大HPと現在HPをリアルタイムに計算する
+        float currentGroupTotalMaxHp = 0f;
+        float currentGroupTotalCurrentHp = 0f;
+
+        Vector2 groupCenter = CalcGroupCenter();
+
+        foreach (EnemyController enemy in _enemies)
+        {
+            if (enemy == null) continue;
+
+            // 中心から10以上離れて吹っ飛んだ敵は無視
+            float distFromCenter = Vector2.Distance(groupCenter, enemy.transform.position);
+            if (distFromCenter > 10f) continue;
+
+            // 最も低い位置にいる生存している敵を割り出す（バーの追従用）
+            if (enemy.transform.position.y < lowestY)
+            {
+                lowestY = enemy.transform.position.y;
+                lowestEnemy = enemy;
+            }
+
+            // 💡 3. 今リストにいる全敵の最大HPと現在HPをそれぞれ足し合わせる
+            currentGroupTotalMaxHp += enemy.GetMaxHP();
+            currentGroupTotalCurrentHp += enemy.GetCurrentHP();
+        }
+
+        // バーを一番下の敵の座標に配置（Z軸は手前の -5.0f）
+        if (lowestEnemy != null)
+        {
+            Vector3 enemyPos = lowestEnemy.transform.position;
+            Vector3 targetPosition = new Vector3(
+                enemyPos.x + hpBarOffset.x,
+                enemyPos.y + hpBarOffset.y,
+                -5.0f
+            );
+            _spawnedHpBar.transform.position = targetPosition;
+        }
+
+        // 💡 【重要】「今生存している全敵の現在HPの合計」÷「合流分も含めた初期の最大HPの合計」で割合を計算！
+        if (_hpBarFillImage != null && _initialGroupMaxHp > 0)
+        {
+            _hpBarFillImage.fillAmount = currentGroupTotalCurrentHp / _initialGroupMaxHp;
+        }
+    }
 }
