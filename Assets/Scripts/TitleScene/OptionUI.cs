@@ -28,17 +28,16 @@ public class OptionUI : MonoBehaviour
     [SerializeField] private Slider seSlider;
     [SerializeField] private TextMeshProUGUI seValueText;
 
-    //[Header("マウス速度設定")]
-    //[SerializeField] private Slider mouseSpeedSlider;
-    //[SerializeField] private TextMeshProUGUI mouseSpeedValueText;
-
-//    private float _defaultMouseSensitivity = 1f;
 
     private void Start()
     {
         optionPanel.SetActive(false);
 
-        // スライダーの設定
+        // まずリスナーを全部外す
+        bgmSlider.onValueChanged.RemoveAllListeners();
+        seSlider.onValueChanged.RemoveAllListeners();
+
+        // リスナーなしの状態で値を設定
         bgmSlider.minValue = 0;
         bgmSlider.maxValue = 100;
         bgmSlider.wholeNumbers = true;
@@ -52,18 +51,9 @@ public class OptionUI : MonoBehaviour
         UpdateBgmText((int)bgmSlider.value);
         UpdateSeText((int)seSlider.value);
 
-        // スライダーのイベント登録
+        // 値設定後にリスナーを登録
         bgmSlider.onValueChanged.AddListener(OnBgmSliderChanged);
         seSlider.onValueChanged.AddListener(OnSeSliderChanged);
-
-        // マウス速度ボタンのイベント登録
-        //mouseSpeedSlider.minValue = 0;
-        //mouseSpeedSlider.maxValue = 2;
-        //mouseSpeedSlider.wholeNumbers = true;
-        //mouseSpeedSlider.value = 1;     // デフォルトは通常（真ん中）
-        //UpdateMouseSpeedText((int)mouseSpeedSlider.value);
-
-        //mouseSpeedSlider.onValueChanged.AddListener(OnMouseSpeedSliderChanged);
     }
 
     // オプションボタンを押したら呼ぶ
@@ -106,32 +96,5 @@ public class OptionUI : MonoBehaviour
             seValueText.text = value.ToString();
     }
 
-    //---
-    //マウスカーソル速度のオプションはカーソルを仮想カーソルで扱うものにしないといけないため保留
-    //---
-    //private void OnMouseSpeedSliderChanged(float value)
-    //{
-    //    float multiplier = value switch
-    //    {
-    //        0 => 0.5f,  // 1/2倍
-    //        1 => 1.0f,  // 通常
-    //        2 => 2.0f,  // 2倍
-    //        _ => 1.0f
-    //    };
-    //    PlayerPrefs.SetFloat("MouseSpeedMultiplier", multiplier);
-    //    PlayerPrefs.Save();
-    //    UpdateMouseSpeedText((int)value);
-    //}
 
-    //private void UpdateMouseSpeedText(int value)
-    //{
-    //    if (mouseSpeedValueText == null) return;
-    //    mouseSpeedValueText.text = value switch
-    //    {
-    //        0 => "x0.5",
-    //        1 => "x1.0",
-    //        2 => "x2.0",
-    //        _ => "x1.0"
-    //    };
-    //}
 }
