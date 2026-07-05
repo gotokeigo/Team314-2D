@@ -29,6 +29,14 @@ public class EnemySpawner : MonoBehaviour
     [Tooltip("スポーンエリアの何倍離れたら敵を消すか")]
     [SerializeField] private float despawnDistanceMultiplier = 2f;
 
+    // ★追加：1グループあたりの敵の数（初期値は4体）
+    [Header("時間経過・集団数強化設定")]
+    [Tooltip("初期の1グループあたりの敵の数")]
+    [SerializeField] private int enemiesPerGroup = 4;
+    private float _timeTracker = 0f;
+    private float _difficultyInterval = 30f; // 30秒ごとに増加
+
+
     [Header("敵グループPrefab")]
     [Tooltip("スポーンする敵グループのPrefabリスト")]
     [SerializeField] private List<GameObject> enemyGroupPrefabs = new List<GameObject>();
@@ -49,6 +57,15 @@ public class EnemySpawner : MonoBehaviour
     {
         if (enemyGroupPrefabs.Count == 0) return;
 
+        // ★追加：30秒経ったら、グループ内の敵の数を+1する（上限はプレハブ内の最大数）
+        _timeTracker += Time.deltaTime;
+        if (_timeTracker >= _difficultyInterval)
+        {
+            enemiesPerGroup += 1; // 4 ➔ 5 ➔ 6 と増える
+            Debug.Log($"30秒経過：1グループあたりの敵の数が {enemiesPerGroup} 体にアップしました！");
+            _timeTracker = 0f;
+        }
+
         _spawnTimer -= Time.deltaTime;
         if (_spawnTimer <= 0f)
         {
@@ -64,6 +81,10 @@ public class EnemySpawner : MonoBehaviour
 
         Vector2 spawnPos = GetSpawnPosition();
         GameObject prefab = enemyGroupPrefabs[Random.Range(0, enemyGroupPrefabs.Count)];
+
+        // ★追加：生成されるグループの Start() が走る直前に、数を受け渡す
+        PlayerPrefs.SetInt("NextGroupSize", enemiesPerGroup);
+
         Instantiate(prefab, spawnPos, Quaternion.identity);
 
         _currentEnemyCount++;   // グループ単位でカウント

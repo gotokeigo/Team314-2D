@@ -80,6 +80,9 @@ public class EnemyController : MonoBehaviour
     public int Level => level;                      // Experienceからレベルを参照用
     public float GetBaseSpeed() => moveSpeed;   // 基本速度を返す
 
+    // ★ ここを追加！グループからHPを読み取れるようにする窓口
+    public float GetMaxHP() => maxHp;
+    public float GetCurrentHP() => _currentHp;
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
