@@ -1637,8 +1637,6 @@ MonoBehaviour:
   useBounds: 1
   minX: -77
   maxX: 77
-  minY: -34
-  maxY: 34
   minZ: -34
   maxZ: 34
 --- !u!1 &80992269
@@ -2668,11 +2666,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.31303233, y: 0.13184166}
   m_EdgeRadius: 0
---- !u!1 &247995336 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: d4565c145a615f14a927ee348d66232a, type: 3}
-  m_PrefabInstance: {fileID: 1131995004}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &247995337 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d4565c145a615f14a927ee348d66232a, type: 3}
@@ -7816,7 +7809,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 1}
-  m_LocalScale: {x: 190, y: 92.5, z: -1}
+  m_LocalScale: {x: 190, y: 92.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -11958,7 +11951,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1966885293
 Transform:
   m_ObjectHideFlags: 0
@@ -12041,7 +12034,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1966885292}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -13327,11 +13320,7 @@ MonoBehaviour:
   chargeEffectPrefab: {fileID: 7677013053262124761, guid: bf6559136281e564fab25f6dfc0a249d, type: 3}
   chargeWindPrefab: {fileID: 5606259899122270309, guid: b9b789a04d34e904aaaa58e55698af9c, type: 3}
   slashEffectPrefab: {fileID: 3816927504909393319, guid: aeec2a6a728313444a58113644021ea7, type: 3}
-  attackRangeFBX: {fileID: 247995336}
-  attackRangePivot: {fileID: 114695615}
-  smallOffset: 2
-  mediumOffset: 3
-  largeOffset: 4
+  lineRenderer: {fileID: 1966885295}
 --- !u!114 &2053118865
 MonoBehaviour:
   m_ObjectHideFlags: 0

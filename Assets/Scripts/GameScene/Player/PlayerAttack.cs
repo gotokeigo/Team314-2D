@@ -82,12 +82,13 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private GameObject chargeEffectPrefab;
     [SerializeField] private GameObject chargeWindPrefab;
     [SerializeField] private GameObject slashEffectPrefab;
-    [SerializeField] private GameObject attackRangeFBX;
-    [SerializeField] private GameObject attackRangePivot;
-    [SerializeField] private float smallOffset = 2f;
-    [SerializeField] private float mediumOffset = 3f;
-    [SerializeField] private float largeOffset = 4f;
-
+    //[SerializeField] private GameObject attackRangeFBX;
+    //[SerializeField] private GameObject attackRangePivot;
+    //[SerializeField] private float smallOffset = 2f;
+    //[SerializeField] private float mediumOffset = 3f;
+    //[SerializeField] private float largeOffset = 4f;
+    [Header("攻撃範囲表示")]
+    [SerializeField] private LineRenderer lineRenderer;
     private GameObject chargeEffectInstance;
     private GameObject chargeWindInstance;
     public enum ChargeLevel { Small, Medium, Large }
@@ -111,6 +112,7 @@ public class PlayerAttack : MonoBehaviour
         _weaponSpriteRenderer = weaponObject.GetComponent<SpriteRenderer>();
         _attackAction = GetComponent<PlayerInput>().actions["Attack"];
         _playerHealth = GetComponent<PlayerHealth>();
+        lineRenderer.enabled = false;
     }
 
     private void OnAttack(InputValue value)
@@ -118,8 +120,9 @@ public class PlayerAttack : MonoBehaviour
         if (_playerHealth != null && _playerHealth.IsDead) return;
         if (_isAttacking || _isCharging) return;
         _isCharging = true;
-        attackRangeFBX.SetActive(true);
-        attackRangeObject.SetActive(true);
+        //attackRangeFBX.SetActive(true);
+        //attackRangeObject.SetActive(true);
+        lineRenderer.enabled = true;
         _chargeStartTime = Time.time;
         _playerController.SetSpeedMultiplier(chargeSpeedMultiplier);
         _playerController.SetCharging(true);
@@ -169,32 +172,32 @@ public class PlayerAttack : MonoBehaviour
             }
         }
 
-        float offset = smallOffset;
+        //float offset = smallOffset;
 
-        switch (CurrentChargeLevel)
-        {
-            case ChargeLevel.Small:
-                attackRangeFBX.transform.localScale = new Vector3(60f, 60f, 60f);
-                offset = smallOffset;
-                break;
-            case ChargeLevel.Medium:
-                attackRangeFBX.transform.localScale = new Vector3(80f, 80f, 80f);
-                offset = mediumOffset;
-                break;
-            case ChargeLevel.Large:
-                attackRangeFBX.transform.localScale = new Vector3(100f, 100f, 100f);
-                offset = largeOffset;
-                break;
-        }
+        //switch (CurrentChargeLevel)
+        //{
+        //    case ChargeLevel.Small:
+        //        attackRangeFBX.transform.localScale = new Vector3(60f, 60f, 60f);
+        //        offset = smallOffset;
+        //        break;
+        //    case ChargeLevel.Medium:
+        //        attackRangeFBX.transform.localScale = new Vector3(80f, 80f, 80f);
+        //        offset = mediumOffset;
+        //        break;
+        //    case ChargeLevel.Large:
+        //        attackRangeFBX.transform.localScale = new Vector3(100f, 100f, 100f);
+        //        offset = largeOffset;
+        //        break;
+        //}
 
-        attackRangeFBX.transform.localPosition = new Vector3(0, offset, 0);
+        //attackRangeFBX.transform.localPosition = new Vector3(0, offset, 0);
 
         Vector3 dir = GetMouseDirection();
 
         if (dir != Vector3.zero)
         {
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-            attackRangePivot.transform.localRotation = Quaternion.Euler(0f, 0f, angle + 270.0f);
+           // attackRangePivot.transform.localRotation = Quaternion.Euler(0f, 0f, angle + 270.0f);
 
             float range = CurrentChargeLevel switch
             {
@@ -208,8 +211,9 @@ public class PlayerAttack : MonoBehaviour
 
         if (_attackAction.WasReleasedThisFrame())
         {
-            attackRangeFBX.SetActive(false);
-            attackRangeObject.SetActive(false);
+            //  attackRangeFBX.SetActive(false);
+            //  attackRangeObject.SetActive(false);
+            lineRenderer.enabled = false;
             if (_attackTimer > 0f) return;
             _isCharging = false;
             _playerController.SetSpeedMultiplier(1.0f);
@@ -449,18 +453,55 @@ public class PlayerAttack : MonoBehaviour
             _ => smallAttackAngle
         };
 
-        float startAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - attackAngle / 2f;
+        //lineRenderer.positionCount = segments + 2;
+        lineRenderer.positionCount = segments + 3;
+        // プレイヤーの位置
+        lineRenderer.SetPosition(0, transform.position);
 
+        // 扇形の開始角度
+        float baseAngle = Mathf.Atan2(direction.z, direction.x) * Mathf.Rad2Deg;
+        float startAngle = baseAngle - attackAngle / 2f;
+
+        // 扇形を描画
         for (int i = 0; i <= segments; i++)
         {
             float angle = startAngle + attackAngle * i / segments;
             float rad = angle * Mathf.Deg2Rad;
 
-            Vector3 pos = transform.position + new Vector3(
+            Vector3 point = transform.position + new Vector3(
                 Mathf.Cos(rad),
-                Mathf.Sin(rad),
-                0f
+                0f,
+                Mathf.Sin(rad)
             ) * range;
+
+            lineRenderer.SetPosition(i + 1, point);
         }
+        lineRenderer.SetPosition(segments + 2, transform.position);
     }
+    //private void DrawAttackRange(Vector3 direction, float range)
+    //{
+    //    int segments = 30;
+
+    //    float attackAngle = CurrentChargeLevel switch
+    //    {
+    //        ChargeLevel.Small => smallAttackAngle,
+    //        ChargeLevel.Medium => mediumAttackAngle,
+    //        ChargeLevel.Large => largeAttackAngle,
+    //        _ => smallAttackAngle
+    //    };
+
+    //    float startAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - attackAngle / 2f;
+
+    //    for (int i = 0; i <= segments; i++)
+    //    {
+    //        float angle = startAngle + attackAngle * i / segments;
+    //        float rad = angle * Mathf.Deg2Rad;
+
+    //        Vector3 pos = transform.position + new Vector3(
+    //            Mathf.Cos(rad),
+    //            Mathf.Sin(rad),
+    //            0f
+    //        ) * range;
+    //    }
+    //}
 }
