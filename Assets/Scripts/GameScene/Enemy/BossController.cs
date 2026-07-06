@@ -10,6 +10,8 @@
 //  2026/06/11  作成
 //              プロトタイプ。通常敵よりHP・移動速度が高いだけで固有行動なし。
 //
+//  2026/07/06  3D対応。
+//
 //--------------------------------------
 using UnityEngine;
 using System.Collections;
@@ -36,7 +38,7 @@ public class BossController : MonoBehaviour
     private bool _isFalling;
 
     private Transform _player;
-    private Rigidbody2D _rb;
+    private Rigidbody _rb;
     private PlayerHealth _playerHp;
     private float _stopDistance;
 
@@ -45,17 +47,24 @@ public class BossController : MonoBehaviour
 
     private void Start()
     {
-        _rb = GetComponent<Rigidbody2D>();
+        _rb = GetComponent<Rigidbody>();
         _currentHp = maxHp;
 
-        Collider2D bossCol = GetComponent<Collider2D>();
+        Collider bossCol = GetComponent<Collider>();
         GameObject playerObject = GameObject.FindWithTag("Player");
         if (playerObject != null)
         {
             _player = playerObject.transform;
             _playerHp = playerObject.GetComponent<PlayerHealth>();
-            Collider2D playerCol = playerObject.GetComponent<Collider2D>();
-            _stopDistance = bossCol.bounds.extents.x + playerCol.bounds.extents.x;
+            Collider playerCol = playerObject.GetComponent<Collider>();
+            if (bossCol != null && playerCol != null)
+            {
+                _stopDistance = bossCol.bounds.extents.x + playerCol.bounds.extents.x;
+            }
+            else
+            {
+                _stopDistance = 1f;
+            }
         }
         else
         {
@@ -64,8 +73,8 @@ public class BossController : MonoBehaviour
 
         _defaultLayer = gameObject.layer;
         _knockbackLayer = LayerMask.NameToLayer("EnemyKnockback");
-        Physics2D.IgnoreLayerCollision(_knockbackLayer, _defaultLayer, true);
-        Physics2D.IgnoreLayerCollision(_knockbackLayer, _knockbackLayer, true);
+        Physics.IgnoreLayerCollision(_knockbackLayer, _defaultLayer, true);
+        Physics.IgnoreLayerCollision(_knockbackLayer, _knockbackLayer, true);
     }
 
     private void FixedUpdate()
@@ -74,7 +83,7 @@ public class BossController : MonoBehaviour
         if (_isFalling) return;
         if (_playerHp != null && _playerHp.IsDead)
         {
-            _rb.linearVelocity = Vector2.zero;
+            _rb.linearVelocity = Vector3.zero;
             return;
         }
         if (_isKnockedBack) return;
@@ -84,18 +93,18 @@ public class BossController : MonoBehaviour
 
     private void Chase()
     {
-        Vector2 direction = (Vector2)(_player.position - transform.position);
+        Vector3 direction = _player.position - transform.position;
         float distance = direction.magnitude;
         if (distance <= _stopDistance)
         {
             _rb.MovePosition(_rb.position);
             return;
         }
-        Vector2 newPosition = _rb.position + direction.normalized * moveSpeed * Time.fixedDeltaTime;
+        Vector3 newPosition = _rb.position + direction.normalized * moveSpeed * Time.fixedDeltaTime;
         _rb.MovePosition(newPosition);
     }
 
-    private void OnCollisionStay2D(Collision2D collision)
+    private void OnCollisionStay(Collision collision)
     {
         if (_isDead) return;
         if (!collision.gameObject.CompareTag("Player")) return;
@@ -110,7 +119,6 @@ public class BossController : MonoBehaviour
     {
         if (_isDead) return false;
 
-        // プレイヤーが一定レベル以上なら即死
         int playerLevel = ExperienceManager.Instance.PlayerLevel;
         if (playerLevel >= oneHitKillPlayerLevel)
         {
@@ -127,16 +135,16 @@ public class BossController : MonoBehaviour
         return false;
     }
 
-    public void SmallKnockBack(Vector2 direction, float force)
+    public void SmallKnockBack(Vector3 direction, float force)
     {
         if (_isDead) return;
         StartCoroutine(SmallKnockBackCoroutine(direction, force));
     }
 
-    private IEnumerator SmallKnockBackCoroutine(Vector2 direction, float force)
+    private IEnumerator SmallKnockBackCoroutine(Vector3 direction, float force)
     {
         _isKnockedBack = true;
-        _rb.AddForce(direction * force, ForceMode2D.Impulse);
+        _rb.AddForce(direction * force, ForceMode.Impulse);
         yield return new WaitForSeconds(0.1f);
         _isKnockedBack = false;
     }
@@ -145,7 +153,6 @@ public class BossController : MonoBehaviour
     {
         _isDead = true;
 
-        // GameTimerにボス撃破を通知
         GameTimer gameTimer = FindFirstObjectByType<GameTimer>();
         if (gameTimer != null)
         {
@@ -153,13 +160,13 @@ public class BossController : MonoBehaviour
         }
     }
 
-    public void KnockBack(Vector2 direction, float force)
+    public void KnockBack(Vector3 direction, float force)
     {
         _isKnockedBack = true;
-        _rb.linearVelocity = Vector2.zero;
+        _rb.linearVelocity = Vector3.zero;
         _rb.freezeRotation = false;
-        _rb.AddForce(direction * force, ForceMode2D.Impulse);
-        _rb.AddTorque(rotationForce, ForceMode2D.Impulse);
+        _rb.AddForce(direction * force, ForceMode.Impulse);
+        _rb.AddTorque(Vector3.up * rotationForce, ForceMode.Impulse);
         StartCoroutine(KnockBackCoroutine());
     }
 
@@ -173,7 +180,7 @@ public class BossController : MonoBehaviour
         {
             _isKnockedBack = false;
             _rb.freezeRotation = true;
-            _rb.rotation = 0f;
+            _rb.rotation = Quaternion.identity;
             gameObject.layer = _defaultLayer;
         }
     }
@@ -195,9 +202,9 @@ public class BossController : MonoBehaviour
         _isKnockedBack = false;
         StopAllCoroutines();
 
-        _rb.linearVelocity = Vector2.zero;
-        _rb.angularVelocity = 0f;
-        _rb.bodyType = RigidbodyType2D.Kinematic;
+        _rb.linearVelocity = Vector3.zero;
+        _rb.angularVelocity = Vector3.zero;
+        _rb.isKinematic = true;
         _rb.freezeRotation = false;
 
         StartCoroutine(FallAndDestroy());
@@ -208,7 +215,7 @@ public class BossController : MonoBehaviour
         float duration = 1.5f;
         float elapsed = 0f;
         Vector3 startScale = transform.localScale;
-        Vector2 startPos = transform.position;
+        Vector3 startPos = transform.position;
 
         while (elapsed < duration)
         {
@@ -220,7 +227,7 @@ public class BossController : MonoBehaviour
             transform.position = new Vector3(
                 startPos.x,
                 startPos.y - eased * 3f,
-                transform.position.z
+                startPos.z
             );
 
             yield return null;
@@ -228,5 +235,4 @@ public class BossController : MonoBehaviour
 
         Destroy(gameObject);
     }
-
 }

@@ -58,7 +58,7 @@ public class EnemyController : MonoBehaviour
     private bool _isKnockedBack; // 吹き飛んでいるか
     private float _currentHp;    // 敵の現在HP
     private Transform _player;
-    private Rigidbody2D _rb;
+    private Rigidbody _rb;
     private PlayerHealth _playerHp;
     private float _stopDistance;
     private bool _isDead;
@@ -67,7 +67,7 @@ public class EnemyController : MonoBehaviour
 
     //  敵集団管理用
     private bool _isDiscovered;                             // プレイヤーを発見しているか
-    private Vector2 _wanderTarget;                          // さまよう目標地点
+    private Vector3 _wanderTarget;                          // さまよう目標地点
     private float _wanderTimer;                             // さまようタイマー
     private float _currentMoveSpeed;                        // 現在の移動速度（グループから設定される)
 
@@ -85,24 +85,24 @@ public class EnemyController : MonoBehaviour
     public float GetCurrentHP() => _currentHp;
     void Start()
     {
-        _rb = GetComponent<Rigidbody2D>();
+        _rb = GetComponent<Rigidbody>();
         _currentHp = maxHp;                          // 敵の最大HP
 
-        Collider2D enemyCol = GetComponent<Collider2D>();
+        Collider enemyCol = GetComponent<Collider>();
         GameObject playerObject = GameObject.FindWithTag("Player");
         if (playerObject != null)
         {
             _player = playerObject.transform;
             _playerHp = playerObject.GetComponent<PlayerHealth>();
-            Collider2D playerCol = playerObject.GetComponent<Collider2D>();
+            Collider playerCol = playerObject.GetComponent<Collider>();
             _stopDistance = enemyCol.bounds.extents.x + playerCol.bounds.extents.x;
         }
 
 
         _defaultLayer = gameObject.layer;
         _knockbackLayer = LayerMask.NameToLayer("EnemyKnockback");
-        Physics2D.IgnoreLayerCollision(_knockbackLayer, _defaultLayer, true);
-        Physics2D.IgnoreLayerCollision(_knockbackLayer, _knockbackLayer, true);
+        Physics.IgnoreLayerCollision(_knockbackLayer, _defaultLayer, true);
+        Physics.IgnoreLayerCollision(_knockbackLayer, _knockbackLayer, true);
 
         _currentMoveSpeed = moveSpeed;
         _wanderTarget = GetNewWanderTarget();
@@ -114,7 +114,7 @@ public class EnemyController : MonoBehaviour
         if (_isFalling) return;
         if (_playerHp != null && _playerHp.IsDead)
         {
-            _rb.linearVelocity = Vector2.zero;
+            _rb.linearVelocity = Vector3.zero;
             return;
         }
         if (_isKnockedBack) return;
@@ -122,7 +122,7 @@ public class EnemyController : MonoBehaviour
         // 未発見なら自動発見チェック
         if (!_isDiscovered)
         {
-            float distToPlayer = Vector2.Distance(_rb.position, _player.position);
+            float distToPlayer = Vector3.Distance(_rb.position, _player.position);
             if (distToPlayer <= detectionRange)
             {
                 SetDiscovered(true);
@@ -142,32 +142,33 @@ public class EnemyController : MonoBehaviour
     // 追跡処理（既存のFixedUpdateの移動処理を移動）
     private void Chase()
     {
-        Vector2 direction = (Vector2)(_player.position - transform.position);
+        Vector3 direction = (Vector3)(_player.position - transform.position);
         float distance = direction.magnitude;
         if (distance <= _stopDistance)
         {
             _rb.MovePosition(_rb.position);
             return;
         }
-        Vector2 newPosition = _rb.position + direction.normalized * _currentMoveSpeed * Time.fixedDeltaTime;
+        Vector3 newPosition = _rb.position + direction.normalized * _currentMoveSpeed * Time.fixedDeltaTime;
         _rb.MovePosition(newPosition);
     }
 
     // さまよう処理
     private void Wander()
     {
-        Vector2 direction = (_wanderTarget - _rb.position);
+        Vector3 direction = (_wanderTarget - _rb.position);
         if (direction.magnitude <= 0.1f) return;    // 目標地点に着いたら止まって待つ
 
-        Vector2 newPosition = _rb.position + direction.normalized * _currentMoveSpeed * Time.fixedDeltaTime;
+        Vector3 newPosition = _rb.position + direction.normalized * _currentMoveSpeed * Time.fixedDeltaTime;
         _rb.MovePosition(newPosition);
     }
 
     // さまよう目標地点をランダムに決める
-    private Vector2 GetNewWanderTarget()
+    private Vector3 GetNewWanderTarget()
     {
         _wanderTimer = wanderInterval;
-        return _rb.position + Random.insideUnitCircle * wanderRadius;
+        Vector2 randomCircle = Random.insideUnitCircle * wanderRadius;
+        return _rb.position + new Vector3(randomCircle.x, 0f, randomCircle.y);
     }
 
     // グループから発見状態を設定する
@@ -196,7 +197,7 @@ public class EnemyController : MonoBehaviour
 
     public bool IsDiscovered => _isDiscovered;  // グループから参照用
 
-    private void OnCollisionStay2D(Collision2D collision)
+    private void OnCollisionStay(Collision collision)
     {
 
         if (_isDead) return;
@@ -235,26 +236,26 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    public void KnockBack(Vector2 direction, float force)
+    public void KnockBack(Vector3 direction, float force)
     {
         _isKnockedBack = true;
-        _rb.linearVelocity = Vector2.zero;
+        _rb.linearVelocity = Vector3.zero;
         _rb.freezeRotation = false;
-        _rb.AddForce(direction * force, ForceMode2D.Impulse);
-        _rb.AddTorque(rotationForce, ForceMode2D.Impulse);
+        _rb.AddForce(direction * force, ForceMode.Impulse);
+        _rb.AddTorque(Vector3.up * rotationForce, ForceMode.Impulse);
         StartCoroutine(KnockBackCoroutine());
     }
 
-    public void SmallKnockBack(Vector2 direction, float force)
+    public void SmallKnockBack(Vector3 direction, float force)
     {
         if (_isDead) return;
         StartCoroutine(SmallKnockBackCoroutine(direction, force));
     }
 
-    private IEnumerator SmallKnockBackCoroutine(Vector2 direction, float force)
+    private IEnumerator SmallKnockBackCoroutine(Vector3 direction, float force)
     {
         _isKnockedBack = true;
-        _rb.AddForce(direction * force, ForceMode2D.Impulse);
+        _rb.AddForce(direction * force, ForceMode.Impulse);
         yield return new WaitForSeconds(0.1f);  // 追跡を止める時間（Inspectorで調整できないので短めに固定）
         _isKnockedBack = false;
     }
@@ -270,14 +271,14 @@ public class EnemyController : MonoBehaviour
         {
             _isKnockedBack = false;
             _rb.freezeRotation = true;
-            _rb.rotation = 0f;
+            _rb.rotation = Quaternion.identity;
             gameObject.layer = _defaultLayer;
         }
     }
 
     private IEnumerator StunCoroutine(float duration)
     {
-        _rb.linearVelocity = Vector2.zero;
+        _rb.linearVelocity = Vector3.zero;
         yield return new WaitForSeconds(duration);
     }
 
@@ -299,7 +300,7 @@ public class EnemyController : MonoBehaviour
     }
 
     // グループから目標地点を受け取る
-    public void SetWanderTarget(Vector2 target)
+    public void SetWanderTarget(Vector3 target)
     {
         if (_isFalling || _isDead) return;
         _wanderTarget = target;
@@ -315,9 +316,9 @@ public class EnemyController : MonoBehaviour
         _isKnockedBack = false;
         StopAllCoroutines();
 
-        _rb.linearVelocity = Vector2.zero;
-        _rb.angularVelocity = 0f;
-        _rb.bodyType = RigidbodyType2D.Kinematic;
+        _rb.linearVelocity = Vector3.zero;
+        _rb.angularVelocity = Vector3.zero;
+        _rb.isKinematic = true;
         _rb.freezeRotation = false;
 
         StartCoroutine(FallAndDestroy());
@@ -329,7 +330,7 @@ public class EnemyController : MonoBehaviour
         float duration = 1.5f;
         float elapsed = 0f;
         Vector3 startScale = transform.localScale;
-        Vector2 startPos = transform.position;  // Vector2で管理（Z軸を触らない）
+        Vector3 startPos = transform.position;  // Vector2で管理（Z軸を触らない）
 
         while (elapsed < duration)
         {

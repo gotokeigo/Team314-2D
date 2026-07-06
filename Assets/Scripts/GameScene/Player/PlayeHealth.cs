@@ -11,6 +11,7 @@
 //              敵に当たった時にプレイヤーのHPが減り無敵時間を得るようにした。
 //              また、プレイヤーのHPが0になった時に操作を不能にし点滅した後にプレイヤーを消すようにした
 //
+//  2026/07/06  3D対応。
 //
 //--------------------------------------
 using UnityEngine;
@@ -24,21 +25,23 @@ public class PlayerHealth : MonoBehaviour
     private bool _isInvincible;
     private float _currentHp;
     private Renderer _renderer;
-    private Collider2D _playerCollider;
+    private Collider _playerCollider;
     private int _enemyLayer;
     private int _enemyKnockbackLayer;
     public bool IsDead { get; private set; }
     public float MaxHp => maxHp;
     public float CurrentHp => _currentHp;
+
     void Start()
     {
         _currentHp = maxHp;
         IsDead = false;
         _renderer = GetComponentInChildren<Renderer>();
-        _playerCollider = GetComponent<Collider2D>();
+        _playerCollider = GetComponentInChildren<Collider>();
         _enemyLayer = LayerMask.NameToLayer("Enemy");
         _enemyKnockbackLayer = LayerMask.NameToLayer("EnemyKnockback");
     }
+
     public void TakeDamage(float damage)
     {
         if (IsDead || _isInvincible) return;
@@ -52,12 +55,12 @@ public class PlayerHealth : MonoBehaviour
             StartCoroutine(InvincibleCoroutine());
         }
     }
+
     private void Die()
     {
         IsDead = true;
         Debug.Log("Player is Dead");
 
-        // リザルトに渡すデータを保存
         ResultData.FinalLevel = ExperienceManager.Instance.PlayerLevel;
         GameTimer gameTimer = FindFirstObjectByType<GameTimer>();
         if (gameTimer != null)
@@ -65,12 +68,13 @@ public class PlayerHealth : MonoBehaviour
             ResultData.SurvivedTime = gameTimer.CurrentTime;
         }
 
-
-        GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+        Collider col = GetComponentInChildren<Collider>();
+        if (col != null) col.enabled = false;
         GetComponent<PlayerController>().enabled = false;
-        GetComponent<Collider2D>().enabled = false;
+        GetComponent<Collider>().enabled = false;
         StartCoroutine(BlinkAndDestroy());
     }
+
     private IEnumerator BlinkAndDestroy()
     {
         for (int i = 0; i < 4; i++)
@@ -81,18 +85,18 @@ public class PlayerHealth : MonoBehaviour
             yield return new WaitForSeconds(0.2f);
         }
         Destroy(gameObject);
-
         UnityEngine.SceneManagement.SceneManager.LoadScene("ResultScene");
     }
+
     private IEnumerator InvincibleCoroutine()
     {
         _isInvincible = true;
         int playerLayer = gameObject.layer;
-        Physics2D.IgnoreLayerCollision(playerLayer, _enemyLayer, true);
-        Physics2D.IgnoreLayerCollision(playerLayer, _enemyKnockbackLayer, true);
+        Physics.IgnoreLayerCollision(playerLayer, _enemyLayer, true);
+        Physics.IgnoreLayerCollision(playerLayer, _enemyKnockbackLayer, true);
         yield return new WaitForSeconds(invincibleTime);
-        Physics2D.IgnoreLayerCollision(playerLayer, _enemyLayer, false);
-        Physics2D.IgnoreLayerCollision(playerLayer, _enemyKnockbackLayer, false);
+        Physics.IgnoreLayerCollision(playerLayer, _enemyLayer, false);
+        Physics.IgnoreLayerCollision(playerLayer, _enemyKnockbackLayer, false);
         _isInvincible = false;
     }
 }

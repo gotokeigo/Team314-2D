@@ -9,6 +9,7 @@
 //  更新履歴
 //
 //  2026/05/19  作成
+//  2026/07/06  3D対応。
 //
 //-------------------------------------------------------
 using UnityEngine;
@@ -16,16 +17,16 @@ using UnityEngine;
 public class ShoutProjectile : MonoBehaviour
 {
     [Tooltip("シャウトの判定が飛ぶ速度")]
-    [SerializeField] private float speed = 10f;         // 飛ぶ速度
+    [SerializeField] private float speed = 10f;
     [Tooltip("シャウトが消えるまでの時間")]
-    [SerializeField] private float lifeTime = 3f;       // 消えるまでの時間
+    [SerializeField] private float lifeTime = 3f;
 
-    private Vector2 _direction;
-    private Rigidbody2D _rb;
+    private Vector3 _direction;
+    private Rigidbody _rb;
 
     private void Awake()
     {
-        _rb = GetComponent<Rigidbody2D>();
+        _rb = GetComponent<Rigidbody>();
     }
 
     private void Start()
@@ -38,18 +39,16 @@ public class ShoutProjectile : MonoBehaviour
         _rb.MovePosition(_rb.position + _direction * speed * Time.fixedDeltaTime);
     }
 
-    public void SetDirection(Vector2 direction)
+    public void SetDirection(Vector3 direction)
     {
         _direction = direction.normalized;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter(Collider other)
     {
-        // EnemyGroupControllerを持つオブジェクトに当たったらアラート
         EnemyController enemyController = other.GetComponent<EnemyController>();
         if (enemyController != null)
         {
-            // 親のEnemyGroupControllerを探す
             EnemyGroupController group = other.GetComponentInParent<EnemyGroupController>();
             if (group != null)
             {
@@ -57,11 +56,9 @@ public class ShoutProjectile : MonoBehaviour
             }
             else
             {
-                // グループに属していない敵は単体で発見状態に
                 enemyController.SetDiscovered(true);
             }
         }
-
         Destroy(gameObject);
     }
 }

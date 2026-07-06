@@ -9,6 +9,7 @@
 //  更新履歴
 //
 //  2026/05/24  作成
+//  2026/07/06  3D対応。
 //
 //-------------------------------------------------------
 using UnityEngine;
@@ -18,9 +19,9 @@ using UnityEngine.VFX;
 public class PlayerShout : MonoBehaviour
 {
     [Tooltip("声の見た目に使うPrefab")]
-    [SerializeField] private GameObject shoutPrefab;        // 声のPrefab
+    [SerializeField] private GameObject shoutPrefab;
     [Tooltip("クールタイム")]
-    [SerializeField] private float shoutCoolTime = 3f;      // クールタイム
+    [SerializeField] private float shoutCoolTime = 3f;
 
     private PlayerController _playerController;
     private float _coolTimer;
@@ -30,7 +31,6 @@ public class PlayerShout : MonoBehaviour
     private void Awake()
     {
         _playerController = GetComponent<PlayerController>();
-
         _visualEffectObject = new GameObject("ShoutVisualEffect");
         _visualEffect = _visualEffectObject.AddComponent<ShoutVisualEffect>();
     }
@@ -43,20 +43,19 @@ public class PlayerShout : MonoBehaviour
         }
     }
 
-    // Input Systemのキー入力
-    // InputActionで入力された名前(今回だとShout)が呼ばれたときに実行される
     private void OnShout(InputValue value)
     {
         if (_coolTimer > 0f) return;
         _coolTimer = shoutCoolTime;
 
-        Vector2 direction = _playerController.LastMoveDirection;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        Vector3 direction = _playerController.LastMoveDirection;
 
-        GameObject shout = Instantiate(shoutPrefab, transform.position, Quaternion.Euler(0, 0, angle));
+        // XZ平面での角度を計算
+        float angle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+        GameObject shout = Instantiate(shoutPrefab, transform.position, Quaternion.Euler(0, angle, 0));
         shout.GetComponent<ShoutProjectile>().SetDirection(direction);
 
-        // 追加：エフェクト表示
+        // エフェクト表示
         GameObject effectObj = new GameObject("ShoutVisualEffect");
         ShoutVisualEffect effect = effectObj.AddComponent<ShoutVisualEffect>();
         effect.Show(transform.position, direction);

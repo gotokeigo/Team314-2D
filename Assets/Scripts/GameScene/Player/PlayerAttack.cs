@@ -26,6 +26,8 @@
 //
 //  2026/06/22  硬直をやめて生存時に小ノックバックするように変更
 //
+//  2026/07/06  3D対応。
+//
 //--------------------------------------
 using System.Collections;
 using System.Collections.Generic;
@@ -72,19 +74,14 @@ public class PlayerAttack : MonoBehaviour
     [Tooltip("強攻撃の範囲(角度)")]
     [SerializeField] private float largeAttackAngle;
 
-    [SerializeField]
-    private GameObject attackRangeObject;
-
-    [SerializeField]
-    private AudioSource audioSource;
-    [SerializeField]
-    private AudioClip attackSE;
+    [SerializeField] private GameObject attackRangeObject;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip attackSE;
 
     [Header("エフェクト")]
     [SerializeField] private GameObject chargeEffectPrefab;
     [SerializeField] private GameObject chargeWindPrefab;
     [SerializeField] private GameObject slashEffectPrefab;
-   // [SerializeField]private LineRenderer lineRenderer;
     [SerializeField] private GameObject attackRangeFBX;
     [SerializeField] private GameObject attackRangePivot;
     [SerializeField] private float smallOffset = 2f;
@@ -107,14 +104,13 @@ public class PlayerAttack : MonoBehaviour
     private float _attackTimer = 0f;
     private ParticleSystem[] chargeParticles;
     private bool maxChargeReached = false;
-    
+
     private void Awake()
     {
         _playerController = GetComponent<PlayerController>();
         _weaponSpriteRenderer = weaponObject.GetComponent<SpriteRenderer>();
         _attackAction = GetComponent<PlayerInput>().actions["Attack"];
         _playerHealth = GetComponent<PlayerHealth>();
-       // lineRenderer.enabled = false;
     }
 
     private void OnAttack(InputValue value)
@@ -123,32 +119,21 @@ public class PlayerAttack : MonoBehaviour
         if (_isAttacking || _isCharging) return;
         _isCharging = true;
         attackRangeFBX.SetActive(true);
-        //lineRenderer.enabled = true;
         attackRangeObject.SetActive(true);
         _chargeStartTime = Time.time;
         _playerController.SetSpeedMultiplier(chargeSpeedMultiplier);
         _playerController.SetCharging(true);
+
         if (chargeEffectPrefab != null && chargeEffectInstance == null)
         {
-            chargeEffectInstance = Instantiate(
-                chargeEffectPrefab,
-                transform.position,
-                Quaternion.identity,
-                transform
-            );
-            chargeWindInstance = Instantiate(
-             chargeWindPrefab,
-             transform.position,
-             Quaternion.identity,
-             transform
-);
+            chargeEffectInstance = Instantiate(chargeEffectPrefab, transform.position, Quaternion.identity, transform);
+            chargeWindInstance = Instantiate(chargeWindPrefab, transform.position, Quaternion.identity, transform);
         }
 
         chargeParticles = chargeEffectInstance.GetComponentsInChildren<ParticleSystem>();
         maxChargeReached = false;
 
-        Vector2 attackDirection = GetMouseDirection();
-
+        Vector3 attackDirection = GetMouseDirection();
         _playerController.SetLookDirection(attackDirection);
     }
 
@@ -158,7 +143,7 @@ public class PlayerAttack : MonoBehaviour
 
         if (_isCharging)
         {
-            Vector2 mouseDir = GetMouseDirection();
+            Vector3 mouseDir = GetMouseDirection();
             _playerController.SetLookDirection(mouseDir);
         }
 
@@ -171,87 +156,59 @@ public class PlayerAttack : MonoBehaviour
 
         float elapsedTime = Time.time - _chargeStartTime;
         CurrentChargeLevel = DetermineChargeLevel(elapsedTime);
-        if (!maxChargeReached &&
-        CurrentChargeLevel == ChargeLevel.Large)
+
+        if (!maxChargeReached && CurrentChargeLevel == ChargeLevel.Large)
         {
             maxChargeReached = true;
-           
             if (chargeParticles != null)
             {
-                
                 foreach (ParticleSystem ps in chargeParticles)
                 {
-                   
                     ps.Pause();
                 }
             }
-            
-        }
-        
-        float range = smallAttackRange;
-
-        switch (CurrentChargeLevel)
-        {
-            case ChargeLevel.Medium:
-                range = mediumAttackRange;
-                break;
-
-            case ChargeLevel.Large:
-                range = largeAttackRange;
-                break;
         }
 
-        //attackRangeObject.transform.localScale =
-        //    new Vector3(range, range, 1.0f);
         float offset = smallOffset;
 
         switch (CurrentChargeLevel)
         {
             case ChargeLevel.Small:
-                attackRangeFBX.transform.localScale =
-                    new Vector3(60f, 60f, 60f);
+                attackRangeFBX.transform.localScale = new Vector3(60f, 60f, 60f);
                 offset = smallOffset;
                 break;
-
             case ChargeLevel.Medium:
-                attackRangeFBX.transform.localScale =
-                    new Vector3(80f, 80f, 80f);
+                attackRangeFBX.transform.localScale = new Vector3(80f, 80f, 80f);
                 offset = mediumOffset;
                 break;
-
             case ChargeLevel.Large:
-                attackRangeFBX.transform.localScale =
-                    new Vector3(100f, 100f, 100f);
+                attackRangeFBX.transform.localScale = new Vector3(100f, 100f, 100f);
                 offset = largeOffset;
                 break;
         }
 
-        attackRangeFBX.transform.localPosition =
-              new Vector3(0, offset, 0);
+        attackRangeFBX.transform.localPosition = new Vector3(0, offset, 0);
 
-        // Vector2 dir = _playerController.LastMoveDirection;
-        Vector2 dir = GetMouseDirection();
+        Vector3 dir = GetMouseDirection();
 
-        if (dir != Vector2.zero)
+        if (dir != Vector3.zero)
         {
-            //attackRangeObject.transform.localPosition =
-            //    dir.normalized * range;
-            
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            attackRangePivot.transform.localRotation = Quaternion.Euler(0f, 0f, angle + 270.0f);
 
-            attackRangePivot.transform.localRotation =
-                  Quaternion.Euler(0f, 0f, angle + 270.0f);
-
-            //attackRangeObject.transform.localRotation =
-            //    Quaternion.Euler(0f, 0f, angle);
-
+            float range = CurrentChargeLevel switch
+            {
+                ChargeLevel.Small => smallAttackRange,
+                ChargeLevel.Medium => mediumAttackRange,
+                ChargeLevel.Large => largeAttackRange,
+                _ => smallAttackRange
+            };
             DrawAttackRange(dir, range * 1.7f);
         }
 
         if (_attackAction.WasReleasedThisFrame())
         {
             attackRangeFBX.SetActive(false);
-           // lineRenderer.enabled = false;
             attackRangeObject.SetActive(false);
             if (_attackTimer > 0f) return;
             _isCharging = false;
@@ -283,8 +240,7 @@ public class PlayerAttack : MonoBehaviour
         _weaponSpriteRenderer.enabled = true;
 
         audioSource.PlayOneShot(attackSE);
-       
-        
+
         Debug.Log($"チャージレベル: {chargeLevel}");
 
         float currentRange = chargeLevel switch
@@ -302,50 +258,34 @@ public class PlayerAttack : MonoBehaviour
             _ => smallAttackAngle
         };
 
-        //Vector2 attackDirection = _playerController.LastMoveDirection;
-        Vector2 attackDirection = GetMouseDirection();
-        float effectAngle = Mathf.Atan2(
-           attackDirection.y,
-            attackDirection.x
-            ) * Mathf.Rad2Deg;
-        Vector2 attackCenter = (Vector2)transform.position + attackDirection * currentRange;
+        Vector3 attackDirection = GetMouseDirection();
+        float effectAngle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
+        Vector3 attackCenter = transform.position + attackDirection * currentRange;
+
         if (slashEffectPrefab != null)
         {
-            GameObject slash = Instantiate(
-                slashEffectPrefab,
-                transform.position,
-                Quaternion.Euler(0, 0, effectAngle)
-            );
+            GameObject slash = Instantiate(slashEffectPrefab, transform.position, Quaternion.Euler(0, 0, effectAngle));
             ParticleSystem[] particles = slash.GetComponentsInChildren<ParticleSystem>();
 
             foreach (ParticleSystem ps in particles)
             {
                 var main = ps.main;
-
                 switch (chargeLevel)
                 {
-                    case ChargeLevel.Small:
-                        main.startSize = 25f;
-                        break;
-
-                    case ChargeLevel.Medium:
-                        main.startSize = 35f;
-                        break;
-
-                    case ChargeLevel.Large:
-                        main.startSize = 50f;
-                        break;
+                    case ChargeLevel.Small: main.startSize = 25f; break;
+                    case ChargeLevel.Medium: main.startSize = 35f; break;
+                    case ChargeLevel.Large: main.startSize = 50f; break;
                 }
             }
         }
 
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackCenter, currentRange, enemyLayer);
-        List<Collider2D> hitEnemiesInFan = new List<Collider2D>();
+        Collider[] hitEnemies = Physics.OverlapSphere(attackCenter, currentRange, enemyLayer);
+        List<Collider> hitEnemiesInFan = new List<Collider>();
 
-        foreach (Collider2D enemy in hitEnemies)
+        foreach (Collider enemy in hitEnemies)
         {
-            Vector2 dirToEnemy = (enemy.transform.position - transform.position).normalized;
-            float angle = Vector2.Angle(attackDirection, dirToEnemy);
+            Vector3 dirToEnemy = (enemy.transform.position - transform.position).normalized;
+            float angle = Vector3.Angle(attackDirection, dirToEnemy);
             if (angle <= currentAngle / 2f)
             {
                 hitEnemiesInFan.Add(enemy);
@@ -354,9 +294,8 @@ public class PlayerAttack : MonoBehaviour
 
         int killCount = 0;
 
-        foreach (Collider2D enemy in hitEnemiesInFan)
-        {                   
-            // 通常敵への攻撃
+        foreach (Collider enemy in hitEnemiesInFan)
+        {
             EnemyController enemyController = enemy.GetComponent<EnemyController>();
             if (enemyController != null)
             {
@@ -364,21 +303,18 @@ public class PlayerAttack : MonoBehaviour
                 bool died = enemyController.TakeDamage(damage);
                 if (died)
                 {
-                    // 死亡時は強くノックバック
-                    Vector2 knockBackDirection = (enemy.transform.position - transform.position).normalized;
+                    Vector3 knockBackDirection = (enemy.transform.position - transform.position).normalized;
                     enemyController.KnockBack(knockBackDirection, knockbackForce);
                     killCount++;
                 }
                 else
                 {
-                    // 生存時は小ノックバック
-                    Vector2 knockBackDirection = (enemy.transform.position - transform.position).normalized;
+                    Vector3 knockBackDirection = (enemy.transform.position - transform.position).normalized;
                     enemyController.SmallKnockBack(knockBackDirection, hitKnockbackForce);
                 }
                 continue;
             }
 
-            // ボスへの攻撃
             BossController bossController = enemy.GetComponent<BossController>();
             if (bossController != null)
             {
@@ -386,14 +322,12 @@ public class PlayerAttack : MonoBehaviour
                 bool died = bossController.TakeDamage(damage);
                 if (died)
                 {
-                    // 死亡時は強くノックバック
-                    Vector2 knockBackDirection = (enemy.transform.position - transform.position).normalized;
+                    Vector3 knockBackDirection = (enemy.transform.position - transform.position).normalized;
                     bossController.KnockBack(knockBackDirection, knockbackForce);
                 }
                 else
                 {
-                    // 生存時は小ノックバック
-                    Vector2 knockBackDirection = (enemy.transform.position - transform.position).normalized;
+                    Vector3 knockBackDirection = (enemy.transform.position - transform.position).normalized;
                     bossController.SmallKnockBack(knockBackDirection, hitKnockbackForce);
                 }
             }
@@ -413,11 +347,9 @@ public class PlayerAttack : MonoBehaviour
         {
             case ChargeLevel.Small:
                 return enemy.MaxHp / 2f;
-
             case ChargeLevel.Medium:
             case ChargeLevel.Large:
                 return ExperienceManager.Instance.PlayerAttackPower;
-
             default:
                 return enemy.MaxHp / 2f;
         }
@@ -429,11 +361,9 @@ public class PlayerAttack : MonoBehaviour
         {
             case ChargeLevel.Small:
                 return boss.MaxHp / 2f;
-
             case ChargeLevel.Medium:
             case ChargeLevel.Large:
                 return ExperienceManager.Instance.PlayerAttackPower;
-
             default:
                 return boss.MaxHp / 2f;
         }
@@ -441,8 +371,7 @@ public class PlayerAttack : MonoBehaviour
 
     private IEnumerator HideBat(float range)
     {
-        // Vector2 attackDirection = _playerController.LastMoveDirection;
-        Vector2 attackDirection = GetMouseDirection();
+        Vector3 attackDirection = GetMouseDirection();
 
         float baseAngle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
         float startAngle = baseAngle + 90f;
@@ -456,52 +385,59 @@ public class PlayerAttack : MonoBehaviour
             float t = elapsed / swingDuration;
             float currentAngle = Mathf.Lerp(startAngle, endAngle, t);
             float rad = currentAngle * Mathf.Deg2Rad;
-            weaponObject.transform.localPosition = new Vector2(
+            weaponObject.transform.localPosition = new Vector3(
                 Mathf.Cos(rad) * range,
-                Mathf.Sin(rad) * range
+                Mathf.Sin(rad) * range,
+                0f
             );
             weaponObject.transform.rotation = Quaternion.Euler(0, 0, currentAngle);
             yield return null;
-            
         }
 
         _weaponSpriteRenderer.enabled = false;
         _isAttacking = false;
         CurrentChargeLevel = ChargeLevel.Small;
-        //_playerController.lookMode = PlayerController.LookMode.Move;
     }
 
     private void OnDrawGizmos()
     {
         if (_playerController == null) return;
-        // Vector2 attackDirection = _playerController.LastMoveDirection;
-        Vector2 attackDirection = GetMouseDirection();
+        Vector3 attackDirection = GetMouseDirection();
 
         DrawFanGizmo(attackDirection, smallAttackRange, smallAttackAngle, Color.red);
         DrawFanGizmo(attackDirection, mediumAttackRange, mediumAttackAngle, Color.yellow);
         DrawFanGizmo(attackDirection, largeAttackRange, largeAttackAngle, Color.green);
     }
 
-    private void DrawFanGizmo(Vector2 attackDirection, float range, float angle, Color color)
+    private void DrawFanGizmo(Vector3 attackDirection, float range, float angle, Color color)
     {
         Gizmos.color = color;
         float halfAngle = angle / 2f;
-        Vector3 leftDir = Quaternion.Euler(0, 0, halfAngle) * (Vector3)attackDirection;
-        Vector3 rightDir = Quaternion.Euler(0, 0, -halfAngle) * (Vector3)attackDirection;
+        Vector3 leftDir = Quaternion.Euler(0, 0, halfAngle) * attackDirection;
+        Vector3 rightDir = Quaternion.Euler(0, 0, -halfAngle) * attackDirection;
         Gizmos.DrawLine(transform.position, transform.position + leftDir * range * 2f);
         Gizmos.DrawLine(transform.position, transform.position + rightDir * range * 2f);
     }
-    private Vector2 GetMouseDirection()
+
+    private Vector3 GetMouseDirection()
     {
         Vector3 mousePos = Mouse.current.position.ReadValue();
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
 
-        // スクリーン座標 → ワールド座標
-        mousePos = Camera.main.ScreenToWorldPoint(mousePos);
-        mousePos.z = 0;
+        // Y=プレイヤーのY座標の平面との交点を取る
+        Plane groundPlane = new Plane(Vector3.up, new Vector3(0, transform.position.y, 0));
 
-        return (mousePos - transform.position).normalized;
+        if (groundPlane.Raycast(ray, out float distance))
+        {
+            Vector3 worldPos = ray.GetPoint(distance);
+            worldPos.y = transform.position.y;
+            return (worldPos - transform.position).normalized;
+        }
+
+        return transform.forward;
     }
-    private void DrawAttackRange(Vector2 direction, float range)
+
+    private void DrawAttackRange(Vector3 direction, float range)
     {
         int segments = 30;
 
@@ -513,13 +449,7 @@ public class PlayerAttack : MonoBehaviour
             _ => smallAttackAngle
         };
 
-       // lineRenderer.positionCount = segments + 3;
-
-       // lineRenderer.SetPosition(0, transform.position);
-
-        float startAngle =
-            Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg
-            - attackAngle / 2f;
+        float startAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - attackAngle / 2f;
 
         for (int i = 0; i <= segments; i++)
         {
@@ -531,9 +461,6 @@ public class PlayerAttack : MonoBehaviour
                 Mathf.Sin(rad),
                 0f
             ) * range;
-
-            //lineRenderer.SetPosition(i + 1, pos);
-            //lineRenderer.SetPosition(lineRenderer.positionCount - 1, transform.position);
         }
     }
 }
