@@ -241,6 +241,7 @@ public class EnemyController : MonoBehaviour
         _isKnockedBack = true;
         _rb.linearVelocity = Vector3.zero;
         _rb.freezeRotation = false;
+        _rb.linearDamping = 0f;    // ノックバック中はDampingをオフ
         _rb.AddForce(direction * force, ForceMode.Impulse);
         _rb.AddTorque(Vector3.up * rotationForce, ForceMode.Impulse);
         StartCoroutine(KnockBackCoroutine());
@@ -263,15 +264,14 @@ public class EnemyController : MonoBehaviour
     private IEnumerator KnockBackCoroutine()
     {
         gameObject.layer = _knockbackLayer;
-
         yield return new WaitForSeconds(0.3f);
 
-        // 死亡していたら吹き飛び状態のまま画面外まで飛ばし続ける
         if (!_isDead)
         {
             _isKnockedBack = false;
             _rb.freezeRotation = true;
             _rb.rotation = Quaternion.identity;
+            _rb.linearDamping = 10f;    // 元に戻す
             gameObject.layer = _defaultLayer;
         }
     }
