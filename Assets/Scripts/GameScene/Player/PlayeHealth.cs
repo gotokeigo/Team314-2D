@@ -28,6 +28,7 @@ public class PlayerHealth : MonoBehaviour
     private Collider _playerCollider;
     private int _enemyLayer;
     private int _enemyKnockbackLayer;
+    private PlayerController _playerController;
     public bool IsDead { get; private set; }
     public float MaxHp => maxHp;
     public float CurrentHp => _currentHp;
@@ -38,6 +39,7 @@ public class PlayerHealth : MonoBehaviour
         IsDead = false;
         _renderer = GetComponentInChildren<Renderer>();
         _playerCollider = GetComponentInChildren<Collider>();
+        _playerController = GetComponent<PlayerController>();
         _enemyLayer = LayerMask.NameToLayer("Enemy");
         _enemyKnockbackLayer = LayerMask.NameToLayer("EnemyKnockback");
     }
@@ -46,6 +48,10 @@ public class PlayerHealth : MonoBehaviour
     {
         if (IsDead || _isInvincible) return;
         _currentHp -= damage;
+
+        // 被弾モーション再生
+        _playerController.PlayHitAnimation();
+
         if (_currentHp <= 0)
         {
             Die();

@@ -262,6 +262,8 @@ public class PlayerAttack : MonoBehaviour
             _ => smallAttackAngle
         };
 
+
+
         Vector3 attackDirection = GetMouseDirection();
         float effectAngle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
         Vector3 attackCenter = transform.position + attackDirection * currentRange;
