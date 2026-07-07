@@ -99,4 +99,8 @@ public class PlayerController : MonoBehaviour
             modelTransform.localScale = new Vector3(-1, 1, 1);
         }
     }
+    public void PlayHitAnimation()
+    {
+        _animator.SetTrigger("isHit");
+    }
 }
