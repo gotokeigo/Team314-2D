@@ -103,4 +103,8 @@ public class PlayerController : MonoBehaviour
     {
         _animator.SetTrigger("isHit");
     }
+    public void PlayAttackAnimation()
+    {
+        _animator.SetTrigger("isAttack");
+    }
 }
