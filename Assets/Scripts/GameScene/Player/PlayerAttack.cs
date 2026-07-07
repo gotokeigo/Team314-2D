@@ -270,7 +270,14 @@ public class PlayerAttack : MonoBehaviour
 
         if (slashEffectPrefab != null)
         {
-            GameObject slash = Instantiate(slashEffectPrefab, transform.position, Quaternion.Euler(0, 0, effectAngle));
+            Quaternion rotation = Quaternion.LookRotation(attackDirection, Vector3.up);
+
+            GameObject slash = Instantiate(
+                slashEffectPrefab,
+                transform.position,
+                rotation
+            );
+
             ParticleSystem[] particles = slash.GetComponentsInChildren<ParticleSystem>();
 
             foreach (ParticleSystem ps in particles)
@@ -278,12 +285,35 @@ public class PlayerAttack : MonoBehaviour
                 var main = ps.main;
                 switch (chargeLevel)
                 {
-                    case ChargeLevel.Small: main.startSize = 25f; break;
-                    case ChargeLevel.Medium: main.startSize = 35f; break;
-                    case ChargeLevel.Large: main.startSize = 50f; break;
+                    case ChargeLevel.Small:
+                        main.startSize = 25f;
+                        break;
+                    case ChargeLevel.Medium:
+                        main.startSize = 35f;
+                        break;
+                    case ChargeLevel.Large:
+                        main.startSize = 50f;
+                        break;
                 }
             }
         }
+
+        //if (slashEffectPrefab != null)
+        //{
+        //    GameObject slash = Instantiate(slashEffectPrefab, transform.position, Quaternion.Euler(0, 0, effectAngle));
+        //    ParticleSystem[] particles = slash.GetComponentsInChildren<ParticleSystem>();
+
+        //    foreach (ParticleSystem ps in particles)
+        //    {
+        //        var main = ps.main;
+        //        switch (chargeLevel)
+        //        {
+        //            case ChargeLevel.Small: main.startSize = 25f; break;
+        //            case ChargeLevel.Medium: main.startSize = 35f; break;
+        //            case ChargeLevel.Large: main.startSize = 50f; break;
+        //        }
+        //    }
+        //}
 
         Collider[] hitEnemies = Physics.OverlapSphere(attackCenter, currentRange, enemyLayer);
         List<Collider> hitEnemiesInFan = new List<Collider>();
