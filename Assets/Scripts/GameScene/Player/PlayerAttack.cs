@@ -240,6 +240,8 @@ public class PlayerAttack : MonoBehaviour
 
     private void Attack(ChargeLevel chargeLevel)
     {
+         _playerController.PlayAttackAnimation();
+
         _isAttacking = true;
         _weaponSpriteRenderer.enabled = true;
 
