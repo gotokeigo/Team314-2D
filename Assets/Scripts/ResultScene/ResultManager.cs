@@ -20,4 +20,8 @@ public class ResultManager : MonoBehaviour
     {
         SceneManager.LoadScene("TitleScene");
     }
+    public void OnClickRetry()
+    {
+        SceneManager.LoadScene("GameScene");
+    }
 }
