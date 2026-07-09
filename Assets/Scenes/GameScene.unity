@@ -18991,6 +18991,7 @@ GameObject:
   - component: {fileID: 2053118866}
   - component: {fileID: 2053118867}
   - component: {fileID: 2053118869}
+  - component: {fileID: 2053118870}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -19295,6 +19296,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2053118870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2053118854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8d303232ca8b87479f30dbca19e75f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerWallEffect
+  wallEffectPrefab: {fileID: 3433135150538591156, guid: 30cf2895a8910bd4a8270d866e43cdd6, type: 3}
+  effectLifeTime: 1
+  effectOffset: {x: 0, y: -8, z: -2}
 --- !u!4 &2059559029 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4896971307864747113, guid: fc86cb41c7719554b90bfc4f08ea552f, type: 3}
