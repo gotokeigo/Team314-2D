@@ -13,8 +13,9 @@ GameObject:
   - component: {fileID: 5130151624116716246}
   - component: {fileID: -6893134519760515463}
   - component: {fileID: 3489477913892946319}
+  - component: {fileID: -1440708514846714521}
   m_Layer: 3
-  m_Name: Boss
+  m_Name: Boss1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -122,6 +123,28 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4.3817835, y: 1, z: 1}
   m_Center: {x: 0.0001707077, y: 2, z: 0}
+--- !u!95 &-1440708514846714521
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4032952339765419896}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5aa918ed38474354ea4b0fdae8741068, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &6858007861860591947
 PrefabInstance:
   m_ObjectHideFlags: 0

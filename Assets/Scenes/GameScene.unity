@@ -6434,6 +6434,8 @@ MonoBehaviour:
   enemiesPerGroup: 4
   enemyGroupPrefabs:
   - {fileID: 3389243784592188378, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
+  - {fileID: 3389243784592188378, guid: 672d773ff3414e44ebbd486dec2354ca, type: 3}
+  - {fileID: 3389243784592188378, guid: c517b02f13ad91b4ea95ed8fcbee4ead, type: 3}
 --- !u!4 &1260249308 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b9d9af87822dd1d4b8289edad31e5620, type: 3}
