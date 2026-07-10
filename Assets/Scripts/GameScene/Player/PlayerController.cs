@@ -67,8 +67,11 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector3 newPosition = _rb.position + _moveInput * moveSpeed * _speedMultiplier * Time.fixedDeltaTime;
-        _rb.MovePosition(newPosition);
+        _rb.linearVelocity = new Vector3(
+            _moveInput.x * moveSpeed * _speedMultiplier,
+            _rb.linearVelocity.y,
+            _moveInput.z * moveSpeed * _speedMultiplier
+        );
 
         if (_moveInput != Vector3.zero)
         {
@@ -77,7 +80,6 @@ public class PlayerController : MonoBehaviour
 
         _animator.SetBool("isWalk", _speedMultiplier < 1.0f);
     }
-
     public void SetSpeedMultiplier(float multiplier)
     {
         _speedMultiplier = multiplier;
