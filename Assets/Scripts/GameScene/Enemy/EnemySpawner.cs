@@ -122,7 +122,7 @@ public class EnemySpawner : MonoBehaviour
             if (biasDir == Vector3.zero)
             {
                 Vector2 circle = Random.insideUnitCircle * spawnAreaSize;
-                randomOffset = new Vector3(circle.x, 0f, circle.y);
+                randomOffset = new Vector3(circle.x, -2.6f, circle.y);
             }
             else
             {
