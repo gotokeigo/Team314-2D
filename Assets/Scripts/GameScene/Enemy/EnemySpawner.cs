@@ -81,13 +81,14 @@ public class EnemySpawner : MonoBehaviour
         if (_currentEnemyCount >= enemyGroupMaxCount) return;
 
         Vector3 spawnPos = GetSpawnPosition();
-        spawnPos.y = spawnY;    // フィールドのY座標に合わせて固定（必要に応じて変更）
+
+        // 有効な位置が見つからなかった場合はスポーンしない
+        if (float.IsInfinity(spawnPos.x)) return;
+
+        spawnPos.y = spawnY;
         GameObject prefab = enemyGroupPrefabs[Random.Range(0, enemyGroupPrefabs.Count)];
-
         PlayerPrefs.SetInt("NextGroupSize", enemiesPerGroup);
-
         Instantiate(prefab, spawnPos, Quaternion.identity);
-
         _currentEnemyCount++;
     }
 
@@ -122,7 +123,7 @@ public class EnemySpawner : MonoBehaviour
             if (biasDir == Vector3.zero)
             {
                 Vector2 circle = Random.insideUnitCircle * spawnAreaSize;
-                randomOffset = new Vector3(circle.x, -2.6f, circle.y);
+                randomOffset = new Vector3(circle.x, circle.y,0 );
             }
             else
             {
@@ -141,8 +142,16 @@ public class EnemySpawner : MonoBehaviour
             }
         }
 
+        // フォールバックもFieldチェックする
         Vector3 fallbackDir = biasDir == Vector3.zero ? Vector3.forward : -biasDir;
-        return transform.position + fallbackDir * spawnAreaSize;
+        Vector3 fallbackPos = transform.position + fallbackDir * spawnAreaSize;
+
+        if (IsInsideField(fallbackPos))
+        {
+            return fallbackPos;
+        }
+
+        return Vector3.positiveInfinity;  // フィールド外なのでスポーンしない
     }
 
     private bool IsInsideField(Vector3 pos)
