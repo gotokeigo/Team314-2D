@@ -29,6 +29,8 @@ public class PlayerHealth : MonoBehaviour
     private int _enemyLayer;
     private int _enemyKnockbackLayer;
     private PlayerController _playerController;
+    [Tooltip("被弾エフェクト")]
+    [SerializeField] private GameObject hitEffectPrefab;
     public bool IsDead { get; private set; }
     public float MaxHp => maxHp;
     public float CurrentHp => _currentHp;
@@ -48,6 +50,12 @@ public class PlayerHealth : MonoBehaviour
     {
         if (IsDead || _isInvincible) return;
         _currentHp -= damage;
+
+        // ヒットエフェクト表示
+        if (hitEffectPrefab != null)
+        {
+            Instantiate(hitEffectPrefab, transform.position, Quaternion.identity);
+        }
 
         // 被弾モーション再生
         _playerController.PlayHitAnimation();
