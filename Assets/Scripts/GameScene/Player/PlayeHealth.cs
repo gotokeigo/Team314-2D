@@ -67,6 +67,7 @@ public class PlayerHealth : MonoBehaviour
         IsDead = true;
         Debug.Log("Player is Dead");
 
+
         ResultData.FinalLevel = ExperienceManager.Instance.PlayerLevel;
         GameTimer gameTimer = FindFirstObjectByType<GameTimer>();
         if (gameTimer != null)
@@ -90,8 +91,16 @@ public class PlayerHealth : MonoBehaviour
             _renderer.enabled = true;
             yield return new WaitForSeconds(0.2f);
         }
+
+
+        int minutes = (int)(ResultData.SurvivedTime / 60f);
+        int seconds = (int)(ResultData.SurvivedTime % 60f);
+
         Destroy(gameObject);
-        UnityEngine.SceneManagement.SceneManager.LoadScene("ResultScene");
+        if (minutes < 10)
+            UnityEngine.SceneManagement.SceneManager.LoadScene("GameOverScene");
+        else
+            UnityEngine.SceneManagement.SceneManager.LoadScene("GameClearScene");
     }
 
     private IEnumerator InvincibleCoroutine()
