@@ -240,7 +240,10 @@ public class PlayerAttack : MonoBehaviour
 
     private void Attack(ChargeLevel chargeLevel)
     {
-         _playerController.PlayAttackAnimation();
+        Vector3 attackeirection = GetMouseDirection();
+        _playerController.SetLookDirection(attackeirection);
+
+        _playerController.PlayAttackAnimation();
 
         _isAttacking = true;
         _weaponSpriteRenderer.enabled = true;

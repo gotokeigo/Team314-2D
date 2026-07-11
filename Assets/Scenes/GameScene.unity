@@ -10894,6 +10894,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHp: 3
   invincibleTime: 2
+  hitEffectPrefab: {fileID: 1111599548697017563, guid: e60d99d7e4dd2ae4590a49255c558c49, type: 3}
 --- !u!114 &2053118863
 MonoBehaviour:
   m_ObjectHideFlags: 0

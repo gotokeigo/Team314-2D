@@ -101,6 +101,15 @@ public class PlayerController : MonoBehaviour
             modelTransform.localScale = new Vector3(-1, 1, 1);
         }
     }
+    //public void SetLookDirection(Vector3 dir)
+    //{
+    //    dir.y = 0f;
+
+    //    if (dir.sqrMagnitude > 0.001f)
+    //    {
+    //        modelTransform.rotation = Quaternion.LookRotation(dir);
+    //    }
+    //}
     public void PlayHitAnimation()
     {
         _animator.SetTrigger("isHit");
