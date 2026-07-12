@@ -90,26 +90,27 @@ public class PlayerController : MonoBehaviour
         _animator.SetBool("isCharging", charging);
     }
 
-    public void SetLookDirection(Vector3 dir)
-    {
-        if (dir.x > 0)
-        {
-            modelTransform.localScale = new Vector3(1, 1, 1);
-        }
-        else if (dir.x < 0)
-        {
-            modelTransform.localScale = new Vector3(-1, 1, 1);
-        }
-    }
     //public void SetLookDirection(Vector3 dir)
     //{
-    //    dir.y = 0f;
-
-    //    if (dir.sqrMagnitude > 0.001f)
+    //    if (dir.x > 0)
     //    {
-    //        modelTransform.rotation = Quaternion.LookRotation(dir);
+    //        modelTransform.localScale = new Vector3(1, 1, 1);
+    //    }
+    //    else if (dir.x < 0)
+    //    {
+    //        modelTransform.localScale = new Vector3(-1, 1, 1);
     //    }
     //}
+    
+    public void SetLookDirection(Vector3 dir)
+    {
+        dir.y = 0;
+
+        if (dir != Vector3.zero)
+        {
+            modelTransform.forward = dir.normalized;
+        }
+    }
     public void PlayHitAnimation()
     {
         _animator.SetTrigger("isHit");
