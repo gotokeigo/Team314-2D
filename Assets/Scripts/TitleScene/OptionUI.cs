@@ -12,6 +12,7 @@
 //--------------------------------------
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 
 public class OptionUI : MonoBehaviour
@@ -50,6 +51,15 @@ public class OptionUI : MonoBehaviour
         // 値設定後にリスナーを登録
         bgmSlider.onValueChanged.AddListener(OnBgmSliderChanged);
         seSlider.onValueChanged.AddListener(OnSeSliderChanged);
+
+        // SEスライダーのPointerUp
+        seSlider.gameObject.AddComponent<EventTrigger>();
+        EventTrigger seTrigger = seSlider.GetComponent<EventTrigger>();
+        EventTrigger.Entry seEntry = new EventTrigger.Entry();
+        seEntry.eventID = EventTriggerType.PointerUp;
+        seEntry.callback.AddListener((data) => titleManager?.PlayButtonSE());
+        seTrigger.triggers.Add(seEntry);
+
     }
 
     // オプションボタンを押したら呼ぶ
@@ -79,6 +89,4 @@ public class OptionUI : MonoBehaviour
         seSlider.value = intValue;
         AudioManager.Instance.SetSeVolume(intValue);
     }
-
-
 }
