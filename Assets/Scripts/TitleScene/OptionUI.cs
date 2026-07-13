@@ -22,12 +22,11 @@ public class OptionUI : MonoBehaviour
 
     [Header("BGM設定")]
     [SerializeField] private Slider bgmSlider;
-    [SerializeField] private TextMeshProUGUI bgmValueText;
 
     [Header("SE設定")]
     [SerializeField] private Slider seSlider;
-    [SerializeField] private TextMeshProUGUI seValueText;
 
+    [SerializeField]private TitleManager titleManager;
 
     private void Start()
     {
@@ -48,9 +47,6 @@ public class OptionUI : MonoBehaviour
         seSlider.wholeNumbers = true;
         seSlider.value = AudioManager.Instance.SeVolume;
 
-        UpdateBgmText((int)bgmSlider.value);
-        UpdateSeText((int)seSlider.value);
-
         // 値設定後にリスナーを登録
         bgmSlider.onValueChanged.AddListener(OnBgmSliderChanged);
         seSlider.onValueChanged.AddListener(OnSeSliderChanged);
@@ -59,12 +55,14 @@ public class OptionUI : MonoBehaviour
     // オプションボタンを押したら呼ぶ
     public void OpenOption()
     {
+        titleManager.PlayButtonSE();
         optionPanel.SetActive(true);
     }
 
     // 閉じるボタンを押したら呼ぶ
     public void CloseOption()
     {
+        titleManager.PlayButtonSE();
         optionPanel.SetActive(false);
     }
 
@@ -73,7 +71,6 @@ public class OptionUI : MonoBehaviour
         int intValue = Mathf.RoundToInt(value / 10f) * 10;  // 10刻みに丸める
         bgmSlider.value = intValue;
         AudioManager.Instance.SetBgmVolume(intValue);
-        UpdateBgmText(intValue);
     }
 
     private void OnSeSliderChanged(float value)
@@ -81,19 +78,6 @@ public class OptionUI : MonoBehaviour
         int intValue = Mathf.RoundToInt(value / 10f) * 10;
         seSlider.value = intValue;
         AudioManager.Instance.SetSeVolume(intValue);
-        UpdateSeText(intValue);
-    }
-
-    private void UpdateBgmText(int value)
-    {
-        if (bgmValueText != null)
-            bgmValueText.text = value.ToString();
-    }
-
-    private void UpdateSeText(int value)
-    {
-        if (seValueText != null)
-            seValueText.text = value.ToString();
     }
 
 

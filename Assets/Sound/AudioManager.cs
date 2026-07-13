@@ -43,8 +43,8 @@ public class AudioManager:MonoBehaviour
     public void SetBgmVolume(int value)
     {
         _bgmVolume = Mathf.Clamp(value, 0, 100);
-        // AudioMixerはdB単位なので変換(0は-80dB,100は0dB)
-        float db = _bgmVolume == 0 ? -80f : Mathf.Log10(-BgmVolume / 100f) * 20f;
+        float db = _bgmVolume == 0 ? -80f : Mathf.Log10(_bgmVolume / 100f) * 20f;
+        Debug.Log($"BGM value: {_bgmVolume}, db: {db}");
         audioMixer.SetFloat("BGMVolume", db);
     }
 
