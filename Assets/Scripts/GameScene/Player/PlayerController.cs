@@ -40,6 +40,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        modelTransform.rotation = Quaternion.Euler(-30f, -180f, 0f);
+    }
+
+
     private void OnMove(InputValue value)
     {
         Vector3 input = value.Get<Vector3>();                       
@@ -102,15 +108,15 @@ public class PlayerController : MonoBehaviour
     //    }
     //}
     
-    public void SetLookDirection(Vector3 dir)
+public void SetLookDirection(Vector3 dir)
+{
+    dir.y = 0;
+    if (dir != Vector3.zero)
     {
-        dir.y = 0;
-
-        if (dir != Vector3.zero)
-        {
-            modelTransform.forward = dir.normalized;
-        }
+        float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
+        modelTransform.rotation = Quaternion.Euler(0f, angle, 0f);
     }
+}
     public void PlayHitAnimation()
     {
         _animator.SetTrigger("isHit");
