@@ -19,9 +19,16 @@ public class ResultManager : MonoBehaviour
 {
     [Tooltip("ボタン選択時のSE")]
     [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioSource bgmAudioSource;
     [SerializeField] private AudioClip buttonSE;
+    [SerializeField] private AudioClip ResultBGM;
 
     private bool _isTransitioning = false;
+
+    private void Start()
+    {
+        PlayResultBGM();
+    }
 
     public void OnClickBackTitle()
     {
@@ -49,6 +56,15 @@ public class ResultManager : MonoBehaviour
         if (audioSource != null && buttonSE != null)
         {
             audioSource.PlayOneShot(buttonSE);
+        }
+    }
+    private void PlayResultBGM()
+    {
+        if (bgmAudioSource != null && ResultBGM != null)
+        {
+            bgmAudioSource.clip = ResultBGM;
+            bgmAudioSource.loop = true;
+            bgmAudioSource.Play();
         }
     }
 }

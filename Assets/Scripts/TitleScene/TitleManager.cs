@@ -20,11 +20,19 @@ public class TitleManager : MonoBehaviour
 {
     [Tooltip("オプションパネルのGameObject")]
     [SerializeField] private GameObject optionPanel;
-    [Tooltip("ボタン選択時のSE")]
+
     [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioSource bgmAudioSource;
+
     [SerializeField] private AudioClip buttonSE;
+    [SerializeField] private AudioClip TitleBGM;
 
     private bool _isTransitioning = false;  // 遷移中フラグ
+
+    private void Start()
+    {
+        PlayTitleBGM();
+    }
 
     public void OnClickGameStart()
     {
@@ -55,11 +63,20 @@ public class TitleManager : MonoBehaviour
         optionPanel.SetActive(true);
     }
 
-    private void PlayButtonSE()
+    public void PlayButtonSE()
     {
         if (audioSource != null && buttonSE != null)
         {
             audioSource.PlayOneShot(buttonSE);
+        }
+    }
+    private void PlayTitleBGM()
+    {
+        if (bgmAudioSource != null && TitleBGM != null)
+        {
+            bgmAudioSource.clip = TitleBGM;
+            bgmAudioSource.loop = true;
+            bgmAudioSource.Play();
         }
     }
 }
