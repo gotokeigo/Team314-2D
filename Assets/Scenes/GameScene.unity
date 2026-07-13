@@ -171,6 +171,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rose_a_map (14)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -458,6 +462,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
       propertyPath: m_Name
       value: Rose_a_map (22)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1036,7 +1044,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 806299973999219435, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 806299973999219435, guid: d68c4362856911e46948519ebfe434eb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Name
@@ -1044,11 +1056,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1200,6 +1216,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
       propertyPath: m_Name
       value: Rose_a_map (19)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1376,6 +1396,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rose_a_map (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1511,7 +1535,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 806299973999219435, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 806299973999219435, guid: d68c4362856911e46948519ebfe434eb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Name
@@ -1519,11 +1547,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2344,6 +2376,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rose_a_map (16)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2400,6 +2436,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
       propertyPath: m_Name
       value: Rose_a_map (26)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2495,7 +2535,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 806299973999219435, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 806299973999219435, guid: d68c4362856911e46948519ebfe434eb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Name
@@ -2503,11 +2547,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2985,7 +3033,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 806299973999219435, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 806299973999219435, guid: d68c4362856911e46948519ebfe434eb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Name
@@ -2993,11 +3045,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3464,6 +3520,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rose_a_map (24)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3696,6 +3756,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rose_a_map (30)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3752,6 +3816,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
       propertyPath: m_Name
       value: Rose_a_map (10)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3903,6 +3971,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
       propertyPath: m_Name
       value: Rose_a_map (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4157,7 +4229,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 806299973999219435, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 806299973999219435, guid: d68c4362856911e46948519ebfe434eb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Name
@@ -4165,11 +4241,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4336,6 +4416,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
       propertyPath: m_Name
       value: Rose_a_map (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4505,6 +4589,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 848182236}
+  - component: {fileID: 848182237}
   m_Layer: 9
   m_Name: Map
   m_TagString: Untagged
@@ -4579,6 +4664,38 @@ Transform:
   - {fileID: 1406653057}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &848182237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 848182235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
+  m_SerializedVersion: 0
+  m_AgentTypeID: -1372625422
+  m_CollectObjects: 2
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.5
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: 5c43cbd34871280479b52d15fbbdcba8, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1001 &878831524
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6082,6 +6199,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rose_a_map (25)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6210,6 +6331,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
       propertyPath: m_Name
       value: Rose_a_map (23)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6411,6 +6536,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rose_a_map (17)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6494,6 +6623,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
       propertyPath: m_Name
       value: Rose_a_map (27)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6626,6 +6759,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
       propertyPath: m_Name
       value: Rose_a_map (13)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6830,6 +6967,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rose_a_map (18)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7025,6 +7166,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
       propertyPath: m_Name
       value: Rose_a_map (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7582,7 +7727,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 806299973999219435, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 806299973999219435, guid: d68c4362856911e46948519ebfe434eb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Name
@@ -7590,11 +7739,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7729,6 +7882,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
       propertyPath: m_Name
       value: Rose_a_map (28)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8086,6 +8243,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
       propertyPath: m_Name
       value: Rose_a_map (21)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8701,6 +8862,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rose_a_map (12)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9011,71 +9176,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1596135917}
   m_CullTransparentMesh: 1
---- !u!1001 &1600633801
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 3389243784592188378, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_Name
-      value: EnemyGroup
-      objectReference: {fileID: 0}
-    - target: {fileID: 4507359851746653484, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -6
-      objectReference: {fileID: 0}
-    - target: {fileID: 4507359851746653484, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.00000022413406
-      objectReference: {fileID: 0}
-    - target: {fileID: 4507359851746653484, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -20
-      objectReference: {fileID: 0}
-    - target: {fileID: 4507359851746653484, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4507359851746653484, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4507359851746653484, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4507359851746653484, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4507359851746653484, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4507359851746653484, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4507359851746653484, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6379138236375012093, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.66
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 3201366655758617660, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-    - {fileID: 532276758845845184, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-    - {fileID: 6820707793777042373, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-    - {fileID: 3491583236482247761, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
 --- !u!1001 &1602474330
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9662,6 +9762,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rose_a_map (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9824,6 +9928,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
       propertyPath: m_Name
       value: Rose_a_map (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10235,6 +10343,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rose_a_map
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10292,6 +10404,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rose_a_map (29)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10348,6 +10464,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
       propertyPath: m_Name
       value: Rose_a_map (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10573,67 +10693,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.1801567, y: 1.777205, z: 12.127322}
   m_Center: {x: -0.0000024437911, y: -0.000000029802322, z: -0.000004529953}
---- !u!1001 &1919857339
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 3389243784592188378, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_Name
-      value: EnemyGroup (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 4507359851746653484, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4507359851746653484, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.00000075670687
-      objectReference: {fileID: 0}
-    - target: {fileID: 4507359851746653484, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 15.970084
-      objectReference: {fileID: 0}
-    - target: {fileID: 4507359851746653484, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4507359851746653484, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4507359851746653484, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4507359851746653484, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4507359851746653484, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4507359851746653484, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4507359851746653484, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 3201366655758617660, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-    - {fileID: 532276758845845184, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-    - {fileID: 6820707793777042373, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-    - {fileID: 3491583236482247761, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 2d9a4417238977a419950fd606ee21a0, type: 3}
 --- !u!1 &1921361479 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 54993a9536bda084cb792c8e4a624662, type: 3}
@@ -10758,6 +10817,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
       propertyPath: m_Name
       value: Rose_a_map (15)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -11167,6 +11230,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rose_a_map (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11292,7 +11359,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 806299973999219435, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 806299973999219435, guid: d68c4362856911e46948519ebfe434eb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Name
@@ -11300,11 +11371,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -11418,7 +11493,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 806299973999219435, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 806299973999219435, guid: d68c4362856911e46948519ebfe434eb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Name
@@ -11426,11 +11505,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -11832,6 +11915,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rose_a_map (20)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11926,7 +12013,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 806299973999219435, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 806299973999219435, guid: d68c4362856911e46948519ebfe434eb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Name
@@ -11934,11 +12025,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d68c4362856911e46948519ebfe434eb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12002,6 +12097,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rose_a_map (9)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12059,6 +12158,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rose_a_map (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c75c413204f900248959a80722fc0b95, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12110,5 +12213,3 @@ SceneRoots:
   - {fileID: 710872132}
   - {fileID: 1024492159}
   - {fileID: 878831524}
-  - {fileID: 1600633801}
-  - {fileID: 1919857339}
