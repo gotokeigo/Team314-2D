@@ -29,7 +29,8 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.InputSystem.Processors;
-
+using UnityEngine.AI; // ★追加
+[RequireComponent(typeof(NavMeshAgent))] // ★追加
 public class EnemyController : MonoBehaviour
 {
     [Header("敵のステータス設定")]
@@ -54,6 +55,7 @@ public class EnemyController : MonoBehaviour
     [Tooltip("次の目標地点を決める間隔")]
     [SerializeField] private float wanderInterval = 2f;     // 次の目標地点を決める間隔
 
+    private NavMeshAgent _agent; // ★追加
     private float _attackTimer;
     private bool _isKnockedBack; // 吹き飛んでいるか
     private float _currentHp;    // 敵の現在HP
@@ -86,7 +88,14 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
+        _agent = GetComponent<NavMeshAgent>(); // ★追加
         _currentHp = maxHp;                          // 敵の最大HP
+
+        // ★追加：AIの速度を設定
+        if (_agent != null)
+        {
+            _agent.speed = moveSpeed;
+        }
 
         Collider enemyCol = GetComponent<Collider>();
         GameObject playerObject = GameObject.FindWithTag("Player");
@@ -96,6 +105,8 @@ public class EnemyController : MonoBehaviour
             _playerHp = playerObject.GetComponent<PlayerHealth>();
             Collider playerCol = playerObject.GetComponent<Collider>();
             _stopDistance = enemyCol.bounds.extents.x + playerCol.bounds.extents.x;
+
+            if (_agent != null) _agent.stoppingDistance = _stopDistance;
         }
 
 
@@ -106,14 +117,23 @@ public class EnemyController : MonoBehaviour
 
         _currentMoveSpeed = moveSpeed;
         _wanderTarget = GetNewWanderTarget();
-    }
 
+        if (_agent != null)
+        {
+            _agent.updatePosition = false;
+            _agent.updateRotation = false;
+        }
+
+        _agent.enabled = true;
+        
+    }
     void FixedUpdate()
     {
-        if (_player == null || _rb == null) return;
+        if (_player == null || _agent == null) return;
         if (_isFalling) return;
         if (_playerHp != null && _playerHp.IsDead)
         {
+            if (_agent.isOnNavMesh) _agent.isStopped = true;
             _rb.linearVelocity = Vector3.zero;
             return;
         }
@@ -142,25 +162,41 @@ public class EnemyController : MonoBehaviour
     // 追跡処理（既存のFixedUpdateの移動処理を移動）
     private void Chase()
     {
-        Vector3 direction = (Vector3)(_player.position - transform.position);
-        float distance = direction.magnitude;
-        if (distance <= _stopDistance)
+        if (_agent.isOnNavMesh)
         {
-            _rb.MovePosition(_rb.position);
-            return;
+            _agent.stoppingDistance = _stopDistance;
+            _agent.SetDestination(_player.position);
+
+            // ★修正：desiredVelocityではなく、AIの「次の経路のポイント（steeringTarget）」への方向を計算する
+            Vector3 targetDirection = _agent.steeringTarget - transform.position;
+            targetDirection.y = 0; // 上下方向の移動は無視する
+
+            Vector3 direction = targetDirection.normalized;
+
+            // 障害物を避ける方向へ、Rigidbodyの物理で実際に移動させる
+            Vector3 newPosition = _rb.position + direction * _currentMoveSpeed * Time.fixedDeltaTime;
+            _rb.MovePosition(newPosition);
         }
-        Vector3 newPosition = _rb.position + direction.normalized * _currentMoveSpeed * Time.fixedDeltaTime;
-        _rb.MovePosition(newPosition);
     }
 
     // さまよう処理
     private void Wander()
     {
-        Vector3 direction = (_wanderTarget - _rb.position);
-        if (direction.magnitude <= 0.1f) return;    // 目標地点に着いたら止まって待つ
+        if (_agent.isOnNavMesh)
+        {
+            _agent.stoppingDistance = 0f;
+            _agent.SetDestination(_wanderTarget);
 
-        Vector3 newPosition = _rb.position + direction.normalized * _currentMoveSpeed * Time.fixedDeltaTime;
-        _rb.MovePosition(newPosition);
+            // ★修正：こちらも同様に、AIが導き出した次のポイントへの方向を計算する
+            Vector3 targetDirection = _agent.steeringTarget - transform.position;
+            targetDirection.y = 0; // 上下方向の移動は無視する
+
+            Vector3 direction = targetDirection.normalized;
+
+            // 障害物を避ける方向へ、Rigidbodyの物理で実際に移動させる
+            Vector3 newPosition = _rb.position + direction * _currentMoveSpeed * Time.fixedDeltaTime;
+            _rb.MovePosition(newPosition);
+        }
     }
 
     // さまよう目標地点をランダムに決める
@@ -228,6 +264,8 @@ public class EnemyController : MonoBehaviour
     {
         _isDead = true;
 
+        if (_agent.isOnNavMesh) _agent.isStopped = true;
+
         // 発見状態だった場合は通知
         if (_isDiscovered)
         {
@@ -239,6 +277,7 @@ public class EnemyController : MonoBehaviour
     public void KnockBack(Vector3 direction, float force)
     {
         _isKnockedBack = true;
+        if (_agent.isOnNavMesh) _agent.isStopped = true;
         _rb.linearVelocity = Vector3.zero;
         _rb.freezeRotation = false;
         _rb.linearDamping = 0f;    // ノックバック中はDampingをオフ
@@ -256,9 +295,11 @@ public class EnemyController : MonoBehaviour
     private IEnumerator SmallKnockBackCoroutine(Vector3 direction, float force)
     {
         _isKnockedBack = true;
+        if (_agent.isOnNavMesh) _agent.isStopped = true;
         _rb.AddForce(direction * force, ForceMode.Impulse);
         yield return new WaitForSeconds(0.1f);  // 追跡を止める時間（Inspectorで調整できないので短めに固定）
         _isKnockedBack = false;
+        if (_agent.isOnNavMesh && !_isDead) _agent.isStopped = false;
     }
 
     private IEnumerator KnockBackCoroutine()
@@ -273,6 +314,7 @@ public class EnemyController : MonoBehaviour
             _rb.rotation = Quaternion.identity;
             _rb.linearDamping = 10f;    // 元に戻す
             gameObject.layer = _defaultLayer;
+            if (_agent.isOnNavMesh) _agent.isStopped = false;
         }
     }
 
@@ -315,6 +357,8 @@ public class EnemyController : MonoBehaviour
         _isDead = true;
         _isKnockedBack = false;
         StopAllCoroutines();
+
+        if (_agent != null) _agent.enabled = false;
 
         _rb.linearVelocity = Vector3.zero;
         _rb.angularVelocity = Vector3.zero;

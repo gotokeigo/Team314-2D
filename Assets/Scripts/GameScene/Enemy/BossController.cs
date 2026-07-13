@@ -15,7 +15,9 @@
 //--------------------------------------
 using UnityEngine;
 using System.Collections;
+using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent))] // ★追加
 public class BossController : MonoBehaviour
 {
     [Header("基本設定")]
@@ -29,6 +31,7 @@ public class BossController : MonoBehaviour
     [SerializeField] private float rotationForce = 5f;
     [Tooltip("このレベル以上のプレイヤーはボスをワンパンできる")]
     [SerializeField] private int oneHitKillPlayerLevel = 10;
+
 
     public float MaxHp => maxHp;
 
@@ -45,10 +48,20 @@ public class BossController : MonoBehaviour
     private int _defaultLayer;
     private int _knockbackLayer;
 
+    private NavMeshAgent _agent; // ★追加
+
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
+        _agent = GetComponent<NavMeshAgent>(); // ★追加
         _currentHp = maxHp;
+
+        // ★追加：AIの速度と回転速度を設定
+        if (_agent != null)
+        {
+            _agent.speed = moveSpeed;
+            _agent.angularSpeed = 120f;
+        }
 
         Collider bossCol = GetComponent<Collider>();
         GameObject playerObject = GameObject.FindWithTag("Player");
@@ -65,6 +78,9 @@ public class BossController : MonoBehaviour
             {
                 _stopDistance = 1f;
             }
+
+            // ★追加：AIの停止距離をセット
+            if (_agent != null) _agent.stoppingDistance = _stopDistance;
         }
         else
         {
@@ -79,11 +95,11 @@ public class BossController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_player == null || _rb == null) return;
+        if (_player == null || _agent == null) return; // ★ _rb から _agent に変更
         if (_isFalling) return;
         if (_playerHp != null && _playerHp.IsDead)
         {
-            _rb.linearVelocity = Vector3.zero;
+            if (_agent.isOnNavMesh) _agent.isStopped = true; // ★追加：追跡を停止
             return;
         }
         if (_isKnockedBack) return;
@@ -93,15 +109,10 @@ public class BossController : MonoBehaviour
 
     private void Chase()
     {
-        Vector3 direction = _player.position - transform.position;
-        float distance = direction.magnitude;
-        if (distance <= _stopDistance)
+        if (_agent.isOnNavMesh)
         {
-            _rb.MovePosition(_rb.position);
-            return;
+            _agent.SetDestination(_player.position);
         }
-        Vector3 newPosition = _rb.position + direction.normalized * moveSpeed * Time.fixedDeltaTime;
-        _rb.MovePosition(newPosition);
     }
 
     private void OnCollisionStay(Collision collision)
@@ -144,14 +155,21 @@ public class BossController : MonoBehaviour
     private IEnumerator SmallKnockBackCoroutine(Vector3 direction, float force)
     {
         _isKnockedBack = true;
+        // ★追加：ノックバック開始時にAIを一時停止
+        if (_agent.isOnNavMesh) _agent.isStopped = true;
         _rb.AddForce(direction * force, ForceMode.Impulse);
         yield return new WaitForSeconds(0.1f);
         _isKnockedBack = false;
+        // ★追加：生きていればAIを再開
+        if (_agent.isOnNavMesh && !_isDead) _agent.isStopped = false;
     }
 
     private void Die()
     {
         _isDead = true;
+
+        // ★追加：死亡時にAIを停止
+        if (_agent.isOnNavMesh) _agent.isStopped = true;
 
         // 【修正】自分自身ではなく、子要素（boss_idou_motion）からAnimatorを取得する
         Animator anim = GetComponentInChildren<Animator>();
@@ -170,6 +188,8 @@ public class BossController : MonoBehaviour
     public void KnockBack(Vector3 direction, float force)
     {
         _isKnockedBack = true;
+        // ★追加：大きなノックバック開始時にもAIを一時停止
+        if (_agent.isOnNavMesh) _agent.isStopped = true;
         _rb.linearVelocity = Vector3.zero;
         _rb.freezeRotation = false;
         _rb.AddForce(direction * force, ForceMode.Impulse);
@@ -189,6 +209,9 @@ public class BossController : MonoBehaviour
             _rb.freezeRotation = true;
             _rb.rotation = Quaternion.identity;
             gameObject.layer = _defaultLayer;
+
+            // ★追加：生きて復帰したらAIを再開
+            if (_agent.isOnNavMesh) _agent.isStopped = false;
         }
     }
 
@@ -208,6 +231,9 @@ public class BossController : MonoBehaviour
         _isDead = true;
         _isKnockedBack = false;
         StopAllCoroutines();
+
+        // ★追加：落下が始まったらAIの機能自体を完全にOFFにする
+        if (_agent != null) _agent.enabled = false;
 
         _rb.linearVelocity = Vector3.zero;
         _rb.angularVelocity = Vector3.zero;
