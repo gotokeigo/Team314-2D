@@ -153,6 +153,13 @@ public class BossController : MonoBehaviour
     {
         _isDead = true;
 
+        // 【修正】自分自身ではなく、子要素（boss_idou_motion）からAnimatorを取得する
+        Animator anim = GetComponentInChildren<Animator>();
+        if (anim != null)
+        {
+            anim.SetTrigger("Die");
+        }
+
         GameTimer gameTimer = FindFirstObjectByType<GameTimer>();
         if (gameTimer != null)
         {
