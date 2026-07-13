@@ -34,6 +34,8 @@ using UnityEngine.AI; // ★追加
 public class EnemyController : MonoBehaviour
 {
     [Header("敵のステータス設定")]
+    [Tooltip("死んだときのSE")] // ★追加
+    [SerializeField] private AudioClip deathSound; // ★追加
     [Tooltip("敵の移動速度")]
     [SerializeField] private float moveSpeed;       //  移動速度
     [Tooltip("プレイヤーに接触したときにプレイヤーに与えるダメージ")]
@@ -263,6 +265,11 @@ public class EnemyController : MonoBehaviour
     private void Die()
     {
         _isDead = true;
+
+        if (deathSound != null)
+        {
+            AudioSource.PlayClipAtPoint(deathSound, transform.position,1.0f);
+        }
 
         if (_agent.isOnNavMesh) _agent.isStopped = true;
 

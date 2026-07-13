@@ -516,6 +516,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4006b09034ebf742b32a02154f6bb73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+  deathSound: {fileID: 8300000, guid: 042f373e8404ecc47a9049f3a31e7346, type: 3}
   moveSpeed: 1
   attackDamage: 1
   attackInterval: 1
@@ -815,6 +816,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4006b09034ebf742b32a02154f6bb73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+  deathSound: {fileID: 8300000, guid: 042f373e8404ecc47a9049f3a31e7346, type: 3}
   moveSpeed: 1
   attackDamage: 1
   attackInterval: 1
@@ -1114,6 +1116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4006b09034ebf742b32a02154f6bb73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+  deathSound: {fileID: 8300000, guid: 042f373e8404ecc47a9049f3a31e7346, type: 3}
   moveSpeed: 1
   attackDamage: 1
   attackInterval: 1
@@ -1413,6 +1416,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4006b09034ebf742b32a02154f6bb73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+  deathSound: {fileID: 8300000, guid: 042f373e8404ecc47a9049f3a31e7346, type: 3}
   moveSpeed: 1
   attackDamage: 1
   attackInterval: 1
@@ -1712,6 +1716,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4006b09034ebf742b32a02154f6bb73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+  deathSound: {fileID: 8300000, guid: 042f373e8404ecc47a9049f3a31e7346, type: 3}
   moveSpeed: 1
   attackDamage: 1
   attackInterval: 1
@@ -2011,6 +2016,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4006b09034ebf742b32a02154f6bb73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+  deathSound: {fileID: 8300000, guid: 042f373e8404ecc47a9049f3a31e7346, type: 3}
   moveSpeed: 1
   attackDamage: 1
   attackInterval: 1
@@ -2310,6 +2316,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4006b09034ebf742b32a02154f6bb73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+  deathSound: {fileID: 8300000, guid: 042f373e8404ecc47a9049f3a31e7346, type: 3}
   moveSpeed: 1
   attackDamage: 1
   attackInterval: 1
@@ -2609,6 +2616,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4006b09034ebf742b32a02154f6bb73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+  deathSound: {fileID: 8300000, guid: 042f373e8404ecc47a9049f3a31e7346, type: 3}
   moveSpeed: 1
   attackDamage: 1
   attackInterval: 1
