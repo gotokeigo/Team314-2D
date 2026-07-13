@@ -31,6 +31,10 @@ public class PlayerHealth : MonoBehaviour
     private PlayerController _playerController;
     [Tooltip("被弾エフェクト")]
     [SerializeField] private GameObject hitEffectPrefab;
+    [Header("SE")]
+    [SerializeField] private AudioSource audioSource;
+
+    [SerializeField] private AudioClip hitSE;
     public bool IsDead { get; private set; }
     public float MaxHp => maxHp;
     public float CurrentHp => _currentHp;
@@ -50,6 +54,12 @@ public class PlayerHealth : MonoBehaviour
     {
         if (IsDead || _isInvincible) return;
         _currentHp -= damage;
+
+        // 被弾SE
+        if (audioSource != null && hitSE != null)
+        {
+            audioSource.PlayOneShot(hitSE);
+        }
 
         // ヒットエフェクト表示
         if (hitEffectPrefab != null)
