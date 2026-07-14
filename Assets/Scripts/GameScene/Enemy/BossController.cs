@@ -23,6 +23,7 @@ public class BossController : MonoBehaviour
     [Header("基本設定")]
     [Tooltip("死んだときのSE")] // ★追加
     [SerializeField] private AudioClip deathSound; // ★追加
+    private AudioSource _audioSource;
     [Tooltip("移動速度")]
     [SerializeField] private float moveSpeed = 3f;
     [Tooltip("接触時のダメージ")]
@@ -56,6 +57,7 @@ public class BossController : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         _agent = GetComponent<NavMeshAgent>(); // ★追加
+        _audioSource = GetComponent<AudioSource>();
         _currentHp = maxHp;
 
         // ★追加：AIの速度と回転速度を設定
@@ -170,10 +172,10 @@ public class BossController : MonoBehaviour
     {
         _isDead = true;
 
-        // ★追加：死んだ瞬間にSEを流す（オブジェクトが消えても途切れない鳴らし方）
-        if (deathSound != null)
+        // ★追加：AudioSourceを使ってSEを鳴らす
+        if (_audioSource != null && deathSound != null)
         {
-            AudioSource.PlayClipAtPoint(deathSound, transform.position,1.0f);
+            _audioSource.PlayOneShot(deathSound);
         }
 
         // ★追加：死亡時にAIを停止

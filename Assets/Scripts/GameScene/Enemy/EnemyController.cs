@@ -36,6 +36,7 @@ public class EnemyController : MonoBehaviour
     [Header("敵のステータス設定")]
     [Tooltip("死んだときのSE")] // ★追加
     [SerializeField] private AudioClip deathSound; // ★追加
+    private AudioSource _audioSource;
     [Tooltip("敵の移動速度")]
     [SerializeField] private float moveSpeed;       //  移動速度
     [Tooltip("プレイヤーに接触したときにプレイヤーに与えるダメージ")]
@@ -91,6 +92,7 @@ public class EnemyController : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         _agent = GetComponent<NavMeshAgent>(); // ★追加
+        _audioSource = GetComponent<AudioSource>();
         _currentHp = maxHp;                          // 敵の最大HP
 
         // ★追加：AIの速度を設定
@@ -266,9 +268,9 @@ public class EnemyController : MonoBehaviour
     {
         _isDead = true;
 
-        if (deathSound != null)
+        if (_audioSource != null && deathSound != null)
         {
-            AudioSource.PlayClipAtPoint(deathSound, transform.position,1.0f);
+            _audioSource.PlayOneShot(deathSound);
         }
 
         if (_agent.isOnNavMesh) _agent.isStopped = true;
@@ -279,6 +281,13 @@ public class EnemyController : MonoBehaviour
             _isDiscovered = false;
             EnemyManager.Instance?.NotifyLost();
         }
+
+        foreach (var renderer in GetComponentsInChildren<Renderer>()) renderer.enabled = false;
+        foreach (var collider in GetComponentsInChildren<Collider>()) collider.enabled = false;
+
+        // 1.5秒後にこのオブジェクトを完全に消去（SEが鳴り終わるのを待つ）
+        Destroy(gameObject, 1.5f);
+
     }
 
     public void KnockBack(Vector3 direction, float force)
