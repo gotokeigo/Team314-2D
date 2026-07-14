@@ -21,6 +21,8 @@ using UnityEngine.AI;
 public class BossController : MonoBehaviour
 {
     [Header("基本設定")]
+    [Tooltip("死んだときのSE")] // ★追加
+    [SerializeField] private AudioClip deathSound; // ★追加
     [Tooltip("移動速度")]
     [SerializeField] private float moveSpeed = 3f;
     [Tooltip("接触時のダメージ")]
@@ -167,6 +169,12 @@ public class BossController : MonoBehaviour
     private void Die()
     {
         _isDead = true;
+
+        // ★追加：死んだ瞬間にSEを流す（オブジェクトが消えても途切れない鳴らし方）
+        if (deathSound != null)
+        {
+            AudioSource.PlayClipAtPoint(deathSound, transform.position,1.0f);
+        }
 
         // ★追加：死亡時にAIを停止
         if (_agent.isOnNavMesh) _agent.isStopped = true;

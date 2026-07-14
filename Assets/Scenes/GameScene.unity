@@ -3364,7 +3364,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b42383b1104fdd547bb1d5a08f64291c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameTimer
-  targetTime: 5
+  targetTime: 60
   bossSpawnInterval: 60
   bossSpawnPosition: {x: 0, y: 0, z: -7}
   timerText: {fileID: 0}

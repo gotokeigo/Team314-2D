@@ -50,6 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8364e068ca3c76d4f9a687d0a2f739be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossController
+  deathSound: {fileID: 8300000, guid: 042f373e8404ecc47a9049f3a31e7346, type: 3}
   moveSpeed: 3
   attackDamage: 1
   maxHp: 1000
@@ -168,7 +169,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 567b460d9a5293f44b04f74142f9491a, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 567b460d9a5293f44b04f74142f9491a, type: 3}
       propertyPath: m_LocalRotation.x
@@ -176,7 +177,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 567b460d9a5293f44b04f74142f9491a, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 567b460d9a5293f44b04f74142f9491a, type: 3}
       propertyPath: m_LocalRotation.z
@@ -188,7 +189,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 567b460d9a5293f44b04f74142f9491a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 180
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 567b460d9a5293f44b04f74142f9491a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
