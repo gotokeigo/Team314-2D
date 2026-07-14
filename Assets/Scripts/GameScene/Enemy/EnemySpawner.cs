@@ -36,8 +36,18 @@ public class EnemySpawner : MonoBehaviour
     [Header("時間経過・集団数強化設定")]
     [Tooltip("初期の1グループあたりの敵の数")]
     [SerializeField] private int enemiesPerGroup = 4;
-    private float _timeTracker = 0f;
-    private float _difficultyInterval = 30f;
+    [Tooltip("敵の数（人数）が増える時間間隔（秒）")] // ★追加
+    [SerializeField] private float countDifficultyInterval = 30f; // ★追加
+    [Tooltip("初期状態の敵の最大HP")]
+    [SerializeField] private float baseEnemyMaxHp = 10f;
+    [Tooltip("30秒ごとに上昇するHPの量")]
+    [SerializeField] private float hpIncreaseAmount = 5f;
+    [Tooltip("敵のHPが増える時間間隔（秒）")] // ★追加
+    [SerializeField] private float hpDifficultyInterval = 10f; // ★追加
+
+    private float _currentEnemyMaxHp; // 現在の難易度に応じたHP
+    private float _countTimeTracker = 0f; // ★人数用のタイマーに変更
+    private float _hpTimeTracker = 0f;    // ★HP用のタイマーに変更
 
     [Header("敵グループPrefab")]
     [Tooltip("スポーンする敵グループのPrefabリスト")]
@@ -53,20 +63,31 @@ public class EnemySpawner : MonoBehaviour
         _mainCamera = Camera.main;
         _playerController = GetComponentInParent<PlayerController>();
         _spawnTimer = spawnInterval;
+
+        _currentEnemyMaxHp = baseEnemyMaxHp; // ★追加：初期HPを設定
     }
 
     private void Update()
     {
-        if (enemyGroupPrefabs.Count == 0) return;
-
-        _timeTracker += Time.deltaTime;
-        if (_timeTracker >= _difficultyInterval)
+        // --- ① 人数アップのタイマー（30秒ごと） ---
+        _countTimeTracker += Time.deltaTime;
+        if (_countTimeTracker >= countDifficultyInterval)
         {
             enemiesPerGroup += 1;
-            Debug.Log($"30秒経過：1グループあたりの敵の数が {enemiesPerGroup} 体にアップしました！");
-            _timeTracker = 0f;
+            Debug.Log($"【人数アップ】{countDifficultyInterval}秒経過：1グループの数が {enemiesPerGroup} 体にアップしました！");
+            _countTimeTracker = 0f;
         }
 
+        // --- ② HPアップのタイマー（10秒ごと） ---
+        _hpTimeTracker += Time.deltaTime;
+        if (_hpTimeTracker >= hpDifficultyInterval)
+        {
+            _currentEnemyMaxHp += hpIncreaseAmount;
+            Debug.Log($"【HPアップ】{hpDifficultyInterval}秒経過：敵の最大HPが {_currentEnemyMaxHp} にアップしました！");
+            _hpTimeTracker = 0f;
+        }
+
+        // --- スポーン処理 ---
         _spawnTimer -= Time.deltaTime;
         if (_spawnTimer <= 0f)
         {
@@ -88,6 +109,7 @@ public class EnemySpawner : MonoBehaviour
         spawnPos.y = spawnY;
         GameObject prefab = enemyGroupPrefabs[Random.Range(0, enemyGroupPrefabs.Count)];
         PlayerPrefs.SetInt("NextGroupSize", enemiesPerGroup);
+        PlayerPrefs.SetFloat("NextEnemyHP", _currentEnemyMaxHp);
         Instantiate(prefab, spawnPos, Quaternion.identity);
         _currentEnemyCount++;
     }
