@@ -60,6 +60,12 @@ public class BossController : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         _currentHp = maxHp;
 
+        float currentNormalEnemyHp = PlayerPrefs.GetFloat("NextEnemyHP", 10f); // ザコ敵のHPを取得
+        maxHp = currentNormalEnemyHp * 2f;                                   // 2倍にする
+        _currentHp = maxHp;                                                  // 現在のHPを満タンに
+
+        Debug.Log($"【ボス出現】ザコHPの2倍の体力「{maxHp}」に設定されました！");
+
         // ★追加：AIの速度と回転速度を設定
         if (_agent != null)
         {
@@ -134,11 +140,11 @@ public class BossController : MonoBehaviour
     {
         if (_isDead) return false;
 
-        int playerLevel = ExperienceManager.Instance.PlayerLevel;
-        if (playerLevel >= oneHitKillPlayerLevel)
-        {
-            damage = float.MaxValue;
-        }
+        //int playerLevel = ExperienceManager.Instance.PlayerLevel;
+        //if (playerLevel >= oneHitKillPlayerLevel)
+        //{
+        //    damage = float.MaxValue;
+        //}
 
         _currentHp -= damage;
         Debug.Log($"ボスHP: {_currentHp}/{maxHp}");
@@ -193,6 +199,7 @@ public class BossController : MonoBehaviour
         {
             gameTimer.OnBossDefeated();
         }
+        Destroy(gameObject, 1.5f);
     }
 
     public void KnockBack(Vector3 direction, float force)

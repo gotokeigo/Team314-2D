@@ -415,4 +415,10 @@ public class EnemyController : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public void SetMaxHP(float newMaxHp)
+    {
+        maxHp = newMaxHp;
+        _currentHp = newMaxHp;
+    }
+
 }

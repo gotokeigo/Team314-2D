@@ -55,7 +55,7 @@ MonoBehaviour:
   moveSpeed: 3
   attackDamage: 1
   maxHp: 1000
-  rotationForce: 5
+  rotationForce: 2
   oneHitKillPlayerLevel: 20
 --- !u!54 &5130151624116716246
 Rigidbody:
@@ -138,7 +138,7 @@ NavMeshAgent:
   m_Radius: 0.7
   m_Speed: 3.5
   m_Acceleration: 8
-  avoidancePriority: 50
+  avoidancePriority: 0
   m_AngularSpeed: 500
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1

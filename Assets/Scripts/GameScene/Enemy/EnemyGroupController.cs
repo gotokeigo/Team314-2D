@@ -59,6 +59,7 @@ public class EnemyGroupController : MonoBehaviour
         _initialGroupMaxHp = 0f;
 
         int targetActiveCount = PlayerPrefs.GetInt("NextGroupSize", 4);
+        float targetEnemyHp = PlayerPrefs.GetFloat("NextEnemyHP", 10f);
         List<EnemyController> allChildEnemies = new List<EnemyController>(GetComponentsInChildren<EnemyController>());
 
         for (int i = 0; i < allChildEnemies.Count; i++)
@@ -72,6 +73,7 @@ public class EnemyGroupController : MonoBehaviour
                 _enemies.Add(allChildEnemies[i]);
                 if (allChildEnemies[i] != null)
                 {
+                    allChildEnemies[i].SetMaxHP(targetEnemyHp);
                     _initialGroupMaxHp += allChildEnemies[i].GetMaxHP();
                 }
             }
@@ -288,7 +290,7 @@ public class EnemyGroupController : MonoBehaviour
         {
             if (enemy == null) continue;
 
-            float distFromCenter = Vector3.Distance(groupCenter, enemy.transform.position); 
+            float distFromCenter = Vector3.Distance(groupCenter, enemy.transform.position);
             if (distFromCenter > 10f) continue;
 
             if (enemy.transform.position.y < lowestY)
