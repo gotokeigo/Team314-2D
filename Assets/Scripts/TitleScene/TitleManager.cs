@@ -27,17 +27,24 @@ public class TitleManager : MonoBehaviour
     [SerializeField] private AudioClip buttonSE;
     [SerializeField] private AudioClip TitleBGM;
 
+    [SerializeField] private Fade fade;
+
+
     private bool _isTransitioning = false;  // 遷移中フラグ
 
     private void Start()
     {
         PlayTitleBGM();
+        fade.FadeIn(1.0f);
     }
 
     public void OnClickGameStart()
     {
         if (_isTransitioning) return;
         _isTransitioning = true;
+
+        fade.FadeOut(0.8f);
+
         StartCoroutine(LoadSceneAfterSE("GameScene"));
     }
 
