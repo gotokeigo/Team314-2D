@@ -48,8 +48,8 @@ public class PlayerController : MonoBehaviour
 
     private void OnMove(InputValue value)
     {
-        Vector3 input = value.Get<Vector3>();                       
-        _moveInput = new Vector3(input.x, 0f, input.y);            // XZ平面に変換
+        Vector3 input = value.Get<Vector3>();
+        _moveInput = new Vector3(input.x, 0f, input.y).normalized;
 
         if (_moveInput != Vector3.zero)
         {

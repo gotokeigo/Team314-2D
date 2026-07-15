@@ -515,30 +515,5 @@ public class PlayerAttack : MonoBehaviour
         }
         lineRenderer.SetPosition(segments + 2, transform.position);
     }
-    //private void DrawAttackRange(Vector3 direction, float range)
-    //{
-    //    int segments = 30;
 
-    //    float attackAngle = CurrentChargeLevel switch
-    //    {
-    //        ChargeLevel.Small => smallAttackAngle,
-    //        ChargeLevel.Medium => mediumAttackAngle,
-    //        ChargeLevel.Large => largeAttackAngle,
-    //        _ => smallAttackAngle
-    //    };
-
-    //    float startAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - attackAngle / 2f;
-
-    //    for (int i = 0; i <= segments; i++)
-    //    {
-    //        float angle = startAngle + attackAngle * i / segments;
-    //        float rad = angle * Mathf.Deg2Rad;
-
-    //        Vector3 pos = transform.position + new Vector3(
-    //            Mathf.Cos(rad),
-    //            Mathf.Sin(rad),
-    //            0f
-    //        ) * range;
-    //    }
-    //}
 }
