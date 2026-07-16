@@ -84,19 +84,31 @@ public class PlayerHealth : MonoBehaviour
     {
         IsDead = true;
         Debug.Log("Player is Dead");
-
-
         ResultData.FinalLevel = ExperienceManager.Instance.PlayerLevel;
         GameTimer gameTimer = FindFirstObjectByType<GameTimer>();
         if (gameTimer != null)
         {
             ResultData.SurvivedTime = gameTimer.CurrentTime;
         }
-
         Collider col = GetComponentInChildren<Collider>();
         if (col != null) col.enabled = false;
         GetComponent<PlayerController>().enabled = false;
         GetComponent<Collider>().enabled = false;
+
+        // CircleWipeを呼び出す
+        CircleWipe circleWipe = FindFirstObjectByType<CircleWipe>();
+        if (circleWipe != null)
+        {
+            circleWipe.WipeOut(1.5f, () =>
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene("GameOverScene");
+            });
+        }
+        else
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("GameOverScene");
+        }
+
         StartCoroutine(BlinkAndDestroy());
     }
 
