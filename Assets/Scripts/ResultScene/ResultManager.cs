@@ -23,16 +23,21 @@ public class ResultManager : MonoBehaviour
     [SerializeField] private AudioClip buttonSE;
     [SerializeField] private AudioClip ResultBGM;
 
+    [SerializeField] private Fade fade;
+
+
     private bool _isTransitioning = false;
 
     private void Start()
     {
         PlayResultBGM();
+        fade.FadeIn(1.0f);
     }
 
     public void OnClickBackTitle()
     {
         if (_isTransitioning) return;
+        fade.FadeOut(0.8f);
         _isTransitioning = true;
         StartCoroutine(LoadSceneAfterSE("TitleScene"));
     }
@@ -40,6 +45,7 @@ public class ResultManager : MonoBehaviour
     public void OnClickRetry()
     {
         if (_isTransitioning) return;
+        fade.FadeOut(0.8f);
         _isTransitioning = true;
         StartCoroutine(LoadSceneAfterSE("GameScene"));
     }
