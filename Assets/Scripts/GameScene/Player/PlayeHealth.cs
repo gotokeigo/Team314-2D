@@ -99,10 +99,7 @@ public class PlayerHealth : MonoBehaviour
         CircleWipe circleWipe = FindFirstObjectByType<CircleWipe>();
         if (circleWipe != null)
         {
-            circleWipe.WipeOut(1.5f, () =>
-            {
-                UnityEngine.SceneManagement.SceneManager.LoadScene("GameOverScene");
-            });
+            StartCoroutine(DelayWipe(circleWipe));
         }
         else
         {
@@ -122,15 +119,8 @@ public class PlayerHealth : MonoBehaviour
             yield return new WaitForSeconds(0.2f);
         }
 
-
-        int minutes = (int)(ResultData.SurvivedTime / 60f);
-        int seconds = (int)(ResultData.SurvivedTime % 60f);
-
         Destroy(gameObject);
-        if (minutes < 10)
-            UnityEngine.SceneManagement.SceneManager.LoadScene("GameOverScene");
-        else
-            UnityEngine.SceneManagement.SceneManager.LoadScene("GameClearScene");
+
     }
 
     private IEnumerator InvincibleCoroutine()
@@ -143,5 +133,18 @@ public class PlayerHealth : MonoBehaviour
         Physics.IgnoreLayerCollision(playerLayer, _enemyLayer, false);
         Physics.IgnoreLayerCollision(playerLayer, _enemyKnockbackLayer, false);
         _isInvincible = false;
+    }
+
+    private IEnumerator DelayWipe(CircleWipe circleWipe)
+    {
+        yield return new WaitForSeconds(1f);
+
+        int minutes = (int)(ResultData.SurvivedTime / 60f);
+        string nextScene = minutes < 10 ? "GameOverScene" : "GameClearScene";
+
+        circleWipe.WipeOut(1.5f, () =>
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(nextScene);
+        });
     }
 }
