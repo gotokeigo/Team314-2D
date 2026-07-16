@@ -35,7 +35,7 @@ Shader "Custom/CircleWipe"
                 float2 center = float2(0.5, 0.5);
                 float dist = distance(IN.uv, center);
                 float alpha = step(_Radius, dist);
-                return half4(0, 0, 0, alpha);
+                return half4(0.01, 0, 0, alpha);
             }
             ENDHLSL
         }
