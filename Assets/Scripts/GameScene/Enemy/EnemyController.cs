@@ -131,6 +131,16 @@ public class EnemyController : MonoBehaviour
         _agent.enabled = true;
         
     }
+
+    void Update()
+    {
+        //未発見の時だけシャウトオブジェクトの接近を監視
+        if (!_isDiscovered)
+        {
+            CheckShoutHit();
+        }
+    }
+
     void FixedUpdate()
     {
         if (_player == null || _agent == null) return;
@@ -146,10 +156,35 @@ public class EnemyController : MonoBehaviour
         // 未発見なら自動発見チェック
         if (!_isDiscovered)
         {
-            float distToPlayer = Vector3.Distance(_rb.position, _player.position);
-            if (distToPlayer <= detectionRange)
+            // 所属グループを取得
+            EnemyGroupController group = GetComponentInParent<EnemyGroupController>();
+            bool isShoutOnly = group != null && group.IsShoutOnly;
+
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, 1.5f); // 判定半径1.5m
+            foreach (var hit in hitColliders)
             {
-                SetDiscovered(true);
+                if (hit.GetComponent<ShoutProjectile>() != null || hit.GetComponentInParent<ShoutProjectile>() != null)
+                {
+                    if (group != null)
+                    {
+                        group.AlertGroup(); // グループ全体を発見状態にする
+                    }
+                    else
+                    {
+                        SetDiscovered(true); // 単体の場合は自分を発見状態にする
+                    }
+                    break;
+                }
+            }
+
+            // ② プレイヤーとの距離による自動発見チェック（shoutOnly でない場合のみ実行）
+            if (!_isDiscovered && !isShoutOnly)
+            {
+                float distToPlayer = Vector3.Distance(_rb.position, _player.position);
+                if (distToPlayer <= detectionRange)
+                {
+                    SetDiscovered(true);
+                }
             }
         }
 
@@ -160,6 +195,31 @@ public class EnemyController : MonoBehaviour
         else
         {
             Wander();
+        }
+    }
+
+    private void CheckShoutHit()
+    {
+        ShoutProjectile[] shouts = FindObjectsByType<ShoutProjectile>(FindObjectsSortMode.None);
+        foreach (var shout in shouts)
+        {
+            // XZ平面での距離を計算（Y軸のズレを無視）
+            Vector3 enemyPos = new Vector3(transform.position.x, 0f, transform.position.z);
+            Vector3 shoutPos = new Vector3(shout.transform.position.x, 0f, shout.transform.position.z);
+
+            if (Vector3.Distance(enemyPos, shoutPos) <= 3.0f) // 半径3m以内に入ったら反応
+            {
+                EnemyGroupController group = GetComponentInParent<EnemyGroupController>();
+                if (group != null)
+                {
+                    group.AlertGroup();
+                }
+                else
+                {
+                    SetDiscovered(true);
+                }
+                break;
+            }
         }
     }
 

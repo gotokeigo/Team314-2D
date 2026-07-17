@@ -60,11 +60,16 @@ public class BossController : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         _currentHp = maxHp;
 
-        float currentNormalEnemyHp = PlayerPrefs.GetFloat("NextEnemyHP", 10f); // ザコ敵のHPを取得
-        maxHp = currentNormalEnemyHp * 2f;                                   // 2倍にする
+        float currentNormalEnemyHp = PlayerPrefs.GetFloat("NextEnemyHP", 10f); // ザコ敵1体のHPを取得
+        int currentGroupSize = PlayerPrefs.GetInt("NextGroupSize", 4);         // ザコ1グループの敵の数を取得
+
+        // ★ザコ1グループの「総体力」を計算する
+        float totalGroupHp = currentNormalEnemyHp * currentGroupSize;
+
+        // ★ボスのHP＝ザコ1グループの総体力の「3倍〜5倍」に設定する
+        maxHp = totalGroupHp * 3f;                                  // 2倍にする
         _currentHp = maxHp;                                                  // 現在のHPを満タンに
 
-        Debug.Log($"【ボス出現】ザコHPの2倍の体力「{maxHp}」に設定されました！");
 
         // ★追加：AIの速度と回転速度を設定
         if (_agent != null)
