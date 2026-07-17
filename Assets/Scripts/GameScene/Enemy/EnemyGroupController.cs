@@ -32,6 +32,8 @@ public class EnemyGroupController : MonoBehaviour
     [SerializeField] private float groupWanderInterval = 3f;
 
     [Header("グループ合流・UI設定")]
+    [Tooltip("このグループはシャウトでのみ発見状態になる")]
+    [SerializeField] private bool shoutOnly = false;
     [SerializeField] private float mergeRadius = 4f;
     [SerializeField] private TMPro.TextMeshProUGUI countText;
     public List<EnemyController> Enemies => _enemies;
@@ -41,8 +43,9 @@ public class EnemyGroupController : MonoBehaviour
     [Tooltip("作ったHPバーのCanvasプレハブをここに割り当てます")]
     [SerializeField] private GameObject hpBarPrefab;
     [Tooltip("HPバーのオフセット")]
-    [SerializeField] private Vector3 hpBarOffset = new Vector3(0, -1.0f, 0);  
+    [SerializeField] private Vector3 hpBarOffset = new Vector3(0, -1.0f, 0);
 
+    public bool IsShoutOnly => shoutOnly;
     private float _initialGroupMaxHp = 0f;
     private GameObject _spawnedHpBar;
     private Image _hpBarFillImage;
@@ -53,7 +56,6 @@ public class EnemyGroupController : MonoBehaviour
 
     private bool _isDiscovered;
     private List<EnemyController> _enemies = new List<EnemyController>();
-
     private void Start()
     {
         _initialGroupMaxHp = 0f;
@@ -216,6 +218,8 @@ public class EnemyGroupController : MonoBehaviour
         {
             if (otherGroup == this || otherGroup.Enemies.Count == 0) continue;
 
+            if (this.shoutOnly != otherGroup.shoutOnly) continue;
+            //ShoutOnly の設定が違うグループとは合流しない
             float dist = Vector3.Distance(CalcGroupCenter(), otherGroup.CalcGroupCenter());
             if (dist <= mergeRadius)
             {
