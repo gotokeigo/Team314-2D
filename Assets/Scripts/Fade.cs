@@ -33,6 +33,11 @@ public sealed class Fade : MonoBehaviour
             elapsed_time += Time.deltaTime;
         }
 
+        color.a = is_reversing ? 0f : 1f;
+        image.color = color;
+
+
+
         if (is_reversing) image.enabled = false;
         if (on_completed != null) on_completed();
     }
