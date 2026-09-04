@@ -82,11 +82,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private GameObject chargeEffectPrefab;
     [SerializeField] private GameObject chargeWindPrefab;
     [SerializeField] private GameObject slashEffectPrefab;
-    //[SerializeField] private GameObject attackRangeFBX;
-    //[SerializeField] private GameObject attackRangePivot;
-    //[SerializeField] private float smallOffset = 2f;
-    //[SerializeField] private float mediumOffset = 3f;
-    //[SerializeField] private float largeOffset = 4f;
+    
     [Header("攻撃範囲表示")]
     [SerializeField] private LineRenderer lineRenderer;
     private GameObject chargeEffectInstance;
@@ -120,8 +116,7 @@ public class PlayerAttack : MonoBehaviour
         if (_playerHealth != null && _playerHealth.IsDead) return;
         if (_isAttacking || _isCharging) return;
         _isCharging = true;
-        //attackRangeFBX.SetActive(true);
-        //attackRangeObject.SetActive(true);
+       
         lineRenderer.enabled = true;
         _chargeStartTime = Time.time;
         _playerController.SetSpeedMultiplier(chargeSpeedMultiplier);
@@ -172,32 +167,12 @@ public class PlayerAttack : MonoBehaviour
             }
         }
 
-        //float offset = smallOffset;
-
-        //switch (CurrentChargeLevel)
-        //{
-        //    case ChargeLevel.Small:
-        //        attackRangeFBX.transform.localScale = new Vector3(60f, 60f, 60f);
-        //        offset = smallOffset;
-        //        break;
-        //    case ChargeLevel.Medium:
-        //        attackRangeFBX.transform.localScale = new Vector3(80f, 80f, 80f);
-        //        offset = mediumOffset;
-        //        break;
-        //    case ChargeLevel.Large:
-        //        attackRangeFBX.transform.localScale = new Vector3(100f, 100f, 100f);
-        //        offset = largeOffset;
-        //        break;
-        //}
-
-        //attackRangeFBX.transform.localPosition = new Vector3(0, offset, 0);
-
+  
         Vector3 dir = GetMouseDirection();
 
         if (dir != Vector3.zero)
         {
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-           // attackRangePivot.transform.localRotation = Quaternion.Euler(0f, 0f, angle + 270.0f);
 
             float range = CurrentChargeLevel switch
             {
@@ -206,13 +181,13 @@ public class PlayerAttack : MonoBehaviour
                 ChargeLevel.Large => largeAttackRange,
                 _ => smallAttackRange
             };
+           
             DrawAttackRange(dir, range * 1.7f);
         }
 
         if (_attackAction.WasReleasedThisFrame())
         {
-            //  attackRangeFBX.SetActive(false);
-            //  attackRangeObject.SetActive(false);
+          
             lineRenderer.enabled = false;
             if (_attackTimer > 0f) return;
             _isCharging = false;
@@ -267,11 +242,10 @@ public class PlayerAttack : MonoBehaviour
             _ => smallAttackAngle
         };
 
-
-
         Vector3 attackDirection = GetMouseDirection();
         float effectAngle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
-        Vector3 attackCenter = transform.position + attackDirection * currentRange;
+        // 攻撃の当たり判定
+        float hitRange = currentRange * 1.6f;
 
         if (slashEffectPrefab != null)
         {
@@ -291,36 +265,20 @@ public class PlayerAttack : MonoBehaviour
                 switch (chargeLevel)
                 {
                     case ChargeLevel.Small:
-                        main.startSize = 25f;
+                        main.startSize = 5f;
                         break;
                     case ChargeLevel.Medium:
-                        main.startSize = 35f;
+                        main.startSize = 20f;
                         break;
                     case ChargeLevel.Large:
-                        main.startSize = 50f;
+                        main.startSize = 37f;
                         break;
                 }
             }
         }
 
-        //if (slashEffectPrefab != null)
-        //{
-        //    GameObject slash = Instantiate(slashEffectPrefab, transform.position, Quaternion.Euler(0, 0, effectAngle));
-        //    ParticleSystem[] particles = slash.GetComponentsInChildren<ParticleSystem>();
-
-        //    foreach (ParticleSystem ps in particles)
-        //    {
-        //        var main = ps.main;
-        //        switch (chargeLevel)
-        //        {
-        //            case ChargeLevel.Small: main.startSize = 25f; break;
-        //            case ChargeLevel.Medium: main.startSize = 35f; break;
-        //            case ChargeLevel.Large: main.startSize = 50f; break;
-        //        }
-        //    }
-        //}
-
-        Collider[] hitEnemies = Physics.OverlapSphere(attackCenter, currentRange, enemyLayer);
+        Collider[] hitEnemies = Physics.OverlapSphere(transform.position,hitRange,enemyLayer
+);
         List<Collider> hitEnemiesInFan = new List<Collider>();
 
         foreach (Collider enemy in hitEnemies)
@@ -490,7 +448,7 @@ public class PlayerAttack : MonoBehaviour
             _ => smallAttackAngle
         };
 
-        //lineRenderer.positionCount = segments + 2;
+        
         lineRenderer.positionCount = segments + 3;
         // プレイヤーの位置
         lineRenderer.SetPosition(0, transform.position);
