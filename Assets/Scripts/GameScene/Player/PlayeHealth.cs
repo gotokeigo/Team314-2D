@@ -84,19 +84,28 @@ public class PlayerHealth : MonoBehaviour
     {
         IsDead = true;
         Debug.Log("Player is Dead");
-
-
         ResultData.FinalLevel = ExperienceManager.Instance.PlayerLevel;
         GameTimer gameTimer = FindFirstObjectByType<GameTimer>();
         if (gameTimer != null)
         {
             ResultData.SurvivedTime = gameTimer.CurrentTime;
         }
-
         Collider col = GetComponentInChildren<Collider>();
         if (col != null) col.enabled = false;
         GetComponent<PlayerController>().enabled = false;
         GetComponent<Collider>().enabled = false;
+
+        // CircleWipeを呼び出す
+        CircleWipe circleWipe = FindFirstObjectByType<CircleWipe>();
+        if (circleWipe != null)
+        {
+            StartCoroutine(DelayWipe(circleWipe));
+        }
+        else
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("GameOverScene");
+        }
+
         StartCoroutine(BlinkAndDestroy());
     }
 
@@ -110,15 +119,8 @@ public class PlayerHealth : MonoBehaviour
             yield return new WaitForSeconds(0.2f);
         }
 
-
-        int minutes = (int)(ResultData.SurvivedTime / 60f);
-        int seconds = (int)(ResultData.SurvivedTime % 60f);
-
         Destroy(gameObject);
-        if (minutes < 10)
-            UnityEngine.SceneManagement.SceneManager.LoadScene("GameOverScene");
-        else
-            UnityEngine.SceneManagement.SceneManager.LoadScene("GameClearScene");
+
     }
 
     private IEnumerator InvincibleCoroutine()
@@ -131,5 +133,18 @@ public class PlayerHealth : MonoBehaviour
         Physics.IgnoreLayerCollision(playerLayer, _enemyLayer, false);
         Physics.IgnoreLayerCollision(playerLayer, _enemyKnockbackLayer, false);
         _isInvincible = false;
+    }
+
+    private IEnumerator DelayWipe(CircleWipe circleWipe)
+    {
+        yield return new WaitForSeconds(1f);
+
+        int minutes = (int)(ResultData.SurvivedTime / 60f);
+        string nextScene = minutes < 10 ? "GameOverScene" : "GameClearScene";
+
+        circleWipe.WipeOut(1.5f, () =>
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(nextScene);
+        });
     }
 }

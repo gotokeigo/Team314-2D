@@ -11,6 +11,7 @@
 //  2026/07/08  SE再生後にシーン遷移するように変更
 //
 //-------------------------------------------------------
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -23,33 +24,40 @@ public class ResultManager : MonoBehaviour
     [SerializeField] private AudioClip buttonSE;
     [SerializeField] private AudioClip ResultBGM;
 
+    [SerializeField] private Fade fade;
+
+
     private bool _isTransitioning = false;
 
     private void Start()
     {
         PlayResultBGM();
+        fade.FadeIn(1.0f);
     }
 
     public void OnClickBackTitle()
     {
         if (_isTransitioning) return;
         _isTransitioning = true;
-        StartCoroutine(LoadSceneAfterSE("TitleScene"));
+        PlayButtonSE();
+        fade.FadeOut(0.6f, () =>
+        {
+            SceneManager.LoadScene("TitleScene");
+        });
     }
 
     public void OnClickRetry()
     {
         if (_isTransitioning) return;
         _isTransitioning = true;
-        StartCoroutine(LoadSceneAfterSE("GameScene"));
+        PlayButtonSE();
+        fade.FadeOut(0.6f, () =>
+        {
+            SceneManager.LoadScene("GameScene");
+        });
     }
 
-    private IEnumerator LoadSceneAfterSE(string sceneName)
-    {
-        PlayButtonSE();
-        yield return new WaitForSeconds(buttonSE.length);
-        SceneManager.LoadScene(sceneName);
-    }
+
 
     private void PlayButtonSE()
     {
