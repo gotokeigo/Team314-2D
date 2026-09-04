@@ -92,17 +92,6 @@ public class PlayerController : MonoBehaviour
         _animator.SetBool("isCharging", charging);
     }
 
-    //public void SetLookDirection(Vector3 dir)
-    //{
-    //    if (dir.x > 0)
-    //    {
-    //        modelTransform.localScale = new Vector3(1, 1, 1);
-    //    }
-    //    else if (dir.x < 0)
-    //    {
-    //        modelTransform.localScale = new Vector3(-1, 1, 1);
-    //    }
-    //}
     
 public void SetLookDirection(Vector3 dir)
 {

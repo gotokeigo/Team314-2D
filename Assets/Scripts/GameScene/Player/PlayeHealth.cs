@@ -25,6 +25,7 @@ public class PlayerHealth : MonoBehaviour
     private bool _isInvincible;
     private float _currentHp;
     private Renderer _renderer;
+    private Renderer[] _renderers;
     private Collider _playerCollider;
     private int _enemyLayer;
     private int _enemyKnockbackLayer;
@@ -44,6 +45,7 @@ public class PlayerHealth : MonoBehaviour
         _currentHp = maxHp;
         IsDead = false;
         _renderer = GetComponentInChildren<Renderer>();
+        _renderers = GetComponentsInChildren<Renderer>();
         _playerCollider = GetComponentInChildren<Collider>();
         _playerController = GetComponent<PlayerController>();
         _enemyLayer = LayerMask.NameToLayer("Enemy");
@@ -69,6 +71,9 @@ public class PlayerHealth : MonoBehaviour
 
         // 被弾モーション再生
         _playerController.PlayHitAnimation();
+
+        // 被弾時にプレイヤーを点滅
+        StartCoroutine(DamageBlink());
 
         if (_currentHp <= 0)
         {
@@ -122,7 +127,29 @@ public class PlayerHealth : MonoBehaviour
         Destroy(gameObject);
 
     }
+    private IEnumerator DamageBlink()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            foreach (Renderer renderer in _renderers)
+            {
+                if (renderer is LineRenderer)
+                    continue;
+                renderer.enabled = false;
+            }
 
+            yield return new WaitForSeconds(0.1f);
+
+            foreach (Renderer renderer in _renderers)
+            {
+                if (renderer is LineRenderer)
+                    continue;
+                renderer.enabled = true;
+            }
+
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
     private IEnumerator InvincibleCoroutine()
     {
         _isInvincible = true;

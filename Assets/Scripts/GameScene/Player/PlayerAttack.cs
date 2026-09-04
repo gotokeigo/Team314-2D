@@ -1,4 +1,4 @@
-﻿//--------------------------------------
+//--------------------------------------
 //
 //  PlayerAttack.cs
 //
@@ -113,15 +113,18 @@ public class PlayerAttack : MonoBehaviour
 
     private void OnAttack(InputValue value)
     {
+        //死亡中なら攻撃できない
         if (_playerHealth != null && _playerHealth.IsDead) return;
+        //攻撃中・チャージ中なら何もしない
         if (_isAttacking || _isCharging) return;
+        //チャージ開始
         _isCharging = true;
-       
+        //攻撃範囲を表示
         lineRenderer.enabled = true;
         _chargeStartTime = Time.time;
         _playerController.SetSpeedMultiplier(chargeSpeedMultiplier);
         _playerController.SetCharging(true);
-
+        //チャージエフェクトを生成
         if (chargeEffectPrefab != null && chargeEffectInstance == null)
         {
             chargeEffectInstance = Instantiate(chargeEffectPrefab, transform.position, Quaternion.identity, transform);
@@ -131,6 +134,7 @@ public class PlayerAttack : MonoBehaviour
         chargeParticles = chargeEffectInstance.GetComponentsInChildren<ParticleSystem>();
         maxChargeReached = false;
 
+        //マウス方向を取得してプレイヤーを向かせる
         Vector3 attackDirection = GetMouseDirection();
         _playerController.SetLookDirection(attackDirection);
     }
@@ -212,21 +216,36 @@ public class PlayerAttack : MonoBehaviour
         if (chargeTime >= mediumChargeTime) return ChargeLevel.Medium;
         return ChargeLevel.Small;
     }
+    private IEnumerator ShowSlashAfterDelay(GameObject slash)
+    {
+        yield return new WaitForSeconds(0.2f);
 
+        if (slash == null)
+            yield break;
+
+        Renderer[] slashRenderers = slash.GetComponentsInChildren<Renderer>();
+
+        foreach (Renderer renderer in slashRenderers)
+        {
+            renderer.enabled = true;
+        }
+    }
     private void Attack(ChargeLevel chargeLevel)
     {
+        //攻撃方向を取得
         Vector3 attackeirection = GetMouseDirection();
+        //プレイヤーを攻撃方向に向かせる
         _playerController.SetLookDirection(attackeirection);
-
+        //攻撃モーションを再生
         _playerController.PlayAttackAnimation();
 
         _isAttacking = true;
         _weaponSpriteRenderer.enabled = true;
-
+        //攻撃SEを再生
         audioSource.PlayOneShot(attackSE);
 
         Debug.Log($"チャージレベル: {chargeLevel}");
-
+        //チャージレベルに応じて攻撃距離を変更
         float currentRange = chargeLevel switch
         {
             ChargeLevel.Small => smallAttackRange,
@@ -234,6 +253,7 @@ public class PlayerAttack : MonoBehaviour
             ChargeLevel.Large => largeAttackRange,
             _ => smallAttackRange
         };
+        //チャージレベルに応じて攻撃角度を変更
         float currentAngle = chargeLevel switch
         {
             ChargeLevel.Small => smallAttackAngle,
@@ -241,31 +261,44 @@ public class PlayerAttack : MonoBehaviour
             ChargeLevel.Large => largeAttackAngle,
             _ => smallAttackAngle
         };
+        //攻撃角度を少し広げる
+        currentAngle += 40f;
 
         Vector3 attackDirection = GetMouseDirection();
+        //攻撃エフェクトの向きを計算
         float effectAngle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
-        // 攻撃の当たり判定
+        //攻撃の当たり判定
         float hitRange = currentRange * 1.6f;
-
+        //斬撃エフェクトを生成
         if (slashEffectPrefab != null)
         {
             Quaternion rotation = Quaternion.LookRotation(attackDirection, Vector3.up);
-
+            
             GameObject slash = Instantiate(
                 slashEffectPrefab,
                 transform.position,
                 rotation
             );
+            // 最初の秒は画面に表示しない
+            Renderer[] slashRenderers = slash.GetComponentsInChildren<Renderer>();
+
+            foreach (Renderer renderer in slashRenderers)
+            {
+                renderer.enabled = false;
+            }
+
+            // 秒後に表示
+            StartCoroutine(ShowSlashAfterDelay(slash));
 
             ParticleSystem[] particles = slash.GetComponentsInChildren<ParticleSystem>();
-
+            //攻撃レベルに応じてエフェクトサイズを変更
             foreach (ParticleSystem ps in particles)
             {
                 var main = ps.main;
                 switch (chargeLevel)
                 {
                     case ChargeLevel.Small:
-                        main.startSize = 5f;
+                        main.startSize = 12f;
                         break;
                     case ChargeLevel.Medium:
                         main.startSize = 20f;
@@ -275,8 +308,10 @@ public class PlayerAttack : MonoBehaviour
                         break;
                 }
             }
+
         }
 
+        //攻撃範囲内にいる敵を取得
         Collider[] hitEnemies = Physics.OverlapSphere(transform.position,hitRange,enemyLayer
 );
         List<Collider> hitEnemiesInFan = new List<Collider>();
@@ -370,18 +405,24 @@ public class PlayerAttack : MonoBehaviour
 
     private IEnumerator HideBat(float range)
     {
+        //攻撃方向を取得
         Vector3 attackDirection = GetMouseDirection();
-
+        //攻撃方向の角度を取得
         float baseAngle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
+        // 武器を振る開始角度と終了角度
         float startAngle = baseAngle + 90f;
         float endAngle = baseAngle - 90f;
+        //武器を振る時間
         float swingDuration = 0.2f;
+
         float elapsed = 0f;
 
+        //武器を振る
         while (elapsed < swingDuration)
         {
             elapsed += Time.deltaTime;
             float t = elapsed / swingDuration;
+            //武器の現在角度
             float currentAngle = Mathf.Lerp(startAngle, endAngle, t);
             float rad = currentAngle * Mathf.Deg2Rad;
             weaponObject.transform.localPosition = new Vector3(
@@ -436,10 +477,13 @@ public class PlayerAttack : MonoBehaviour
         return transform.forward;
     }
 
+    //攻撃範囲の扇形をLineRendererで描画
     private void DrawAttackRange(Vector3 direction, float range)
     {
+        //扇形を何分割するか
         int segments = 30;
 
+        //現在のチャージレベルから攻撃角度を取得
         float attackAngle = CurrentChargeLevel switch
         {
             ChargeLevel.Small => smallAttackAngle,
@@ -447,10 +491,12 @@ public class PlayerAttack : MonoBehaviour
             ChargeLevel.Large => largeAttackAngle,
             _ => smallAttackAngle
         };
+        //表示上の攻撃範囲を40度広げる
+        attackAngle += 40f;
 
-        
+        //LineRendererの頂点数を設定
         lineRenderer.positionCount = segments + 3;
-        // プレイヤーの位置
+        //扇形の始点をプレイヤー位置にする
         lineRenderer.SetPosition(0, transform.position);
 
         // 扇形の開始角度
@@ -464,8 +510,7 @@ public class PlayerAttack : MonoBehaviour
             float rad = angle * Mathf.Deg2Rad;
 
             Vector3 point = transform.position + new Vector3(
-                Mathf.Cos(rad),
-                0f,
+                Mathf.Cos(rad),0f,
                 Mathf.Sin(rad)
             ) * range;
 
