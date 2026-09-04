@@ -216,7 +216,20 @@ public class PlayerAttack : MonoBehaviour
         if (chargeTime >= mediumChargeTime) return ChargeLevel.Medium;
         return ChargeLevel.Small;
     }
+    private IEnumerator ShowSlashAfterDelay(GameObject slash)
+    {
+        yield return new WaitForSeconds(0.2f);
 
+        if (slash == null)
+            yield break;
+
+        Renderer[] slashRenderers = slash.GetComponentsInChildren<Renderer>();
+
+        foreach (Renderer renderer in slashRenderers)
+        {
+            renderer.enabled = true;
+        }
+    }
     private void Attack(ChargeLevel chargeLevel)
     {
         //攻撃方向を取得
@@ -260,14 +273,23 @@ public class PlayerAttack : MonoBehaviour
         if (slashEffectPrefab != null)
         {
             Quaternion rotation = Quaternion.LookRotation(attackDirection, Vector3.up);
-
+            
             GameObject slash = Instantiate(
                 slashEffectPrefab,
                 transform.position,
                 rotation
             );
+            // 最初の秒は画面に表示しない
+            Renderer[] slashRenderers = slash.GetComponentsInChildren<Renderer>();
 
-            
+            foreach (Renderer renderer in slashRenderers)
+            {
+                renderer.enabled = false;
+            }
+
+            // 秒後に表示
+            StartCoroutine(ShowSlashAfterDelay(slash));
+
             ParticleSystem[] particles = slash.GetComponentsInChildren<ParticleSystem>();
             //攻撃レベルに応じてエフェクトサイズを変更
             foreach (ParticleSystem ps in particles)
@@ -288,6 +310,7 @@ public class PlayerAttack : MonoBehaviour
             }
 
         }
+
         //攻撃範囲内にいる敵を取得
         Collider[] hitEnemies = Physics.OverlapSphere(transform.position,hitRange,enemyLayer
 );
