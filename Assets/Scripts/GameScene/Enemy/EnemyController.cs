@@ -29,13 +29,13 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.InputSystem.Processors;
-using UnityEngine.AI; // ★追加
-[RequireComponent(typeof(NavMeshAgent))] // ★追加
+using UnityEngine.AI; 
+[RequireComponent(typeof(NavMeshAgent))] 
 public class EnemyController : MonoBehaviour
 {
     [Header("敵のステータス設定")]
-    [Tooltip("死んだときのSE")] // ★追加
-    [SerializeField] private AudioClip deathSound; // ★追加
+    [Tooltip("死んだときのSE")] 
+    [SerializeField] private AudioClip deathSound; 
     private AudioSource _audioSource;
     [Tooltip("敵の移動速度")]
     [SerializeField] private float moveSpeed;       //  移動速度
@@ -58,7 +58,10 @@ public class EnemyController : MonoBehaviour
     [Tooltip("次の目標地点を決める間隔")]
     [SerializeField] private float wanderInterval = 2f;     // 次の目標地点を決める間隔
 
-    private NavMeshAgent _agent; // ★追加
+    [Tooltip("プレイヤーの方を向く回転速度")] 
+    [SerializeField] private float rotationSpeed = 10f;
+
+    private NavMeshAgent _agent; 
     private float _attackTimer;
     private bool _isKnockedBack; // 吹き飛んでいるか
     private float _currentHp;    // 敵の現在HP
@@ -85,17 +88,17 @@ public class EnemyController : MonoBehaviour
     public int Level => level;                      // Experienceからレベルを参照用
     public float GetBaseSpeed() => moveSpeed;   // 基本速度を返す
 
-    // ★ ここを追加！グループからHPを読み取れるようにする窓口
+   
     public float GetMaxHP() => maxHp;
     public float GetCurrentHP() => _currentHp;
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
-        _agent = GetComponent<NavMeshAgent>(); // ★追加
+        _agent = GetComponent<NavMeshAgent>();
         _audioSource = GetComponent<AudioSource>();
         _currentHp = maxHp;                          // 敵の最大HP
 
-        // ★追加：AIの速度を設定
+        // AIの速度を設定
         if (_agent != null)
         {
             _agent.speed = moveSpeed;
@@ -231,7 +234,7 @@ public class EnemyController : MonoBehaviour
             _agent.stoppingDistance = _stopDistance;
             _agent.SetDestination(_player.position);
 
-            // ★修正：desiredVelocityではなく、AIの「次の経路のポイント（steeringTarget）」への方向を計算する
+            
             Vector3 targetDirection = _agent.steeringTarget - transform.position;
             targetDirection.y = 0; // 上下方向の移動は無視する
 
@@ -240,6 +243,16 @@ public class EnemyController : MonoBehaviour
             // 障害物を避ける方向へ、Rigidbodyの物理で実際に移動させる
             Vector3 newPosition = _rb.position + direction * _currentMoveSpeed * Time.fixedDeltaTime;
             _rb.MovePosition(newPosition);
+        }
+
+        Vector3 lookAtPlayerDir = _player.position - transform.position;
+        lookAtPlayerDir.y = 0; // 地面に対して水平に回転させる（お辞儀や傾きを防止）
+
+        if (lookAtPlayerDir != Vector3.zero)
+        {
+            // transform.rotation を直接更新して滑らかに回転させる
+            Quaternion targetRotation = Quaternion.LookRotation(lookAtPlayerDir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
     }
 
@@ -251,7 +264,7 @@ public class EnemyController : MonoBehaviour
             _agent.stoppingDistance = 0f;
             _agent.SetDestination(_wanderTarget);
 
-            // ★修正：こちらも同様に、AIが導き出した次のポイントへの方向を計算する
+            
             Vector3 targetDirection = _agent.steeringTarget - transform.position;
             targetDirection.y = 0; // 上下方向の移動は無視する
 

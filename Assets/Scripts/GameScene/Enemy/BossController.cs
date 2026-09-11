@@ -17,12 +17,12 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.AI;
 
-[RequireComponent(typeof(NavMeshAgent))] // ★追加
+[RequireComponent(typeof(NavMeshAgent))] 
 public class BossController : MonoBehaviour
 {
     [Header("基本設定")]
-    [Tooltip("死んだときのSE")] // ★追加
-    [SerializeField] private AudioClip deathSound; // ★追加
+    [Tooltip("死んだときのSE")] 
+    [SerializeField] private AudioClip deathSound; 
     private AudioSource _audioSource;
     [Tooltip("移動速度")]
     [SerializeField] private float moveSpeed = 3f;
@@ -51,27 +51,27 @@ public class BossController : MonoBehaviour
     private int _defaultLayer;
     private int _knockbackLayer;
 
-    private NavMeshAgent _agent; // ★追加
+    private NavMeshAgent _agent; 
 
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
-        _agent = GetComponent<NavMeshAgent>(); // ★追加
+        _agent = GetComponent<NavMeshAgent>(); 
         _audioSource = GetComponent<AudioSource>();
         _currentHp = maxHp;
 
         float currentNormalEnemyHp = PlayerPrefs.GetFloat("NextEnemyHP", 10f); // ザコ敵1体のHPを取得
         int currentGroupSize = PlayerPrefs.GetInt("NextGroupSize", 4);         // ザコ1グループの敵の数を取得
 
-        // ★ザコ1グループの「総体力」を計算する
+        // ザコ1グループの「総体力」を計算する
         float totalGroupHp = currentNormalEnemyHp * currentGroupSize;
 
-        // ★ボスのHP＝ザコ1グループの総体力の「3倍〜5倍」に設定する
+        // ボスのHP＝ザコ1グループの総体力の「3倍〜5倍」に設定する
         maxHp = totalGroupHp * 3f;                                  // 2倍にする
         _currentHp = maxHp;                                                  // 現在のHPを満タンに
 
 
-        // ★追加：AIの速度と回転速度を設定
+        // AIの速度と回転速度を設定
         if (_agent != null)
         {
             _agent.speed = moveSpeed;
@@ -94,7 +94,7 @@ public class BossController : MonoBehaviour
                 _stopDistance = 1f;
             }
 
-            // ★追加：AIの停止距離をセット
+            // AIの停止距離をセット
             if (_agent != null) _agent.stoppingDistance = _stopDistance;
         }
         else
@@ -110,11 +110,11 @@ public class BossController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_player == null || _agent == null) return; // ★ _rb から _agent に変更
+        if (_player == null || _agent == null) return; 
         if (_isFalling) return;
         if (_playerHp != null && _playerHp.IsDead)
         {
-            if (_agent.isOnNavMesh) _agent.isStopped = true; // ★追加：追跡を停止
+            if (_agent.isOnNavMesh) _agent.isStopped = true; // 追跡を停止
             return;
         }
         if (_isKnockedBack) return;
@@ -170,12 +170,12 @@ public class BossController : MonoBehaviour
     private IEnumerator SmallKnockBackCoroutine(Vector3 direction, float force)
     {
         _isKnockedBack = true;
-        // ★追加：ノックバック開始時にAIを一時停止
+        // ノックバック開始時にAIを一時停止
         if (_agent.isOnNavMesh) _agent.isStopped = true;
         _rb.AddForce(direction * force, ForceMode.Impulse);
         yield return new WaitForSeconds(0.1f);
         _isKnockedBack = false;
-        // ★追加：生きていればAIを再開
+        // 生きていればAIを再開
         if (_agent.isOnNavMesh && !_isDead) _agent.isStopped = false;
     }
 
@@ -183,16 +183,16 @@ public class BossController : MonoBehaviour
     {
         _isDead = true;
 
-        // ★追加：AudioSourceを使ってSEを鳴らす
+        // AudioSourceを使ってSEを鳴らす
         if (_audioSource != null && deathSound != null)
         {
             _audioSource.PlayOneShot(deathSound);
         }
 
-        // ★追加：死亡時にAIを停止
+        //死亡時にAIを停止
         if (_agent.isOnNavMesh) _agent.isStopped = true;
 
-        // 【修正】自分自身ではなく、子要素（boss_idou_motion）からAnimatorを取得する
+       
         Animator anim = GetComponentInChildren<Animator>();
         if (anim != null)
         {
@@ -232,7 +232,7 @@ public class BossController : MonoBehaviour
             _rb.rotation = Quaternion.identity;
             gameObject.layer = _defaultLayer;
 
-            // ★追加：生きて復帰したらAIを再開
+            // 生きて復帰したらAIを再開
             if (_agent.isOnNavMesh) _agent.isStopped = false;
         }
     }
@@ -254,7 +254,7 @@ public class BossController : MonoBehaviour
         _isKnockedBack = false;
         StopAllCoroutines();
 
-        // ★追加：落下が始まったらAIの機能自体を完全にOFFにする
+        // 落下が始まったらAIの機能自体を完全にOFFにする
         if (_agent != null) _agent.enabled = false;
 
         _rb.linearVelocity = Vector3.zero;

@@ -36,18 +36,18 @@ public class EnemySpawner : MonoBehaviour
     [Header("時間経過・集団数強化設定")]
     [Tooltip("初期の1グループあたりの敵の数")]
     [SerializeField] private int enemiesPerGroup = 4;
-    [Tooltip("敵の数（人数）が増える時間間隔（秒）")] // ★追加
-    [SerializeField] private float countDifficultyInterval = 30f; // ★追加
+    [Tooltip("敵の数（人数）が増える時間間隔（秒）")] 
+    [SerializeField] private float countDifficultyInterval = 30f; 
     [Tooltip("初期状態の敵の最大HP")]
     [SerializeField] private float baseEnemyMaxHp = 10f;
     [Tooltip("30秒ごとに上昇するHPの量")]
     [SerializeField] private float hpIncreaseAmount = 5f;
-    [Tooltip("敵のHPが増える時間間隔（秒）")] // ★追加
-    [SerializeField] private float hpDifficultyInterval = 10f; // ★追加
+    [Tooltip("敵のHPが増える時間間隔（秒）")] // 
+    [SerializeField] private float hpDifficultyInterval = 10f; 
 
     private float _currentEnemyMaxHp; // 現在の難易度に応じたHP
-    private float _countTimeTracker = 0f; // ★人数用のタイマーに変更
-    private float _hpTimeTracker = 0f;    // ★HP用のタイマーに変更
+    private float _countTimeTracker = 0f; // 人数用のタイマーに変更
+    private float _hpTimeTracker = 0f;    // HP用のタイマーに変更
 
     [Header("敵グループPrefab")]
     [Tooltip("スポーンする敵グループのPrefabリスト")]
@@ -64,7 +64,7 @@ public class EnemySpawner : MonoBehaviour
         _playerController = GetComponentInParent<PlayerController>();
         _spawnTimer = spawnInterval;
 
-        _currentEnemyMaxHp = baseEnemyMaxHp; // ★追加：初期HPを設定
+        _currentEnemyMaxHp = baseEnemyMaxHp; // 初期HPを設定
     }
 
     private void Update()
