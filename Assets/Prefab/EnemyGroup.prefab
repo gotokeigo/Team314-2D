@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3930298548134310613}
   - component: {fileID: 1424722929811195975}
   - component: {fileID: 2984144594284134800}
+  - component: {fileID: 7613263908356670244}
   m_Layer: 5
   m_Name: GroupCountText
   m_TagString: Untagged
@@ -137,6 +138,18 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7613263908356670244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2087200840384899872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8312bb72306e6e42bffbe8eab40ffd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Billboard
 --- !u!1 &3389243784592188378
 GameObject:
   m_ObjectHideFlags: 0
@@ -195,6 +208,7 @@ MonoBehaviour:
   maxGroupSizeForSlow: 0
   groupWanderRadius: 5
   groupWanderInterval: 3
+  shoutOnly: 0
   mergeRadius: 4
   countText: {fileID: 2984144594284134800}
   hpBarPrefab: {fileID: 4139514934719599915, guid: 5607a1c0d70ac7e47a83d9ff98588df7, type: 3}
@@ -211,6 +225,7 @@ GameObject:
   - component: {fileID: 7842780876794604506}
   - component: {fileID: 1756844117887304223}
   - component: {fileID: 1249660016684767649}
+  - component: {fileID: 3268166494703956586}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -301,6 +316,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &3268166494703956586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4090359439167651800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8312bb72306e6e42bffbe8eab40ffd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Billboard
 --- !u!1001 &180891370497946725
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -529,6 +556,7 @@ MonoBehaviour:
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
+  rotationSpeed: 10
 --- !u!54 &5466457218624479915
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -586,7 +614,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 6072095521304407395}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 1.5
+  m_Radius: 0.7
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -929,6 +957,7 @@ MonoBehaviour:
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
+  rotationSpeed: 10
 --- !u!54 &5117279027278589148
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -986,7 +1015,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 5946029489094402393}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 1.5
+  m_Radius: 0.7
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -1329,6 +1358,7 @@ MonoBehaviour:
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
+  rotationSpeed: 10
 --- !u!54 &7669474960306642360
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1386,7 +1416,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 5062377644203753399}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 1.5
+  m_Radius: 0.7
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -1729,6 +1759,7 @@ MonoBehaviour:
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
+  rotationSpeed: 10
 --- !u!54 &8518001282715733969
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1786,7 +1817,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 4655988051498564974}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 1.5
+  m_Radius: 0.7
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -2129,6 +2160,7 @@ MonoBehaviour:
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
+  rotationSpeed: 10
 --- !u!54 &1025630262910283457
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2186,7 +2218,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 8577916706020891562}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 1.5
+  m_Radius: 0.7
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -2529,6 +2561,7 @@ MonoBehaviour:
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
+  rotationSpeed: 10
 --- !u!54 &6071701089890224746
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2586,7 +2619,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 1551080050361196171}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 1.5
+  m_Radius: 0.7
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -2929,6 +2962,7 @@ MonoBehaviour:
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
+  rotationSpeed: 10
 --- !u!54 &1818701381257532982
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2986,7 +3020,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 1415217281898224353}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 1.5
+  m_Radius: 0.7
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -3329,6 +3363,7 @@ MonoBehaviour:
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
+  rotationSpeed: 10
 --- !u!54 &8114019604798251911
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3386,7 +3421,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 175483552176780583}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 1.5
+  m_Radius: 0.7
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50

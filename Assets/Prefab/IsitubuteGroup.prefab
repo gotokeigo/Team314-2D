@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3930298548134310613}
   - component: {fileID: 1424722929811195975}
   - component: {fileID: 2984144594284134800}
+  - component: {fileID: 2144116156834869275}
   m_Layer: 5
   m_Name: GroupCountText
   m_TagString: Untagged
@@ -137,6 +138,18 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2144116156834869275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2087200840384899872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8312bb72306e6e42bffbe8eab40ffd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Billboard
 --- !u!1 &3389243784592188378
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,6 +225,7 @@ GameObject:
   - component: {fileID: 7842780876794604506}
   - component: {fileID: 1756844117887304223}
   - component: {fileID: 1249660016684767649}
+  - component: {fileID: 3770294183893231931}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -302,6 +316,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &3770294183893231931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4090359439167651800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8312bb72306e6e42bffbe8eab40ffd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Billboard
 --- !u!1001 &393830697713672726
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -541,6 +567,7 @@ MonoBehaviour:
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
+  rotationSpeed: 10
 --- !u!95 &3687275828888301230
 Animator:
   serializedVersion: 7
@@ -619,8 +646,8 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 699820730817388359}
   m_Enabled: 1
-  m_AgentTypeID: -1372625422
-  m_Radius: 1.5
+  m_AgentTypeID: 0
+  m_Radius: 0.7
   m_Speed: 3.5
   m_Acceleration: 0
   avoidancePriority: 50
@@ -964,6 +991,7 @@ MonoBehaviour:
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
+  rotationSpeed: 10
 --- !u!95 &233119063388178079
 Animator:
   serializedVersion: 7
@@ -1042,8 +1070,8 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 468704462166155898}
   m_Enabled: 1
-  m_AgentTypeID: -1372625422
-  m_Radius: 1.5
+  m_AgentTypeID: 0
+  m_Radius: 0.7
   m_Speed: 3.5
   m_Acceleration: 0
   avoidancePriority: 50
@@ -1397,6 +1425,7 @@ MonoBehaviour:
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
+  rotationSpeed: 10
 --- !u!95 &1037445256252511372
 Animator:
   serializedVersion: 7
@@ -1475,8 +1504,8 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2086425159928026339}
   m_Enabled: 1
-  m_AgentTypeID: -1372625422
-  m_Radius: 1.5
+  m_AgentTypeID: 0
+  m_Radius: 0.7
   m_Speed: 3.5
   m_Acceleration: 0
   avoidancePriority: 50
@@ -1825,6 +1854,7 @@ MonoBehaviour:
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
+  rotationSpeed: 10
 --- !u!95 &7443818081022306815
 Animator:
   serializedVersion: 7
@@ -1903,8 +1933,8 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4487277103834417417}
   m_Enabled: 1
-  m_AgentTypeID: -1372625422
-  m_Radius: 1.5
+  m_AgentTypeID: 0
+  m_Radius: 0.7
   m_Speed: 3.5
   m_Acceleration: 0
   avoidancePriority: 50
@@ -2253,6 +2283,7 @@ MonoBehaviour:
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
+  rotationSpeed: 10
 --- !u!95 &5771943770913875807
 Animator:
   serializedVersion: 7
@@ -2331,8 +2362,8 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5504606784962330597}
   m_Enabled: 1
-  m_AgentTypeID: -1372625422
-  m_Radius: 1.5
+  m_AgentTypeID: 0
+  m_Radius: 0.7
   m_Speed: 3.5
   m_Acceleration: 0
   avoidancePriority: 50
@@ -2681,6 +2712,7 @@ MonoBehaviour:
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
+  rotationSpeed: 10
 --- !u!95 &8845127104484935665
 Animator:
   serializedVersion: 7
@@ -2759,8 +2791,8 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9049848248126021454}
   m_Enabled: 1
-  m_AgentTypeID: -1372625422
-  m_Radius: 1.5
+  m_AgentTypeID: 0
+  m_Radius: 0.7
   m_Speed: 3.5
   m_Acceleration: 0
   avoidancePriority: 50
@@ -3109,6 +3141,7 @@ MonoBehaviour:
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
+  rotationSpeed: 10
 --- !u!95 &3416807041925712398
 Animator:
   serializedVersion: 7
@@ -3187,8 +3220,8 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9157836584868753237}
   m_Enabled: 1
-  m_AgentTypeID: -1372625422
-  m_Radius: 1.5
+  m_AgentTypeID: 0
+  m_Radius: 0.7
   m_Speed: 3.5
   m_Acceleration: 0
   avoidancePriority: 50
@@ -3532,6 +3565,7 @@ MonoBehaviour:
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
+  rotationSpeed: 10
 --- !u!95 &7512686886596305311
 Animator:
   serializedVersion: 7
@@ -3610,8 +3644,8 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8400672586268023315}
   m_Enabled: 1
-  m_AgentTypeID: -1372625422
-  m_Radius: 1.5
+  m_AgentTypeID: 0
+  m_Radius: 0.7
   m_Speed: 3.5
   m_Acceleration: 0
   avoidancePriority: 50
