@@ -77,6 +77,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private GameObject attackRangeObject;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip attackSE;
+    [SerializeField] private AudioClip chargeSE;
 
     [Header("エフェクト")]
     [SerializeField] private GameObject chargeEffectPrefab;
@@ -119,6 +120,12 @@ public class PlayerAttack : MonoBehaviour
         if (_isAttacking || _isCharging) return;
         //チャージ開始
         _isCharging = true;
+        if (audioSource != null && chargeSE != null)
+        {
+            audioSource.clip = chargeSE;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
         //攻撃範囲を表示
         lineRenderer.enabled = true;
         _chargeStartTime = Time.time;
@@ -193,6 +200,12 @@ public class PlayerAttack : MonoBehaviour
         {
           
             lineRenderer.enabled = false;
+            if (audioSource != null && audioSource.isPlaying)
+            {
+                audioSource.Stop();
+                audioSource.loop = false;
+            }
+
             if (_attackTimer > 0f) return;
             _isCharging = false;
             _playerController.SetSpeedMultiplier(1.0f);
@@ -216,20 +229,8 @@ public class PlayerAttack : MonoBehaviour
         if (chargeTime >= mediumChargeTime) return ChargeLevel.Medium;
         return ChargeLevel.Small;
     }
-    private IEnumerator ShowSlashAfterDelay(GameObject slash)
-    {
-        yield return new WaitForSeconds(0.2f);
-
-        if (slash == null)
-            yield break;
-
-        Renderer[] slashRenderers = slash.GetComponentsInChildren<Renderer>();
-
-        foreach (Renderer renderer in slashRenderers)
-        {
-            renderer.enabled = true;
-        }
-    }
+    
+    
     private void Attack(ChargeLevel chargeLevel)
     {
         //攻撃方向を取得
@@ -269,47 +270,72 @@ public class PlayerAttack : MonoBehaviour
         float effectAngle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
         //攻撃の当たり判定
         float hitRange = currentRange * 1.6f;
-        //斬撃エフェクトを生成
+        
+
         if (slashEffectPrefab != null)
         {
             Quaternion rotation = Quaternion.LookRotation(attackDirection, Vector3.up);
-            
+
             GameObject slash = Instantiate(
                 slashEffectPrefab,
                 transform.position,
                 rotation
             );
-            // 最初の秒は画面に表示しない
-            Renderer[] slashRenderers = slash.GetComponentsInChildren<Renderer>();
 
-            foreach (Renderer renderer in slashRenderers)
-            {
-                renderer.enabled = false;
-            }
+            ParticleSystem[] particles =
+                slash.GetComponentsInChildren<ParticleSystem>();
 
-            // 秒後に表示
-            StartCoroutine(ShowSlashAfterDelay(slash));
-
-            ParticleSystem[] particles = slash.GetComponentsInChildren<ParticleSystem>();
-            //攻撃レベルに応じてエフェクトサイズを変更
+            // 攻撃レベルに応じてエフェクトサイズを変更
             foreach (ParticleSystem ps in particles)
             {
                 var main = ps.main;
+
                 switch (chargeLevel)
                 {
                     case ChargeLevel.Small:
                         main.startSize = 12f;
                         break;
+
                     case ChargeLevel.Medium:
                         main.startSize = 20f;
                         break;
+
                     case ChargeLevel.Large:
                         main.startSize = 37f;
                         break;
                 }
             }
 
-        }
+            // いったん最初の状態に戻す
+            foreach (ParticleSystem ps in particles)
+            {
+                ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            }
+
+            // 0.2秒経過した状態まで一気に進める
+            foreach (ParticleSystem ps in particles)
+            {
+                ps.Simulate(0.2f, true, true);
+            }
+
+            // 0.2秒経過した状態で画面に表示
+            Renderer[] slashRenderers =
+                slash.GetComponentsInChildren<Renderer>();
+
+            foreach (Renderer renderer in slashRenderers)
+            {
+                renderer.enabled = true;
+            }
+
+            // その続きから再生
+            foreach (ParticleSystem ps in particles)
+            {
+                ps.Play(true);
+            }
+
+            // エフェクトが残り続けないように削除
+            //Destroy(slash, 2f);
+    }
 
         //攻撃範囲内にいる敵を取得
         Collider[] hitEnemies = Physics.OverlapSphere(transform.position,hitRange,enemyLayer
