@@ -55,7 +55,8 @@ public class BossController : MonoBehaviour
 
     private NavMeshAgent _agent;
 
-    private int _lastFrameDamaged = -1;
+    private float _lastDamageTime = -999f; 
+    [SerializeField] private float damageCooldown = 0.8f; 
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
@@ -109,6 +110,17 @@ public class BossController : MonoBehaviour
         _knockbackLayer = LayerMask.NameToLayer("EnemyKnockback");
         Physics.IgnoreLayerCollision(_knockbackLayer, _defaultLayer, true);
         Physics.IgnoreLayerCollision(_knockbackLayer, _knockbackLayer, true);
+
+        BossArrow arrow = FindFirstObjectByType<BossArrow>();
+        if (arrow != null)
+        {
+            Debug.Log("BossArrow を見つけました。ターゲットを設定します。");
+            arrow.SetBossTarget(transform);
+        }
+        else
+        {
+            Debug.LogError("BossArrow が見つかりませんでした！");
+        }
     }
 
     private void FixedUpdate()
@@ -148,8 +160,8 @@ public class BossController : MonoBehaviour
     {
         if (_isDead) return false;
 
-        if (Time.frameCount == _lastFrameDamaged) return false;
-        _lastFrameDamaged = Time.frameCount;
+        if (Time.time - _lastDamageTime < damageCooldown) return false;
+        _lastDamageTime = Time.time;
 
         //int playerLevel = ExperienceManager.Instance.PlayerLevel;
         //if (playerLevel >= oneHitKillPlayerLevel)
@@ -210,6 +222,12 @@ public class BossController : MonoBehaviour
     {
         _isDead = true;
 
+        BossArrow arrow = FindFirstObjectByType<BossArrow>();
+        if (arrow != null)
+        {
+            arrow.ClearBossTarget();
+        }
+
         // AudioSourceを使ってSEを鳴らす
         if (_audioSource != null && deathSound != null)
         {
@@ -237,7 +255,7 @@ public class BossController : MonoBehaviour
     public void KnockBack(Vector3 direction, float force)
     {
         _isKnockedBack = true;
-        // ★追加：大きなノックバック開始時にもAIを一時停止
+       
         if (_agent.isOnNavMesh) _agent.isStopped = true;
         _rb.linearVelocity = Vector3.zero;
         _rb.freezeRotation = false;
