@@ -50,6 +50,10 @@ public class EnemyController : MonoBehaviour
     [Tooltip("敵の吹き飛ばしたときの回転力")]
     [SerializeField] private float rotationForce = 5f;     // 敵が吹き飛ぶ時の回転力
 
+    [Header("UI設定")]
+    [Tooltip("生成するDamageCanvasプレハブ")]
+    [SerializeField] private GameObject damageUIPrefab;
+
     [Header("敵のさまよう・索敵関係")]
     [Tooltip("プレイヤーを発見する距離")]
     [SerializeField] private float detectionRange = 5f;     // プレイヤーを発見する距離
@@ -329,12 +333,33 @@ public class EnemyController : MonoBehaviour
     {
         if (_isDead) return false;
         _currentHp -= damage;
+
+        ShowDamageUI((int)damage);
+
         if (_currentHp <= 0)
         {
             Die();
             return true;    // 死亡
         }
         return false;       // 生存
+    }
+
+    private void ShowDamageUI(int damage)
+    {
+        if (damageUIPrefab == null) return;
+
+        
+        Vector3 spawnPosition = transform.position + Vector3.up * 1.5f;
+
+       
+        spawnPosition += new Vector3(Random.Range(-0.2f, 0.2f), 0, Random.Range(-0.2f, 0.2f));
+
+        GameObject uiObj = Instantiate(damageUIPrefab, spawnPosition, Quaternion.identity);
+        DamageUI damageUI = uiObj.GetComponent<DamageUI>();
+        if (damageUI != null)
+        {
+            damageUI.Setup(damage);
+        }
     }
 
     private void Die()

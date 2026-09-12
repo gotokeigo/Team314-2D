@@ -24,6 +24,8 @@ public class BossController : MonoBehaviour
     [Tooltip("死んだときのSE")] 
     [SerializeField] private AudioClip deathSound; 
     private AudioSource _audioSource;
+    [Tooltip("生成するDamageCanvasプレハブ")]
+    [SerializeField] private GameObject damageUIPrefab;
     [Tooltip("移動速度")]
     [SerializeField] private float moveSpeed = 3f;
     [Tooltip("接触時のダメージ")]
@@ -51,8 +53,9 @@ public class BossController : MonoBehaviour
     private int _defaultLayer;
     private int _knockbackLayer;
 
-    private NavMeshAgent _agent; 
+    private NavMeshAgent _agent;
 
+    private int _lastFrameDamaged = -1;
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
@@ -145,20 +148,44 @@ public class BossController : MonoBehaviour
     {
         if (_isDead) return false;
 
+        if (Time.frameCount == _lastFrameDamaged) return false;
+        _lastFrameDamaged = Time.frameCount;
+
         //int playerLevel = ExperienceManager.Instance.PlayerLevel;
         //if (playerLevel >= oneHitKillPlayerLevel)
         //{
         //    damage = float.MaxValue;
         //}
 
+        Debug.Log("TakeDamage実行");
         _currentHp -= damage;
         Debug.Log($"ボスHP: {_currentHp}/{maxHp}");
+        ShowDamageUI((int)damage);
+        
         if (_currentHp <= 0)
         {
             Die();
             return true;
         }
         return false;
+    }
+
+    private void ShowDamageUI(int damage)
+    {
+        if (damageUIPrefab == null) return;
+
+       
+        Vector3 spawnPosition = transform.position + Vector3.up * 2.5f;
+
+        
+        spawnPosition += new Vector3(Random.Range(-0.3f, 0.3f), 0, Random.Range(-0.3f, 0.3f));
+
+        GameObject uiObj = Instantiate(damageUIPrefab, spawnPosition, Quaternion.identity);
+        DamageUI damageUI = uiObj.GetComponent<DamageUI>();
+        if (damageUI != null)
+        {
+            damageUI.Setup(damage);
+        }
     }
 
     public void SmallKnockBack(Vector3 direction, float force)
