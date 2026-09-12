@@ -564,6 +564,7 @@ MonoBehaviour:
   maxHp: 10
   level: 1
   rotationForce: 5
+  damageUIPrefab: {fileID: 1582272680264049533, guid: 3d94bf20252a76d42bdc279fe12cf14a, type: 3}
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
@@ -646,8 +647,8 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 699820730817388359}
   m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.7
+  m_AgentTypeID: -1372625422
+  m_Radius: 1
   m_Speed: 3.5
   m_Acceleration: 0
   avoidancePriority: 50
@@ -988,6 +989,7 @@ MonoBehaviour:
   maxHp: 10
   level: 1
   rotationForce: 5
+  damageUIPrefab: {fileID: 1582272680264049533, guid: 3d94bf20252a76d42bdc279fe12cf14a, type: 3}
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
@@ -1070,8 +1072,8 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 468704462166155898}
   m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.7
+  m_AgentTypeID: -1372625422
+  m_Radius: 1
   m_Speed: 3.5
   m_Acceleration: 0
   avoidancePriority: 50
@@ -1422,6 +1424,7 @@ MonoBehaviour:
   maxHp: 10
   level: 1
   rotationForce: 5
+  damageUIPrefab: {fileID: 1582272680264049533, guid: 3d94bf20252a76d42bdc279fe12cf14a, type: 3}
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
@@ -1504,8 +1507,8 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2086425159928026339}
   m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.7
+  m_AgentTypeID: -1372625422
+  m_Radius: 1
   m_Speed: 3.5
   m_Acceleration: 0
   avoidancePriority: 50
@@ -1851,6 +1854,7 @@ MonoBehaviour:
   maxHp: 10
   level: 1
   rotationForce: 5
+  damageUIPrefab: {fileID: 1582272680264049533, guid: 3d94bf20252a76d42bdc279fe12cf14a, type: 3}
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
@@ -1933,8 +1937,8 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4487277103834417417}
   m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.7
+  m_AgentTypeID: -1372625422
+  m_Radius: 1
   m_Speed: 3.5
   m_Acceleration: 0
   avoidancePriority: 50
@@ -2280,6 +2284,7 @@ MonoBehaviour:
   maxHp: 10
   level: 1
   rotationForce: 5
+  damageUIPrefab: {fileID: 1582272680264049533, guid: 3d94bf20252a76d42bdc279fe12cf14a, type: 3}
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
@@ -2362,8 +2367,8 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5504606784962330597}
   m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.7
+  m_AgentTypeID: -1372625422
+  m_Radius: 1
   m_Speed: 3.5
   m_Acceleration: 0
   avoidancePriority: 50
@@ -2709,6 +2714,7 @@ MonoBehaviour:
   maxHp: 10
   level: 1
   rotationForce: 5
+  damageUIPrefab: {fileID: 1582272680264049533, guid: 3d94bf20252a76d42bdc279fe12cf14a, type: 3}
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
@@ -2791,8 +2797,8 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9049848248126021454}
   m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.7
+  m_AgentTypeID: -1372625422
+  m_Radius: 1
   m_Speed: 3.5
   m_Acceleration: 0
   avoidancePriority: 50
@@ -3138,6 +3144,7 @@ MonoBehaviour:
   maxHp: 10
   level: 1
   rotationForce: 5
+  damageUIPrefab: {fileID: 1582272680264049533, guid: 3d94bf20252a76d42bdc279fe12cf14a, type: 3}
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
@@ -3220,8 +3227,8 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9157836584868753237}
   m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.7
+  m_AgentTypeID: -1372625422
+  m_Radius: 1
   m_Speed: 3.5
   m_Acceleration: 0
   avoidancePriority: 50
@@ -3562,6 +3569,7 @@ MonoBehaviour:
   maxHp: 10
   level: 1
   rotationForce: 5
+  damageUIPrefab: {fileID: 1582272680264049533, guid: 3d94bf20252a76d42bdc279fe12cf14a, type: 3}
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
@@ -3644,8 +3652,8 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8400672586268023315}
   m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.7
+  m_AgentTypeID: -1372625422
+  m_Radius: 1
   m_Speed: 3.5
   m_Acceleration: 0
   avoidancePriority: 50

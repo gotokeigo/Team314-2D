@@ -52,6 +52,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossController
   deathSound: {fileID: 8300000, guid: 042f373e8404ecc47a9049f3a31e7346, type: 3}
+  damageUIPrefab: {fileID: 1582272680264049533, guid: 3d94bf20252a76d42bdc279fe12cf14a, type: 3}
   moveSpeed: 3
   attackDamage: 1
   maxHp: 1000
@@ -135,7 +136,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 4032952339765419896}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 0.7
+  m_Radius: 1
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 0

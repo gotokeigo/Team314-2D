@@ -553,6 +553,7 @@ MonoBehaviour:
   maxHp: 10
   level: 1
   rotationForce: 5
+  damageUIPrefab: {fileID: 1582272680264049533, guid: 3d94bf20252a76d42bdc279fe12cf14a, type: 3}
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
@@ -614,7 +615,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 6072095521304407395}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 0.7
+  m_Radius: 1
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -954,6 +955,7 @@ MonoBehaviour:
   maxHp: 10
   level: 1
   rotationForce: 5
+  damageUIPrefab: {fileID: 1582272680264049533, guid: 3d94bf20252a76d42bdc279fe12cf14a, type: 3}
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
@@ -1015,7 +1017,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 5946029489094402393}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 0.7
+  m_Radius: 1
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -1355,6 +1357,7 @@ MonoBehaviour:
   maxHp: 10
   level: 1
   rotationForce: 5
+  damageUIPrefab: {fileID: 1582272680264049533, guid: 3d94bf20252a76d42bdc279fe12cf14a, type: 3}
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
@@ -1756,6 +1759,7 @@ MonoBehaviour:
   maxHp: 10
   level: 1
   rotationForce: 5
+  damageUIPrefab: {fileID: 1582272680264049533, guid: 3d94bf20252a76d42bdc279fe12cf14a, type: 3}
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
@@ -1817,7 +1821,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 4655988051498564974}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 0.7
+  m_Radius: 1
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -2157,6 +2161,7 @@ MonoBehaviour:
   maxHp: 10
   level: 1
   rotationForce: 5
+  damageUIPrefab: {fileID: 1582272680264049533, guid: 3d94bf20252a76d42bdc279fe12cf14a, type: 3}
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
@@ -2218,7 +2223,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 8577916706020891562}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 0.7
+  m_Radius: 1
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -2558,6 +2563,7 @@ MonoBehaviour:
   maxHp: 10
   level: 1
   rotationForce: 5
+  damageUIPrefab: {fileID: 1582272680264049533, guid: 3d94bf20252a76d42bdc279fe12cf14a, type: 3}
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
@@ -2619,7 +2625,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 1551080050361196171}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 0.7
+  m_Radius: 1
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -2959,6 +2965,7 @@ MonoBehaviour:
   maxHp: 10
   level: 1
   rotationForce: 5
+  damageUIPrefab: {fileID: 1582272680264049533, guid: 3d94bf20252a76d42bdc279fe12cf14a, type: 3}
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
@@ -3020,7 +3027,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 1415217281898224353}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 0.7
+  m_Radius: 1
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -3360,6 +3367,7 @@ MonoBehaviour:
   maxHp: 10
   level: 1
   rotationForce: 5
+  damageUIPrefab: {fileID: 1582272680264049533, guid: 3d94bf20252a76d42bdc279fe12cf14a, type: 3}
   detectionRange: 5
   wanderRadius: 3
   wanderInterval: 2
@@ -3421,7 +3429,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 175483552176780583}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 0.7
+  m_Radius: 1
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
